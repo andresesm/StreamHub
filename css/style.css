@@ -109,11 +109,10 @@ body {
 /* FILTER BAR */
 .filters-section {
   position: fixed;
-  top: 64px;
   left: 0;
   right: 0;
   z-index: 19;
-  padding: 5px 0;
+  padding: 10px 0;
 }
 
 .filters-bar {
@@ -322,7 +321,7 @@ body {
 
 /* MAIN */
 .site-main {
-  padding: 35px 0 40px;
+  padding: 5px 0 40px;
 }
 
 .creators-section {
