@@ -109,7 +109,7 @@ body {
 /* FILTER BAR */
 .filters-section {
   position: fixed;
-  top: 76px; /* ✅ FIX: baja los filtros debajo del header sticky (que está en top:0). */
+  top: 76px; /* ✅ FIX: baja filtros debajo del header sticky */
   left: 0;
   right: 0;
   z-index: 19;
@@ -766,7 +766,7 @@ body {
   }
 
   .filters-section {
-    top: 56px; /* ✅ sigue siendo válido para mobile */
+    top: 56px;
   }
 
   .filters-bar {
