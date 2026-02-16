@@ -60,6 +60,14 @@
     avatarWrapper.appendChild(img);
     card.appendChild(avatarWrapper);
 
+    function openModal() {
+      if (window.VSDModal) {
+        window.VSDModal.open(creator);
+      }
+    }
+
+    avatarWrapper.addEventListener("click", openModal);
+
     const body = document.createElement("div");
     body.className = "creator-card-body";
 
@@ -67,11 +75,7 @@
     usernameBtn.type = "button";
     usernameBtn.className = "creator-username-btn";
     usernameBtn.textContent = `@${creator.username}`;
-    usernameBtn.addEventListener("click", () => {
-      if (window.VSDModal) {
-        window.VSDModal.open(creator);
-      }
-    });
+    usernameBtn.addEventListener("click", openModal);
 
     body.appendChild(usernameBtn);
 

@@ -4,8 +4,14 @@
   const TAG_COUNT_ALL = document.getElementById("tag-count-all");
   const SEARCH_INPUT = document.getElementById("searchInput");
 
+  const FILTERS_TOGGLE_BTN = document.getElementById("filtersToggleBtn");
+  const FILTERS_PANEL = document.getElementById("filtersPanel");
+  const GAMES_TOGGLE_BTN = document.getElementById("gamesToggleBtn");
+  const GAMES_PANEL = document.getElementById("gamesPanel");
+
   let allCreators = [];
-  let activeTags = new Set(); // tags seleccionados
+  let activeTags = new Set(); // tags + plataformas + idioma
+  let activeGames = new Set(); // videojuegos
   let searchTerm = "";
 
   function buildTagPills(uniqueTags) {
@@ -30,33 +36,68 @@
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }
 
+  function attachPanelToggles() {
+    if (FILTERS_TOGGLE_BTN && FILTERS_PANEL) {
+      FILTERS_TOGGLE_BTN.addEventListener("click", function () {
+        const isOpen = FILTERS_PANEL.classList.toggle("is-open");
+        FILTERS_PANEL.setAttribute("aria-hidden", String(!isOpen));
+        FILTERS_TOGGLE_BTN.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
+
+    if (GAMES_TOGGLE_BTN && GAMES_PANEL) {
+      GAMES_TOGGLE_BTN.addEventListener("click", function () {
+        const isOpen = GAMES_PANEL.classList.toggle("is-open");
+        GAMES_PANEL.setAttribute("aria-hidden", String(!isOpen));
+        GAMES_TOGGLE_BTN.setAttribute("aria-expanded", String(isOpen));
+      });
+    }
+  }
+
   function attachEvents() {
     document.addEventListener("click", function (evt) {
-      const btn = evt.target.closest(".tag-pill");
-      if (!btn) return;
-
-      const tag = btn.dataset.tag;
-      if (tag === "all") {
-        activeTags.clear();
-        document.querySelectorAll(".tag-pill").forEach(el => el.classList.remove("is-active"));
-        ALL_TAG_BUTTON.classList.add("is-active");
-      } else {
-        if (activeTags.has(tag)) {
-          activeTags.delete(tag);
-          btn.classList.remove("is-active");
-        } else {
-          activeTags.add(tag);
-          btn.classList.add("is-active");
-        }
-        const anyActive = activeTags.size > 0;
-        if (anyActive) {
-          ALL_TAG_BUTTON.classList.remove("is-active");
-        } else {
+      const tagBtn = evt.target.closest(".tag-pill");
+      if (tagBtn && !tagBtn.classList.contains("game-pill")) {
+        const tag = tagBtn.dataset.tag;
+        if (tag === "all") {
+          activeTags.clear();
+          document.querySelectorAll(".tag-pill").forEach(el => {
+            if (!el.classList.contains("game-pill")) {
+              el.classList.remove("is-active");
+            }
+          });
           ALL_TAG_BUTTON.classList.add("is-active");
+        } else {
+          if (activeTags.has(tag)) {
+            activeTags.delete(tag);
+            tagBtn.classList.remove("is-active");
+          } else {
+            activeTags.add(tag);
+            tagBtn.classList.add("is-active");
+          }
+          const anyActive = activeTags.size > 0;
+          if (anyActive) {
+            ALL_TAG_BUTTON.classList.remove("is-active");
+          } else {
+            ALL_TAG_BUTTON.classList.add("is-active");
+          }
         }
+        window.VSDFilters && window.VSDFilters.onFilterChange();
+        return;
       }
 
-      window.VSDFilters && window.VSDFilters.onFilterChange();
+      const gameBtn = evt.target.closest(".game-pill");
+      if (gameBtn) {
+        const game = gameBtn.dataset.game;
+        if (activeGames.has(game)) {
+          activeGames.delete(game);
+          gameBtn.classList.remove("is-active");
+        } else {
+          activeGames.add(game);
+          gameBtn.classList.add("is-active");
+        }
+        window.VSDFilters && window.VSDFilters.onFilterChange();
+      }
     });
 
     if (SEARCH_INPUT) {
@@ -74,17 +115,25 @@
       if (!uname.includes(term)) return false;
     }
 
-    if (activeTags.size === 0) return true;
+    if (activeTags.size === 0 && activeGames.size === 0) return true;
 
-    const tags = new Set([
+    const baseSet = new Set([
       ...(creator.tags || []),
       ...(creator.platforms || []),
       creator.language || ""
     ]);
 
     for (const t of activeTags) {
-      if (!tags.has(t)) return false;
+      if (!baseSet.has(t)) return false;
     }
+
+    if (activeGames.size > 0) {
+      const gamesSet = new Set(creator.games || []);
+      for (const g of activeGames) {
+        if (!gamesSet.has(g)) return false;
+      }
+    }
+
     return true;
   }
 
@@ -106,7 +155,9 @@
   }
 
   function updateTagCounts(counts) {
-    TAG_COUNT_ALL.textContent = counts.all;
+    if (TAG_COUNT_ALL) {
+      TAG_COUNT_ALL.textContent = counts.all;
+    }
     Object.keys(counts.perTag).forEach(tag => {
       const btn = document.querySelector(`.tag-pill[data-tag="${CSS.escape(tag)}"]`);
       if (!btn) return;
@@ -124,8 +175,11 @@
     allCreators = creators.slice();
     const uniqueTags = extractUniqueTags(allCreators);
     buildTagPills(uniqueTags);
+    attachPanelToggles();
     attachEvents();
-    ALL_TAG_BUTTON.classList.add("is-active");
+    if (ALL_TAG_BUTTON) {
+      ALL_TAG_BUTTON.classList.add("is-active");
+    }
     const counts = computeTagCounts(allCreators);
     updateTagCounts(counts);
   }

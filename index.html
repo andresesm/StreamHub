@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Venezuelan Streamers Directory</title>
-  <meta name="description" content="Directorio minimalista de streamers venezolanos con filtros por plataforma, idioma y tags.">
+  <meta name="description" content="Directorio minimalista de streamers venezolanos con filtros por plataforma, idioma y estilo de contenido.">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -28,29 +28,64 @@
       <div class="max-width">
         <div class="filters-bar" id="filtersBar">
           <div class="filters-left">
-            <div class="search-wrapper">
-              <input
-                type="search"
-                id="searchInput"
-                class="search-input"
-                placeholder="Buscar por nombre..."
-                aria-label="Buscar creador por nombre">
-            </div>
-            <div class="tags-group" aria-label="Filtrar por categoría">
-              <!-- Chips generados por JS -->
+            <div class="search-and-filter-row">
+              <div class="search-wrapper">
+                <input
+                  type="search"
+                  id="searchInput"
+                  class="search-input"
+                  placeholder="Buscar por nombre..."
+                  aria-label="Buscar creador por nombre">
+              </div>
+              <button
+                type="button"
+                id="filtersToggleBtn"
+                class="filters-toggle-btn"
+                aria-expanded="false"
+                aria-controls="filtersPanel"
+                aria-label="Mostrar u ocultar filtros avanzados">
+                <span class="filters-toggle-icon">☰</span>
+              </button>
+              <!-- Botón TODOS siempre visible -->
               <button class="tag-pill is-active" data-tag="all" data-tag-group="meta">
                 Todos
                 <span class="tag-count" id="tag-count-all">0</span>
               </button>
-              <!-- Los demás tags se inyectan desde JS -->
-              <div id="dynamicTagPills" class="dynamic-tags"></div>
+            </div>
+
+            <!-- PANEL DE FILTROS PLEGABLE -->
+            <div
+              class="filters-panel"
+              id="filtersPanel"
+              aria-hidden="true">
+              <div class="tags-group" aria-label="Filtrar por categoría">
+                <!-- Tags dinámicos -->
+                <div id="dynamicTagPills" class="dynamic-tags"></div>
+              </div>
+
+              <!-- Menú de videojuegos -->
+              <div class="games-filter-group">
+                <button
+                  type="button"
+                  id="gamesToggleBtn"
+                  class="games-toggle-btn"
+                  aria-expanded="false"
+                  aria-controls="gamesPanel">
+                  Videojuegos
+                  <span class="games-toggle-icon">▾</span>
+                </button>
+                <div
+                  class="games-panel"
+                  id="gamesPanel"
+                  aria-hidden="true">
+                  <button class="tag-pill game-pill" data-game="Valorant">Valorant</button>
+                  <button class="tag-pill game-pill" data-game="Counter">Counter</button>
+                  <button class="tag-pill game-pill" data-game="Spider">Spider</button>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="filters-right">
-            <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Cambiar tema">
-              <span class="theme-label">Auto</span>
-            </button>
-          </div>
+
         </div>
       </div>
     </section>
@@ -59,6 +94,7 @@
     <main class="site-main">
       <div class="max-width">
         <section class="creators-section" aria-label="Listado de streamers">
+          <div class="filters-grid-spacer"></div>
           <div id="creatorsGrid" class="creators-grid">
             <!-- Tarjetas generadas por JS -->
           </div>
@@ -84,14 +120,24 @@
           </div>
           <div class="modal-body">
             <h2 id="modalUsername" class="modal-username">@username</h2>
-            <p id="modalBio" class="modal-bio">Biografía del creador.</p>
 
+            <!-- TAGS PRINCIPALES -->
             <div class="modal-tags">
               <h3 class="modal-section-title">Tags</h3>
               <div id="modalTagsContainer" class="modal-tags-list">
                 <!-- Tags -->
               </div>
             </div>
+
+            <!-- TAGS DE VIDEOJUEGOS -->
+            <div class="modal-games">
+              <h3 class="modal-section-title">Videojuegos</h3>
+              <div id="modalGamesContainer" class="modal-tags-list">
+                <!-- Games -->
+              </div>
+            </div>
+
+            <p id="modalBio" class="modal-bio">Biografía del creador.</p>
 
             <div class="modal-twitch">
               <h3 class="modal-section-title">Twitch</h3>
@@ -138,6 +184,15 @@
 
     <!-- OVERLAY PARA BLUR GLOBAL EN MODAL -->
     <div id="appBlurOverlay" class="app-blur-overlay"></div>
+
+    <!-- TOGGLE DE TEMA FLOTANTE -->
+    <button
+      id="floatingThemeToggle"
+      class="floating-theme-toggle"
+      type="button"
+      aria-label="Cambiar tema">
+      <span class="floating-theme-icon">☾</span>
+    </button>
 
   </div>
 

@@ -2,8 +2,12 @@
   const ROOT = document.documentElement;
   const STORAGE_KEY = "vsd-theme-mode"; // "auto" | "day" | "night"
   const THEME_ATTR = "data-theme";
-  const TOGGLE_BTN = document.getElementById("themeToggleBtn");
-  const LABEL_SPAN = TOGGLE_BTN ? TOGGLE_BTN.querySelector(".theme-label") : null;
+
+  const INLINE_TOGGLE_BTN = document.getElementById("themeToggleBtn");
+  const INLINE_LABEL = INLINE_TOGGLE_BTN ? INLINE_TOGGLE_BTN.querySelector(".theme-label") : null;
+
+  const FLOATING_TOGGLE = document.getElementById("floatingThemeToggle");
+  const FLOATING_ICON = FLOATING_TOGGLE ? FLOATING_TOGGLE.querySelector(".floating-theme-icon") : null;
 
   function getLocalHour() {
     const now = new Date();
@@ -35,34 +39,53 @@
     }
   }
 
-  function updateLabel(mode) {
-    if (!LABEL_SPAN) return;
-    if (mode === "auto") LABEL_SPAN.textContent = "Auto";
-    else if (mode === "day") LABEL_SPAN.textContent = "Día";
-    else LABEL_SPAN.textContent = "Noche";
+  function updateInlineLabel(mode) {
+    if (!INLINE_LABEL) return;
+    if (mode === "auto") INLINE_LABEL.textContent = "Auto";
+    else if (mode === "day") INLINE_LABEL.textContent = "Día";
+    else INLINE_LABEL.textContent = "Noche";
+  }
+
+  function updateFloatingIcon(mode, effectiveTheme) {
+    if (!FLOATING_ICON) return;
+    if (mode === "auto") {
+      FLOATING_ICON.textContent = effectiveTheme === "day" ? "☀" : "☾";
+    } else if (mode === "day") {
+      FLOATING_ICON.textContent = "☀";
+    } else {
+      FLOATING_ICON.textContent = "☾";
+    }
   }
 
   function syncCurrentTheme() {
     const mode = readStoredMode();
+    let effective = mode;
     if (mode === "auto") {
-      applyTheme(computeAutoTheme());
-    } else {
-      applyTheme(mode);
+      effective = computeAutoTheme();
     }
-    updateLabel(mode);
+    applyTheme(effective);
+    updateInlineLabel(mode);
+    updateFloatingIcon(mode, effective);
+  }
+
+  function nextMode(current) {
+    return current === "auto" ? "day" : current === "day" ? "night" : "auto";
   }
 
   function toggleMode() {
     const current = readStoredMode();
-    const next = current === "auto" ? "day" : current === "day" ? "night" : "auto";
+    const next = nextMode(current);
     storeMode(next);
     syncCurrentTheme();
   }
 
   document.addEventListener("DOMContentLoaded", function () {
     syncCurrentTheme();
-    if (TOGGLE_BTN) {
-      TOGGLE_BTN.addEventListener("click", toggleMode);
+    if (INLINE_TOGGLE_BTN) {
+      INLINE_TOGGLE_BTN.addEventListener("click", toggleMode);
+    }
+    if (FLOATING_TOGGLE) {
+      FLOATING_TOGGLE.addEventListener("click", toggleMode);
     }
   });
 

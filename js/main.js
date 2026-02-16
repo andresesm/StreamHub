@@ -18,6 +18,7 @@
     const usernameEl = document.getElementById("modalUsername");
     const bioEl = document.getElementById("modalBio");
     const tagsContainer = document.getElementById("modalTagsContainer");
+    const gamesContainer = document.getElementById("modalGamesContainer");
     const followersEl = document.getElementById("modalFollowers");
     const liveStatusEl = document.getElementById("modalLiveStatus");
     const streamTitleEl = document.getElementById("modalStreamTitle");
@@ -46,6 +47,14 @@
         span.className = "modal-tag-pill";
         span.textContent = tag;
         tagsContainer.appendChild(span);
+      });
+
+      gamesContainer.innerHTML = "";
+      (creator.games || []).forEach(game => {
+        const span = document.createElement("span");
+        span.className = "modal-tag-pill";
+        span.textContent = game;
+        gamesContainer.appendChild(span);
       });
 
       followersEl.textContent = "—";
