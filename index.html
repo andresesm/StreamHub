@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="day">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Venezuelan Streamers Directory</title>
+  <meta name="description" content="Directorio minimalista de streamers venezolanos con filtros por plataforma, idioma y tags.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-root">
+
+    <!-- HEADER -->
+    <header class="site-header">
+      <div class="max-width">
+        <div class="branding">
+          <img src="assets/logo-placeholder.svg" alt="Logo" class="logo">
+          <div class="branding-text">
+            <h1 class="site-title">Venezuelan Streamers Directory</h1>
+            <p class="site-subtitle">Explora creadores venezolanos por plataforma, idioma y estilo de contenido.</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- FILTER BAR -->
+    <section class="filters-section">
+      <div class="max-width">
+        <div class="filters-bar" id="filtersBar">
+          <div class="filters-left">
+            <div class="search-wrapper">
+              <input
+                type="search"
+                id="searchInput"
+                class="search-input"
+                placeholder="Buscar por nombre..."
+                aria-label="Buscar creador por nombre">
+            </div>
+            <div class="tags-group" aria-label="Filtrar por categoría">
+              <!-- Chips generados por JS -->
+              <button class="tag-pill is-active" data-tag="all" data-tag-group="meta">
+                Todos
+                <span class="tag-count" id="tag-count-all">0</span>
+              </button>
+              <!-- Los demás tags se inyectan desde JS -->
+              <div id="dynamicTagPills" class="dynamic-tags"></div>
+            </div>
+          </div>
+          <div class="filters-right">
+            <button id="themeToggleBtn" class="theme-toggle-btn" type="button" aria-label="Cambiar tema">
+              <span class="theme-label">Auto</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="site-main">
+      <div class="max-width">
+        <section class="creators-section" aria-label="Listado de streamers">
+          <div id="creatorsGrid" class="creators-grid">
+            <!-- Tarjetas generadas por JS -->
+          </div>
+          <div id="gridSentinel" class="grid-sentinel" aria-hidden="true"></div>
+          <div id="loadingIndicator" class="loading-indicator" aria-hidden="true">
+            <span class="loader-dot"></span>
+            <span class="loader-dot"></span>
+            <span class="loader-dot"></span>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- MODAL PERFIL EXTENDIDO -->
+    <div id="profileModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-dialog" role="document">
+        <button class="modal-close-btn" type="button" id="modalCloseBtn" aria-label="Cerrar perfil">
+          ×
+        </button>
+        <div class="modal-content">
+          <div class="modal-avatar-wrapper">
+            <img id="modalAvatar" src="assets/avatar-placeholder-1.png" alt="Avatar del creador" class="modal-avatar">
+          </div>
+          <div class="modal-body">
+            <h2 id="modalUsername" class="modal-username">@username</h2>
+            <p id="modalBio" class="modal-bio">Biografía del creador.</p>
+
+            <div class="modal-tags">
+              <h3 class="modal-section-title">Tags</h3>
+              <div id="modalTagsContainer" class="modal-tags-list">
+                <!-- Tags -->
+              </div>
+            </div>
+
+            <div class="modal-twitch">
+              <h3 class="modal-section-title">Twitch</h3>
+              <div class="modal-twitch-grid">
+                <div class="twitch-stat">
+                  <span class="stat-label">Seguidores</span>
+                  <span class="stat-value" id="modalFollowers">—</span>
+                </div>
+                <div class="twitch-stat">
+                  <span class="stat-label">Estado</span>
+                  <span class="stat-value" id="modalLiveStatus">Desconocido</span>
+                </div>
+                <div class="twitch-stat">
+                  <span class="stat-label">Título en vivo</span>
+                  <span class="stat-value" id="modalStreamTitle">Sin datos</span>
+                </div>
+              </div>
+              <button
+                id="modalTwitchButton"
+                class="primary-btn"
+                type="button"
+                data-twitch-url="#"
+              >
+                Abrir perfil de Twitch
+              </button>
+            </div>
+
+            <div class="modal-platforms">
+              <h3 class="modal-section-title">Plataformas</h3>
+              <div id="modalPlatformsContainer" class="modal-platforms-list">
+                <!-- Iconos de plataformas -->
+              </div>
+            </div>
+
+            <div class="modal-note">
+              <p class="modal-note-text">
+                Datos de Twitch serán cargados automáticamente cuando se integre la API oficial.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OVERLAY PARA BLUR GLOBAL EN MODAL -->
+    <div id="appBlurOverlay" class="app-blur-overlay"></div>
+
+  </div>
+
+  <script src="js/theme-switcher.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/infinite-scroll.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

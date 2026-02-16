@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "username": "arepas_gamer",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Gaming", "FPS", "Spanish"],
+    "platforms": ["Twitch"],
+    "twitch_id": "arepas_gamer",
+    "bio": "Streamer venezolano de FPS y shooters tácticos, energía alta y comunidad chill.",
+    "language": "Spanish"
+  },
+  {
+    "id": 2,
+    "username": "artcaracas",
+    "avatar_url": "assets/avatar-placeholder-2.png",
+    "tags": ["Art", "Illustration", "Spanish"],
+    "platforms": ["Twitch", "Instagram"],
+    "twitch_id": "artcaracas",
+    "bio": "Ilustraciones digitales, fanart y charlas relajadas desde Caracas.",
+    "language": "Spanish"
+  },
+  {
+    "id": 3,
+    "username": "ven_vtuber",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["VTuber", "Anime", "English"],
+    "platforms": ["YouTube"],
+    "twitch_id": "",
+    "bio": "VTuber venezolana con streams comfy y juegos indies.",
+    "language": "English"
+  },
+  {
+    "id": 4,
+    "username": "irl_ccs",
+    "avatar_url": "assets/avatar-placeholder-2.png",
+    "tags": ["IRL", "Travel", "Spanish"],
+    "platforms": ["Twitch", "Kick"],
+    "twitch_id": "irl_ccs",
+    "bio": "Recorriendo Venezuela en directo, comida callejera y cultura local.",
+    "language": "Spanish"
+  }
+]
