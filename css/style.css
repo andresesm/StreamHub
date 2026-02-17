@@ -974,78 +974,58 @@ body.header-hidden {
   padding: calc(var(--site-header-real-h) + var(--filters-h) + 28px) 0 40px;
 }
 
-/* Splash badge con SVG animado */
-.splash-badge--anim{
+/* Splash: dot pulsing (con color por tema) */
+:root{
+  --pulse-dot-color: var(--accent-main); /* tema día: azul */
+  --pulse-dot-glow: rgba(59, 125, 216, 0.35); /* fallback día */
+}
+
+[data-theme="night"]{
+  /* ✅ mismo verde neón de tus iconos */
+  --pulse-dot-color: var(--rrss-icon-color);
+  --pulse-dot-glow: rgba(43, 194, 14, 0.30);
+}
+
+.splash-badge--dot{
   background: transparent;
   border: none;
   box-shadow: none;
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
 }
 
-.splash-mark{
-  width: 80px;
-  height: 80px;
-  display: block;
+.pulse-dot{
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--pulse-dot-color);
+  position: relative;
 }
 
-/* Colores (usan tus tokens) */
-.splash-ring{
-  fill: none;
-  stroke: var(--accent-main);
-  stroke-width: 3.2;
-  stroke-linecap: round;
-  stroke-dasharray: 8 10;
-  opacity: 0.85;
+.pulse-dot::after{
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 999px;
+  background: var(--pulse-dot-glow);
+  transform: scale(1);
+  opacity: 1;
+  animation: pulseDot 1.25s ease-out infinite;
 }
 
-.splash-core{
-  fill: color-mix(in srgb, var(--accent-main) 18%, var(--bg-surface) 82%);
-  stroke: color-mix(in srgb, var(--accent-main) 28%, transparent 72%);
-  stroke-width: 1;
-}
-
-.splash-core-dot{
-  fill: var(--accent-main);
-  opacity: 0.95;
-}
-
-.splash-member{
-  fill: var(--bg-surface-elevated);
-  stroke: color-mix(in srgb, var(--accent-main) 55%, transparent 45%);
-  stroke-width: 1.2;
-}
-
-/* Animaciones estilo “Apple-ish”: rotación suave + flotación */
-.splash-spin{
-  transform-origin: 48px 48px;
-  animation: splashSpin 4.2s linear infinite;
-}
-
-.splash-member{
-  transform-origin: 48px 48px;
-  animation: splashBob 1.8s ease-in-out infinite;
-}
-
-.splash-member.m2{ animation-delay: 0.10s; }
-.splash-member.m3{ animation-delay: 0.20s; }
-.splash-member.m4{ animation-delay: 0.30s; }
-.splash-member.m5{ animation-delay: 0.40s; }
-
-@keyframes splashSpin{
-  from{ transform: rotate(0deg); }
-  to{ transform: rotate(360deg); }
-}
-
-@keyframes splashBob{
-  0%,100%{ transform: translateY(0) scale(1); }
-  50%{ transform: translateY(-2.5px) scale(1.03); }
+@keyframes pulseDot{
+  0%   { transform: scale(1);   opacity: 0.85; }
+  60%  { transform: scale(3.2); opacity: 0; }
+  100% { transform: scale(3.2); opacity: 0; }
 }
 
 /* Respeta “reducir movimiento” */
 @media (prefers-reduced-motion: reduce){
-  .splash-spin,
-  .splash-member{
-    animation: none !important;
+  .pulse-dot::after{
+    animation: none;
+    opacity: 0.25;
+    transform: scale(2.2);
   }
 }
