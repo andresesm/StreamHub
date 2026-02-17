@@ -811,6 +811,17 @@ body {
   mask-size: contain;
 }
 
+/* Ajustes finos por icono */
+.rrss-icon.rrss--email{ width: 16px; height: 16px; }
+.rrss-icon.rrss--ig{ width: 17px; height: 17px; }
+.rrss-icon.rrss--kick{ width: 16px; height: 16px; }
+.rrss-icon.rrss--twitch{ width: 14px; height: 14px; }
+.rrss-icon.rrss--x{ width: 16px; height: 16px; }
+.rrss-icon.rrss--youtube{ width: 16px; height: 16px; }
+
+
+
+
 /* Mapeo de archivos */
 .rrss--email{
   -webkit-mask-image: url("../assets/rrss/email.svg");

@@ -16,7 +16,7 @@
   if (!badgeSpan) {
     badgeSpan = document.createElement("span");
     badgeSpan.className = "floating-theme-badge";
-    badgeSpan.textContent = "Auto";
+    badgeSpan.textContent = "A.";
     btn.appendChild(badgeSpan);
   }
 
@@ -34,7 +34,7 @@
     // Badge visible solo en AUTO
     const isAuto = mode === "auto";
     badgeSpan.style.display = isAuto ? "inline-flex" : "none";
-    badgeSpan.textContent = "Auto"; // si prefieres solo "A", cambia esto a "A"
+    badgeSpan.textContent = "A."; // si prefieres solo "A", cambia esto a "A"
   }
 
   function applyMode(mode) {
