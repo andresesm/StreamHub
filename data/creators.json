@@ -138,10 +138,10 @@
       "tiktok": "Titoaxzel",
       "email": "Axzelvielma@gmail.com"
     },
-    "residence": "Estados unidos",
+    "residence": "Estados Unidos",
     "nationality": "Venezuela"
   },
-  {
+{
     "id": 5,
     "username": "TyferieL",
     "avatar_url": "assets/avatars/TyferieL.webp",
@@ -171,6 +171,199 @@
       "email": "tyferielcontact@gmail.com"
     },
     "residence": "Venezuela",
+    "nationality": "Venezuela"
+  },
+    {
+    "id": 6,
+    "username": "FeirlyGab",
+    "avatar_url": "assets/avatars/FeirlyGab.png",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Eventos especiales",
+      "Alta interacción con el chat",
+      "Música",
+      "Vtuber",
+      "Muy animado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual",
+      "Roleplayer"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "League of Legends",
+      "Garry's Mod",
+      "Minecraft",
+      "Juegos indie",
+      "Juegos de terror",
+      "TFT"
+    ],
+    "socials": {
+      "twitch": "FeirlyGab",
+      "kick": "FeirlyGab",
+      "ig": "FairlyGab",
+      "x": "FairlyGab",
+      "youtube": "FairlyGab",
+      "tiktok": "FeirlyGab",
+      "email": "fairlygab@gmail.com"
+    },
+    "residence": "Caracas, Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 7,
+    "username": "KOrillo_",
+    "avatar_url": "assets/avatars/KOrillo.png",
+    "tags": [
+      "Just Chatting",
+      "Vtuber",
+      "Jugador competitivo/Tryhard"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Pokémon",
+      "Minecraft",
+      "Arc Raiders"
+    ],
+    "socials": {
+      "twitch": "KOrillo_",
+      "kick": "KOriyo",
+      "ig": "KOrillo",
+      "x": "KOrillo_",
+      "youtube": "KOrillo_",
+      "tiktok": "KOrilloo",
+      "email": "koriginb@gmail.com"
+    },
+    "residence": "",
+    "nationality": "Colombia"
+  },
+  {
+    "id": 8,
+    "username": "RealYisus_",
+    "avatar_url": "assets/avatars/RealYisus.png",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Eventos especiales",
+      "Alta interacción con el chat",
+      "Música",
+      "Calmado",
+      "Muy animado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual",
+      "Roleplayer",
+      "Deportes"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "League of Legends",
+      "Pokémon",
+      "Roblox",
+      "Fortnite",
+      "GTA V",
+      "Garry's Mod",
+      "Minecraft",
+      "Juegos de terror",
+      "FIFA (EA FC)"
+    ],
+    "socials": {
+      "twitch": "RealYisus_",
+      "kick": "RealYisus",
+      "ig": "realyisus_",
+      "x": "RealYisus__",
+      "youtube": "RealYisus",
+      "tiktok": "realyisus__"
+    },
+    "residence": "Madrid, España",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 9,
+    "username": "Chiringooo",
+    "avatar_url": "assets/avatars/Chiringooo.png",
+    "tags": [
+      "Just Chatting",
+      "Música",
+      "Calmado",
+      "Muy animado",
+      "Jugador casual",
+      "Roleplayer"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Marvel Rivals",
+      "Garry's Mod",
+      "Minecraft",
+      "Juegos de terror",
+      "Tetris"
+    ],
+    "socials": {
+      "twitch": "Chiringooo",
+      "ig": "Chiringooooo",
+      "x": "Chiringooooo",
+      "tiktok": "Chiringooooo"
+    },
+    "residence": "Houston, Estados Unidos",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 10,
+    "username": "DoggyKillah",
+    "avatar_url": "assets/avatars/DoggyKillah.png",
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Calmado",
+      "Muy animado",
+      "Jugador casual"
+    ],
+    "games": [
+      "Counter-Strike",
+      "League of Legends",
+      "Pokémon",
+      "Garry's Mod",
+      "Minecraft",
+      "TFT",
+      "Resident Evil",
+      "Metal Gear Solid",
+      "Devil May Cry"
+    ],
+    "socials": {
+      "twitch": "DoggyKillah",
+      "kick": "DroggyKillah",
+      "ig": "DoggyKillah",
+      "x": "DoggyKillah",
+      "youtube": "DoggyKillah",
+      "tiktok": "DoggyKillah",
+      "email": "doggykillah@gmail.com"
+    },
+    "residence": "Caracas",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 11,
+    "username": "Tifani10p",
+    "avatar_url": "assets/avatars/Tifani10p.png",
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Jugador casual"
+    ],
+    "games": [
+      "Valorant",
+      "Call Of Duty"
+    ],
+    "socials": {
+      "twitch": "Tifani10p",
+      "ig": "tifanii10p",
+      "x": "tifani10p",
+      "youtube": "Tifani10P",
+      "tiktok": "Tifani10p",
+      "email": "tifani10p10@gmail.com"
+    },
+    "residence": "España",
     "nationality": "Venezuela"
   }
 ]
