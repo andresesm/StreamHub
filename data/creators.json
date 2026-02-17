@@ -1,75 +1,176 @@
 [
   {
     "id": 1,
-    "username": "arepas_gamer",
-    "avatar_url": "assets/avatar-placeholder-1.png",
-    "tags": ["Gaming", "FPS", "Spanish"],
-    "games": ["Valorant", "Counter"],
-    "bio": "Streamer venezolano de FPS y shooters tácticos, energía alta y comunidad chill.",
-    "language": "Spanish",
-    "followers": "12.4K",
-    "residence": "Santiago, CL",
-    "nationality": "Venezolana",
+    "username": "JuanTaich0",
+    "avatar_url": "assets/avatars/JuanTaich0.webp",
+    "tags": [
+      "Just Chatting",
+      "Vtuber",
+      "Calmado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual",
+      "Roleplayer"
+    ],
+    "games": [
+      "Valorant",
+      "League of Legends",
+      "Pokémon",
+      "Juegos de terror"
+    ],
     "socials": {
-      "twitch": "arepas_gamer",
-      "x": "arepas_gamer",
-      "ig": "arepas_gamer",
-      "youtube": "arepas_gamer",
-      "email": "arepas_gamer@email.com"
-    }
+      "twitch": "JuanTaich0",
+      "kick": "JuanTaicho",
+      "ig": "juan_taicho",
+      "x": "JuanTaicho",
+      "youtube": "JuanTaicho",
+      "tiktok": "JuanTaicho",
+      "email": "juantaicho@gmail.com"
+    },
+    "residence": "Venezuela",
+    "nationality": "Venezuela"
   },
   {
     "id": 2,
-    "username": "artcaracas",
-    "avatar_url": "assets/avatar-placeholder-2.png",
-    "tags": ["Art", "Illustration", "Spanish"],
-    "games": ["Spider"],
-    "bio": "Ilustraciones digitales, fanart y charlas relajadas desde Caracas.",
-    "language": "Spanish",
-    "followers": "3.1K",
-    "residence": "Caracas, VE",
-    "nationality": "Venezolana",
+    "username": "BillyBillete",
+    "avatar_url": "assets/avatars/BillyBillete.webp",
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Vtuber",
+      "Watchpartys",
+      "Muy animado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual",
+      "Roleplayer"
+    ],
+    "games": [
+      "Counter-Strike",
+      "League of Legends",
+      "Pokémon",
+      "Fortnite",
+      "Juegos indie",
+      "Juegos de terror",
+      "Sims"
+    ],
     "socials": {
-      "twitch": "artcaracas",
-      "ig": "artcaracas",
-      "x": "artcaracas",
-      "email": "hola@artcaracas.com"
-    }
+      "twitch": "BillyBillete",
+      "kick": "BillyBillete",
+      "ig": "andresesm",
+      "x": "andresesann",
+      "youtube": "BillyBilleteTv",
+      "tiktok": "BillyBilleteTv",
+      "email": "andres@kuumedia.com.es"
+    },
+    "residence": "Chile",
+    "nationality": "Venezuela"
   },
   {
     "id": 3,
-    "username": "ven_vtuber",
-    "avatar_url": "assets/avatar-placeholder-1.png",
-    "tags": ["VTuber", "Anime", "English"],
-    "games": ["Valorant"],
-    "bio": "VTuber venezolana con streams comfy y juegos indies.",
-    "language": "English",
-    "followers": "—",
-    "residence": "Miami, US",
-    "nationality": "Venezolana",
+    "username": "PuniPlayz",
+    "avatar_url": "assets/avatars/PuniPlayz.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Calmado",
+      "Muy animado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual",
+      "Roleplayer",
+      "Cocina"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "League of Legends",
+      "Marvel Rivals",
+      "GTA V",
+      "Garry's Mod",
+      "Minecraft",
+      "Juegos indie",
+      "Juegos de terror",
+      "TFT"
+    ],
     "socials": {
-      "youtube": "ven_vtuber",
-      "x": "ven_vtuber",
-      "ig": "ven_vtuber",
-      "email": "ven_vtuber@email.com"
-    }
+      "twitch": "PuniPlayz",
+      "kick": "PuniPlayz",
+      "ig": "Puniplayz",
+      "x": "Puniplayz",
+      "youtube": "PuniPlayz",
+      "tiktok": "PuniPlayz",
+      "email": "alejandrojpn97@gmail.com"
+    },
+    "residence": "Madeira, Portugal",
+    "nationality": "Venezuela"
   },
   {
     "id": 4,
-    "username": "irl_ccs",
-    "avatar_url": "assets/avatar-placeholder-2.png",
-    "tags": ["IRL", "Travel", "Spanish"],
-    "games": [],
-    "bio": "Recorriendo Venezuela en directo, comida callejera y cultura local.",
-    "language": "Spanish",
-    "followers": "28.9K",
-    "residence": "Caracas, VE",
-    "nationality": "Venezolana",
+    "username": "Titoaxzel",
+    "avatar_url": "assets/avatars/Titoaxzel.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Eventos especiales",
+      "Alta interacción con el chat",
+      "Música",
+      "Arte",
+      "Vtuber",
+      "Anime",
+      "Watchpartys",
+      "Calmado",
+      "Muy animado",
+      "Jugador casual",
+      "Deportes"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "Pokémon",
+      "Fortnite",
+      "Juegos de terror"
+    ],
     "socials": {
-      "twitch": "irl_ccs",
-      "kick": "irl_ccs",
-      "x": "irl_ccs",
-      "email": "contacto@irlccs.com"
-    }
+      "twitch": "Titoaxzel",
+      "kick": "Titoaxzel",
+      "ig": "Titoaxzel",
+      "x": "Titoaxzel",
+      "youtube": "Titoaxzel",
+      "tiktok": "Titoaxzel",
+      "email": "Axzelvielma@gmail.com"
+    },
+    "residence": "Estados unidos",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 5,
+    "username": "TyferieL",
+    "avatar_url": "assets/avatars/TyferieL.webp",
+    "tags": [
+      "Just Chatting",
+      "Calmado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual",
+      "Roleplayer"
+    ],
+    "games": [
+      "Counter-Strike",
+      "League of Legends",
+      "Fortnite",
+      "Marvel Rivals",
+      "Minecraft",
+      "Juegos indie",
+      "Juegos de terror",
+      "Street Fighter"
+    ],
+    "socials": {
+      "twitch": "TyferieL",
+      "ig": "TyferieL",
+      "x": "TyferieL",
+      "youtube": "TyferieL",
+      "tiktok": "TyferieL",
+      "email": "tyferielcontact@gmail.com"
+    },
+    "residence": "Venezuela",
+    "nationality": "Venezuela"
   }
 ]
