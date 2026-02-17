@@ -3,7 +3,7 @@
   --transition-fast: 150ms cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-medium: 220ms cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-slow: 320ms cubic-bezier(0.25, 0.8, 0.25, 1);
-
+  
   /* Day theme */
   --day-bg: #f3f2ed;
   --day-surface: #ffffff;
@@ -48,6 +48,26 @@
   --site-header-real-h: 0px;  /* alto real para animación del header */
   --filters-h: 0px;
 }
+
+@font-face{
+  font-family: "MontserratLocal";
+  src: url("/assets/Montserrat.ttf") format("truetype");
+  font-weight: 100 900; /* rango típico variable */
+  font-style: normal;
+  font-display: swap;
+}
+
+.site-title__stream{
+  font-family: "MontserratLocal", sans-serif;
+  font-weight: 900; /* Black */
+}
+
+.site-title__hub{
+  font-family: "MontserratLocal", sans-serif;
+  font-weight: 400; /* Regular */
+}
+
+
 
 /* NIGHT THEME OVERRIDES */
 [data-theme="night"] {
