@@ -959,7 +959,7 @@ body {
 /* En mobile, tu header es más compacto pero igual suma safe-area */
 @media (max-width: 599px) {
   .site-header{
-    padding-top: calc(35px + var(--safe-top));
+    padding-top: calc(25px + var(--safe-top));
   }
 }
 
@@ -970,12 +970,12 @@ body {
 
 /* ✅ NO sumes header aquí (ya ocupa espacio); solo compensa la barra fija */
 .site-main{
-  padding: calc(var(--filters-h) + 32px) 0 40px;
+  padding: calc(var(--filters-h) + 22px) 0 40px;
 }
 
 /* Gap más grande SOLO en teléfono */
 @media (max-width: 599px) {
   .creators-grid{
-    gap: 75px;
+    gap: 40px;
   }
 }
