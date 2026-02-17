@@ -11,10 +11,48 @@
 
   const CLEAR_FILTERS_BTN = document.getElementById("clearFiltersBtn");
 
+  // Debe coincidir con el orden/labels de infinite-scroll
+  const SOCIAL_KEYS = ["twitch", "kick", "x", "ig", "tiktok", "youtube", "email"];
+  const SOCIAL_TAG_LABEL = {
+    twitch: "Twitch",
+    kick: "Kick",
+    x: "X",
+    ig: "Instagram",
+    tiktok: "TikTok",
+    youtube: "YouTube",
+    email: "Email",
+  };
+
   let allCreators = [];
   let activeTags = new Set(); // tags + plataformas + idioma
   let activeGames = new Set(); // videojuegos
   let searchTerm = "";
+
+  function hasSocialValue(creator, key) {
+    if (!creator) return false;
+
+    // Nuevo schema
+    if (creator.socials && creator.socials[key]) {
+      const v = String(creator.socials[key]).trim();
+      return v.length > 0;
+    }
+
+    // Compat antiguo
+    if (creator.links && creator.links[key]) {
+      const v = String(creator.links[key]).trim();
+      return v.length > 0;
+    }
+
+    return false;
+  }
+
+  function platformTagsForCreator(creator) {
+    const out = [];
+    SOCIAL_KEYS.forEach(k => {
+      if (hasSocialValue(creator, k)) out.push(SOCIAL_TAG_LABEL[k] || k);
+    });
+    return out;
+  }
 
   function buildTagPills(uniqueTags) {
     TAG_CONTAINER.innerHTML = "";
@@ -32,9 +70,13 @@
     const set = new Set();
     creators.forEach(c => {
       (c.tags || []).forEach(tag => set.add(tag));
-      (c.platforms || []).forEach(p => set.add(p));
+
+      // Derivar plataformas desde socials
+      platformTagsForCreator(c).forEach(p => set.add(p));
+
       if (c.language) set.add(c.language);
     });
+
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }
 
@@ -78,10 +120,9 @@
     activeGames.clear();
     searchTerm = "";
 
-    // UI: search
     if (SEARCH_INPUT) SEARCH_INPUT.value = "";
 
-    // UI: tags (no tocar AtoZ)
+    // Tags (sin tocar AtoZ)
     document.querySelectorAll(".tag-pill").forEach(el => {
       if (el.id === "sortAlphaBtn") return;
       if (el.classList.contains("game-pill")) return;
@@ -89,10 +130,10 @@
     });
     if (ALL_TAG_BUTTON) ALL_TAG_BUTTON.classList.add("is-active");
 
-    // UI: games
+    // Games
     document.querySelectorAll(".game-pill").forEach(el => el.classList.remove("is-active"));
 
-    // Regla: papelera cierra todo
+    // Papelera cierra todo
     setGamesPanelOpen(false);
     setFiltersPanelOpen(false);
 
@@ -101,7 +142,7 @@
 
   function attachEvents() {
     document.addEventListener("click", function (evt) {
-      // Ignorar el botón de orden AtoZ
+      // Ignorar el botón de orden
       if (evt.target && evt.target.closest && evt.target.closest("#sortAlphaBtn")) {
         return;
       }
@@ -112,7 +153,7 @@
         return;
       }
 
-      // Cerrar SOLO el panel de filtros si clickeas afuera (gamesPanel NO se cierra aquí)
+      // Click afuera: cierra SOLO filtersPanel (gamesPanel NO se cierra aquí)
       const clickedInsideFiltersPanel = evt.target.closest && evt.target.closest("#filtersPanel");
       const clickedFiltersToggle = evt.target.closest && evt.target.closest("#filtersToggleBtn");
       if (FILTERS_PANEL && FILTERS_PANEL.classList.contains("is-open")) {
@@ -121,7 +162,7 @@
         }
       }
 
-      // Tags (no game)
+      // Tags
       const tagBtn = evt.target.closest(".tag-pill");
       if (tagBtn && !tagBtn.classList.contains("game-pill")) {
         if (tagBtn.id === "sortAlphaBtn") return;
@@ -130,7 +171,7 @@
         if (!tag) return;
 
         if (tag === "all") {
-          // Regla: "Todos" debe mostrar a todos (limpia tags + games + search)
+          // "Todos" muestra a todos
           activeTags.clear();
           activeGames.clear();
           searchTerm = "";
@@ -144,7 +185,7 @@
 
           document.querySelectorAll(".game-pill").forEach(el => el.classList.remove("is-active"));
 
-          // Regla: "Todos" cierra panel videojuegos y panel filtros
+          // "Todos" cierra panel videojuegos y panel filtros
           setGamesPanelOpen(false);
           setFiltersPanelOpen(false);
         } else {
@@ -206,7 +247,7 @@
 
     const baseSet = new Set([
       ...(creator.tags || []),
-      ...(creator.platforms || []),
+      ...platformTagsForCreator(creator),
       creator.language || ""
     ]);
 
@@ -231,7 +272,7 @@
     creatorsSubset.forEach(c => {
       const appliedTags = new Set([
         ...(c.tags || []),
-        ...(c.platforms || []),
+        ...platformTagsForCreator(c),
         c.language || ""
       ]);
 

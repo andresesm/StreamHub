@@ -3,129 +3,73 @@
     "id": 1,
     "username": "arepas_gamer",
     "avatar_url": "assets/avatar-placeholder-1.png",
-    "tags": [
-      "Gaming",
-      "FPS",
-      "Spanish"
-    ],
-    "games": [
-      "Valorant",
-      "Counter"
-    ],
-    "platforms": [
-      "Twitch",
-      "X",
-      "YouTube",
-      "Instagram",
-      "Email"
-    ],
-    "twitch_id": "arepas_gamer",
+    "tags": ["Gaming", "FPS", "Spanish"],
+    "games": ["Valorant", "Counter"],
     "bio": "Streamer venezolano de FPS y shooters tácticos, energía alta y comunidad chill.",
     "language": "Spanish",
     "followers": "12.4K",
     "residence": "Santiago, CL",
     "nationality": "Venezolana",
-    "links": {
+    "socials": {
       "twitch": "arepas_gamer",
       "x": "arepas_gamer",
-      "youtube": "arepas_gamer",
       "ig": "arepas_gamer",
-      "email": "arepas_gamer@email.com",
-      "tiktok": ""
+      "youtube": "arepas_gamer",
+      "email": "arepas_gamer@email.com"
     }
   },
   {
     "id": 2,
     "username": "artcaracas",
     "avatar_url": "assets/avatar-placeholder-2.png",
-    "tags": [
-      "Art",
-      "Illustration",
-      "Spanish"
-    ],
-    "games": [
-      "Spider"
-    ],
-    "platforms": [
-      "Twitch",
-      "Instagram",
-      "X",
-      "Email"
-    ],
-    "twitch_id": "artcaracas",
+    "tags": ["Art", "Illustration", "Spanish"],
+    "games": ["Spider"],
     "bio": "Ilustraciones digitales, fanart y charlas relajadas desde Caracas.",
     "language": "Spanish",
     "followers": "3.1K",
     "residence": "Caracas, VE",
     "nationality": "Venezolana",
-    "links": {
+    "socials": {
       "twitch": "artcaracas",
       "ig": "artcaracas",
       "x": "artcaracas",
-      "email": "hola@artcaracas.com",
-      "tiktok": ""
+      "email": "hola@artcaracas.com"
     }
   },
   {
     "id": 3,
     "username": "ven_vtuber",
     "avatar_url": "assets/avatar-placeholder-1.png",
-    "tags": [
-      "VTuber",
-      "Anime",
-      "English"
-    ],
-    "games": [
-      "Valorant"
-    ],
-    "platforms": [
-      "YouTube",
-      "X",
-      "Instagram",
-      "Email"
-    ],
-    "twitch_id": "",
+    "tags": ["VTuber", "Anime", "English"],
+    "games": ["Valorant"],
     "bio": "VTuber venezolana con streams comfy y juegos indies.",
     "language": "English",
     "followers": "—",
     "residence": "Miami, US",
     "nationality": "Venezolana",
-    "links": {
+    "socials": {
       "youtube": "ven_vtuber",
       "x": "ven_vtuber",
       "ig": "ven_vtuber",
-      "email": "ven_vtuber@email.com",
-      "tiktok": ""
+      "email": "ven_vtuber@email.com"
     }
   },
   {
     "id": 4,
     "username": "irl_ccs",
     "avatar_url": "assets/avatar-placeholder-2.png",
-    "tags": [
-      "IRL",
-      "Travel",
-      "Spanish"
-    ],
+    "tags": ["IRL", "Travel", "Spanish"],
     "games": [],
-    "platforms": [
-      "Twitch",
-      "Kick",
-      "X",
-      "Email"
-    ],
-    "twitch_id": "irl_ccs",
     "bio": "Recorriendo Venezuela en directo, comida callejera y cultura local.",
     "language": "Spanish",
     "followers": "28.9K",
     "residence": "Caracas, VE",
     "nationality": "Venezolana",
-    "links": {
+    "socials": {
       "twitch": "irl_ccs",
       "kick": "irl_ccs",
       "x": "irl_ccs",
-      "email": "contacto@irlccs.com",
-      "tiktok": ""
+      "email": "contacto@irlccs.com"
     }
   }
 ]

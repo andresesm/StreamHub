@@ -7,16 +7,16 @@
 
   // Orden fijo requerido:
   // 1. Twitch 2. Kick 3. Twitter(X) 4. Instagram 5. TikTok 6. YouTube 7. Email
-  const PLATFORM_ORDER = ["twitch", "kick", "x", "ig", "tiktok", "youtube", "email"];
-  const PLATFORM_LABEL = {
-    twitch: "Twitch",
-    kick: "Kick",
-    x: "Twitter",
-    ig: "Instagram",
-    tiktok: "TikTok",
-    youtube: "YouTube",
-    email: "Email",
-  };
+  const SOCIAL_ORDER = ["twitch", "kick", "x", "ig", "tiktok", "youtube", "email"];
+const SOCIAL_LABEL = {
+  twitch: "Twitch",
+  kick: "Kick",
+  x: "X",
+  ig: "Instagram",
+  tiktok: "TikTok",
+  youtube: "YouTube",
+  email: "Email",
+};
 
   let allCreators = [];
   let filteredCreators = [];
@@ -40,21 +40,6 @@
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-  }
-
-  function normalizePlatformKey(platform) {
-    const p = (platform || "").trim().toLowerCase();
-    if (!p) return null;
-
-    if (p === "twitch") return "twitch";
-    if (p === "kick") return "kick";
-    if (p === "youtube" || p === "you tube") return "youtube";
-    if (p === "x" || p === "twitter") return "x";
-    if (p === "instagram" || p === "ig") return "ig";
-    if (p === "tiktok" || p === "tik tok" || p === "tt") return "tiktok";
-    if (p === "email" || p === "mail" || p === "correo") return "email";
-
-    return null;
   }
 
   function isProbablyUrl(value) {
@@ -82,28 +67,28 @@
     return null;
   }
 
-  function getCreatorLink(creator, key) {
-    if (creator && creator.links) {
-      // Key directa
-      if (creator.links[key]) return buildUrlFromHandle(key, creator.links[key]);
+  // Lee SOLO de creator.socials (nuevo schema). Mantiene compat con creator.links si aún existe.
+  function getSocialValue(creator, key) {
+    if (!creator) return "";
 
-      // Aliases opcionales
-      if (key === "x" && creator.links.twitter) return buildUrlFromHandle("x", creator.links.twitter);
-      if (key === "ig" && creator.links.instagram) return buildUrlFromHandle("ig", creator.links.instagram);
-      if (key === "tiktok" && creator.links.tt) return buildUrlFromHandle("tiktok", creator.links.tt);
-    }
+    // Nuevo schema
+    if (creator.socials && creator.socials[key]) return creator.socials[key];
 
-    // fallback compat: twitch_id / username
-    if (key === "twitch") {
-      const twitchId = (creator.twitch_id || creator.username || "").trim();
-      if (!twitchId) return null;
-      return buildUrlFromHandle("twitch", twitchId);
-    }
+    // Compat (por si quedan datos antiguos)
+    if (creator.links && creator.links[key]) return creator.links[key];
+    if (key === "x" && creator.links && creator.links.twitter) return creator.links.twitter;
+    if (key === "ig" && creator.links && creator.links.instagram) return creator.links.instagram;
+    if (key === "tiktok" && creator.links && creator.links.tt) return creator.links.tt;
 
-    return null;
+    return "";
   }
 
-  function createPlatformIconByKey(creator, key) {
+  function getCreatorLink(creator, key) {
+    const v = getSocialValue(creator, key);
+    return buildUrlFromHandle(key, v);
+  }
+
+  function createSocialIcon(creator, key) {
     const url = getCreatorLink(creator, key);
     if (!url) return null;
 
@@ -112,8 +97,8 @@
     a.href = url;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
-    a.title = PLATFORM_LABEL[key] || key;
-    a.setAttribute("aria-label", PLATFORM_LABEL[key] || key);
+    a.title = SOCIAL_LABEL[key] || key;
+    a.setAttribute("aria-label", SOCIAL_LABEL[key] || key);
 
     // Que el click en el icono NO abra modal ni active otras cosas
     a.addEventListener("click", (e) => e.stopPropagation());
@@ -126,12 +111,13 @@
     return a;
   }
 
-  // (Opcional) Export para que el popup use el mismo orden/constructor sin duplicar lógica
+  // Export para que el popup use el mismo orden/constructor sin duplicar lógica
   window.VSDPlatformIcons = {
-    ORDER: PLATFORM_ORDER.slice(),
-    create: createPlatformIconByKey,
-    normalizeKey: normalizePlatformKey,
+    ORDER: SOCIAL_ORDER.slice(),
+    label: (key) => SOCIAL_LABEL[key] || key,
+    create: createSocialIcon,
     getLink: getCreatorLink,
+    getValue: getSocialValue,
   };
 
   function usernameKey(c) {
@@ -221,9 +207,9 @@
     const platformsRow = document.createElement("div");
     platformsRow.className = "creator-platforms";
 
-    // Orden fijo + no dibujar si no hay link
-    PLATFORM_ORDER.forEach(key => {
-      const el = createPlatformIconByKey(creator, key);
+    // Orden fijo + no dibujar si no hay handle
+    SOCIAL_ORDER.forEach(key => {
+      const el = createSocialIcon(creator, key);
       if (el) platformsRow.appendChild(el);
     });
 
