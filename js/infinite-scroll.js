@@ -21,7 +21,6 @@
   let isRendering = false;
 
   function shuffle(arr) {
-    // Durstenfeld/Fisher–Yates
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -110,7 +109,7 @@
   }
 
   function usernameKey(c) {
-    return String(c?.username || "").toLowerCase();
+    return String(c && c.username ? c.username : "").toLowerCase();
   }
 
   function updateSortButtonUI() {
@@ -137,10 +136,10 @@
     if (evt && evt.altKey) {
       sortMode = "random";
     } else {
-      // Toggle SOLO A→Z <-> Z→A (random queda como estado default, no como tercer click)
+      // 3 estados: random → az → za → random
       if (sortMode === "random") sortMode = "az";
       else if (sortMode === "az") sortMode = "za";
-      else sortMode = "az";
+      else sortMode = "random";
     }
 
     updateSortButtonUI();
@@ -164,14 +163,14 @@
   function createCard(creator) {
     const card = document.createElement("article");
     card.className = "creator-card";
-    card.dataset.id = creator.id;
+    if (creator && creator.id != null) card.dataset.id = creator.id;
 
     const avatarWrapper = document.createElement("div");
     avatarWrapper.className = "creator-avatar-wrapper";
 
     const img = document.createElement("img");
     img.className = "creator-avatar";
-    img.alt = `Avatar de ${creator.username}`;
+    img.alt = `Avatar de ${creator.username || "creador"}`;
     img.loading = "lazy";
     img.src = creator.avatar_url || "assets/avatar-placeholder-1.png";
 
@@ -189,7 +188,7 @@
     const usernameBtn = document.createElement("button");
     usernameBtn.type = "button";
     usernameBtn.className = "creator-username-btn";
-    usernameBtn.textContent = `@${creator.username}`;
+    usernameBtn.textContent = `@${creator.username || ""}`;
     usernameBtn.addEventListener("click", openModal);
     body.appendChild(usernameBtn);
 
@@ -209,11 +208,12 @@
   }
 
   function renderNextBatch() {
+    if (!GRID) return;
     if (isRendering) return;
     if (renderedCount >= filteredCreators.length) return;
 
     isRendering = true;
-    LOADER.classList.add("is-visible");
+    if (LOADER) LOADER.classList.add("is-visible");
 
     const start = renderedCount;
     const end = Math.min(start + BATCH_SIZE, filteredCreators.length);
@@ -223,11 +223,13 @@
     }
 
     renderedCount = end;
-    LOADER.classList.remove("is-visible");
+    if (LOADER) LOADER.classList.remove("is-visible");
     isRendering = false;
   }
 
   function resetAndRender() {
+    if (!GRID) return;
+
     GRID.innerHTML = "";
     renderedCount = 0;
 
@@ -253,7 +255,7 @@
   }
 
   function init(creators) {
-    allCreators = creators.slice();
+    allCreators = (creators || []).slice();
 
     // Aleatorio al cargar
     randomOrder = shuffle(allCreators);
