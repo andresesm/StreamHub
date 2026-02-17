@@ -56,17 +56,30 @@
 
   function attachEvents() {
     document.addEventListener("click", function (evt) {
+      // ✅ FIX: ignorar el botón de orden AtoZ para que no afecte tags ("Todos")
+      if (evt.target && evt.target.closest && evt.target.closest("#sortAlphaBtn")) {
+        return;
+      }
+
       const tagBtn = evt.target.closest(".tag-pill");
       if (tagBtn && !tagBtn.classList.contains("game-pill")) {
+        // ✅ FIX extra: si no tiene data-tag (por cualquier motivo), no lo tratamos como tag
         const tag = tagBtn.dataset.tag;
+        if (!tag) return;
+
         if (tag === "all") {
           activeTags.clear();
+
           document.querySelectorAll(".tag-pill").forEach(el => {
+            // ✅ no tocar el botón AtoZ
+            if (el.id === "sortAlphaBtn") return;
+
             if (!el.classList.contains("game-pill")) {
               el.classList.remove("is-active");
             }
           });
-          ALL_TAG_BUTTON.classList.add("is-active");
+
+          if (ALL_TAG_BUTTON) ALL_TAG_BUTTON.classList.add("is-active");
         } else {
           if (activeTags.has(tag)) {
             activeTags.delete(tag);
@@ -75,13 +88,14 @@
             activeTags.add(tag);
             tagBtn.classList.add("is-active");
           }
+
           const anyActive = activeTags.size > 0;
-          if (anyActive) {
-            ALL_TAG_BUTTON.classList.remove("is-active");
-          } else {
-            ALL_TAG_BUTTON.classList.add("is-active");
+          if (ALL_TAG_BUTTON) {
+            if (anyActive) ALL_TAG_BUTTON.classList.remove("is-active");
+            else ALL_TAG_BUTTON.classList.add("is-active");
           }
         }
+
         window.VSDFilters && window.VSDFilters.onFilterChange();
         return;
       }

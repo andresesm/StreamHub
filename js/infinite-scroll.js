@@ -2,12 +2,27 @@
   const GRID = document.getElementById("creatorsGrid");
   const SENTINEL = document.getElementById("gridSentinel");
   const LOADER = document.getElementById("loadingIndicator");
+  const SORT_BTN = document.getElementById("sortAlphaBtn");
   const BATCH_SIZE = 20;
 
   let allCreators = [];
   let filteredCreators = [];
   let renderedCount = 0;
   let observer = null;
+
+  // sortMode: "random" | "az" | "za"
+  let sortMode = "random";
+  let randomOrder = [];
+
+  function shuffle(arr) {
+    // Durstenfeld/Fisher–Yates
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
 
   function normalizePlatformKey(platform) {
     const p = (platform || "").trim().toLowerCase();
@@ -48,12 +63,11 @@
   }
 
   function getCreatorLink(creator, key) {
-    // 1) Prioridad: creator.links[key] (handle o URL completa)
     if (creator && creator.links && creator.links[key]) {
       return buildUrlFromHandle(key, creator.links[key]);
     }
 
-    // 2) Fallback: twitch_id o username si existe
+    // fallback compat: twitch_id / username
     if (key === "twitch") {
       const twitchId = (creator.twitch_id || creator.username || "").trim();
       if (!twitchId) return null;
@@ -70,7 +84,6 @@
     const url = getCreatorLink(creator, key);
     if (!url) return null;
 
-    // ✅ Link real (clickeable)
     const a = document.createElement("a");
     a.className = "platform-icon-btn";
     a.href = url;
@@ -79,17 +92,58 @@
     a.title = platform;
     a.setAttribute("aria-label", platform);
 
-    // Evita que el click “burbujee” y dispare otros handlers (por si luego haces click en card)
-    a.addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
+    // Si haces click en el icono, que no “burbujee” a otros clicks
+    a.addEventListener("click", (e) => e.stopPropagation());
 
     const icon = document.createElement("span");
     icon.className = `rrss-icon rrss--${key}`;
     icon.setAttribute("aria-hidden", "true");
-
     a.appendChild(icon);
+
     return a;
+  }
+
+  function usernameKey(c) {
+    return String(c?.username || "").toLowerCase();
+  }
+
+  function updateSortButtonUI() {
+    if (!SORT_BTN) return;
+
+    if (sortMode === "random") {
+      SORT_BTN.textContent = "AtoZ";
+      SORT_BTN.setAttribute("aria-pressed", "false");
+    } else if (sortMode === "az") {
+      SORT_BTN.textContent = "AtoZ";
+      SORT_BTN.setAttribute("aria-pressed", "true");
+    } else {
+      SORT_BTN.textContent = "ZtoA";
+      SORT_BTN.setAttribute("aria-pressed", "true");
+    }
+  }
+
+  function cycleSortMode() {
+    if (sortMode === "random") sortMode = "az";
+    else if (sortMode === "az") sortMode = "za";
+    else sortMode = "random";
+
+    updateSortButtonUI();
+    resetAndRender();
+  }
+
+  function recomputeFiltered() {
+    // Base list: randomOrder si está en random; si no, el orden base del array
+    const base = (sortMode === "random") ? randomOrder : allCreators;
+
+    filteredCreators = base.filter(c => {
+      return window.VSDFilters ? window.VSDFilters.matches(c) : true;
+    });
+
+    if (sortMode === "az") {
+      filteredCreators.sort((a, b) => usernameKey(a).localeCompare(usernameKey(b)));
+    } else if (sortMode === "za") {
+      filteredCreators.sort((a, b) => usernameKey(b).localeCompare(usernameKey(a)));
+    }
   }
 
   function createCard(creator) {
@@ -137,15 +191,13 @@
     body.appendChild(platformsRow);
     card.appendChild(body);
 
-    requestAnimationFrame(() => {
-      card.classList.add("is-visible");
-    });
-
+    requestAnimationFrame(() => card.classList.add("is-visible"));
     return card;
   }
 
   function renderNextBatch() {
     if (renderedCount >= filteredCreators.length) return;
+
     LOADER.classList.add("is-visible");
 
     const start = renderedCount;
@@ -159,34 +211,50 @@
     LOADER.classList.remove("is-visible");
   }
 
-  function recomputeFiltered() {
-    filteredCreators = allCreators.filter(c => {
-      return window.VSDFilters ? window.VSDFilters.matches(c) : true;
-    });
-  }
-
   function resetAndRender() {
     GRID.innerHTML = "";
     renderedCount = 0;
+
+    // ✅ “Siempre aleatorio” mientras sortMode sea random:
+    // cada cambio de filtro / reset vuelve a mezclar.
+    if (sortMode === "random") {
+      randomOrder = shuffle(allCreators);
+    }
+
     recomputeFiltered();
     renderNextBatch();
   }
 
   function initObserver() {
     if (!SENTINEL) return;
+
     observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) renderNextBatch();
       });
     }, { rootMargin: "200px 0px" });
+
     observer.observe(SENTINEL);
   }
 
   function init(creators) {
     allCreators = creators.slice();
+
+    // ✅ Aleatorio al cargar por primera vez
+    randomOrder = shuffle(allCreators);
+
+    updateSortButtonUI();
     recomputeFiltered();
     renderNextBatch();
     initObserver();
+
+    if (SORT_BTN) {
+      SORT_BTN.addEventListener("click", function (e) {
+        // Muy importante: que este click no lo procese filters.js
+        e.stopPropagation();
+        cycleSortMode();
+      });
+    }
   }
 
   window.VSDInfiniteScroll = {
