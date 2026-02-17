@@ -10,19 +10,17 @@
       });
   }
 
-  function normalizePlatformKey(platform) {
-    const p = (platform || "").trim().toLowerCase();
-    if (!p) return null;
-
-    if (p === "twitch") return "twitch";
-    if (p === "kick") return "kick";
-    if (p === "youtube" || p === "you tube") return "youtube";
-    if (p === "x" || p === "twitter") return "x";
-    if (p === "instagram" || p === "ig") return "ig";
-    if (p === "email" || p === "mail" || p === "correo") return "email";
-
-    return null;
-  }
+  // Orden fijo requerido (debe coincidir con infinite-scroll.js)
+  const SOCIAL_ORDER = ["twitch", "kick", "x", "ig", "tiktok", "youtube", "email"];
+  const SOCIAL_LABEL = {
+    twitch: "Twitch",
+    kick: "Kick",
+    x: "X",
+    ig: "Instagram",
+    tiktok: "TikTok",
+    youtube: "YouTube",
+    email: "Email",
+  };
 
   function isProbablyUrl(value) {
     const v = (value || "").trim().toLowerCase();
@@ -36,36 +34,65 @@
 
     if (isProbablyUrl(raw)) return raw;
 
-    // Si te pasan "@usuario", lo normalizamos
     const handle = raw.startsWith("@") ? raw.slice(1) : raw;
 
     if (key === "twitch") return `https://twitch.tv/${encodeURIComponent(handle)}`;
     if (key === "kick") return `https://kick.com/${encodeURIComponent(handle)}`;
     if (key === "x") return `https://x.com/${encodeURIComponent(handle)}`;
     if (key === "ig") return `https://instagram.com/${encodeURIComponent(handle)}`;
-    if (key === "youtube") {
-      // YouTube puede ser canal/handle; con @handle suele funcionar:
-      return `https://youtube.com/@${encodeURIComponent(handle)}`;
-    }
+    if (key === "tiktok") return `https://tiktok.com/@${encodeURIComponent(handle)}`;
+    if (key === "youtube") return `https://youtube.com/@${encodeURIComponent(handle)}`;
     if (key === "email") return `mailto:${handle}`;
 
     return null;
   }
 
+  // Nuevo schema: creator.socials[key] = handle/url/email
+  // Mantengo compat con creator.links por si quedan datos viejos.
+  function getSocialValue(creator, key) {
+    if (!creator) return "";
+
+    if (creator.socials && creator.socials[key]) return creator.socials[key];
+
+    // compat viejo (opcional)
+    if (creator.links && creator.links[key]) return creator.links[key];
+    if (key === "x" && creator.links && creator.links.twitter) return creator.links.twitter;
+    if (key === "ig" && creator.links && creator.links.instagram) return creator.links.instagram;
+    if (key === "tiktok" && creator.links && creator.links.tt) return creator.links.tt;
+
+    return "";
+  }
+
   function getCreatorLink(creator, key) {
-    // 1) Si existe creator.links[key], lo usamos (puede ser URL completa o handle corto)
-    if (creator && creator.links && creator.links[key]) {
-      return buildUrlFromHandle(key, creator.links[key]);
+    // Si infinite-scroll ya expuso helpers, úsalo (así home y popup son idénticos)
+    if (window.VSDPlatformIcons && typeof window.VSDPlatformIcons.getLink === "function") {
+      return window.VSDPlatformIcons.getLink(creator, key);
     }
 
-    // 2) Fallbacks de compatibilidad con tu JSON antiguo
-    if (key === "twitch") {
-      const twitchId = (creator.twitch_id || creator.username || "").trim();
-      if (!twitchId) return null;
-      return buildUrlFromHandle("twitch", twitchId);
-    }
+    // fallback interno
+    const v = getSocialValue(creator, key);
+    return buildUrlFromHandle(key, v);
+  }
 
-    return null;
+  // Crea el icono para el popup (clase distinta a la del home)
+  function createModalSocialIcon(creator, key) {
+    const url = getCreatorLink(creator, key);
+    if (!url) return null;
+
+    const a = document.createElement("a");
+    a.className = "modal-platform-icon";
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.title = SOCIAL_LABEL[key] || key;
+    a.setAttribute("aria-label", SOCIAL_LABEL[key] || key);
+
+    const icon = document.createElement("span");
+    icon.className = `rrss-icon rrss--${key}`;
+    icon.setAttribute("aria-hidden", "true");
+
+    a.appendChild(icon);
+    return a;
   }
 
   function initModal() {
@@ -125,33 +152,20 @@
       residenceEl.textContent = creator.residence || "Desconocido";
       nationalityEl.textContent = creator.nationality || "Sin datos";
 
-      // ✅ Redes clickeables (anchors)
+      // ✅ Redes en orden fijo, basadas en creator.socials
       platformsContainer.innerHTML = "";
 
-      (creator.platforms || []).forEach(platformName => {
-        const key = normalizePlatformKey(platformName);
-        if (!key) return;
+      const order =
+        (window.VSDPlatformIcons && Array.isArray(window.VSDPlatformIcons.ORDER))
+          ? window.VSDPlatformIcons.ORDER
+          : SOCIAL_ORDER;
 
-        const url = getCreatorLink(creator, key);
-        if (!url) return;
-
-        const a = document.createElement("a");
-        a.className = "modal-platform-icon";
-        a.href = url;
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.title = platformName;
-        a.setAttribute("aria-label", platformName);
-
-        const icon = document.createElement("span");
-        icon.className = `rrss-icon rrss--${key}`;
-        icon.setAttribute("aria-hidden", "true");
-
-        a.appendChild(icon);
-        platformsContainer.appendChild(a);
+      order.forEach(key => {
+        const el = createModalSocialIcon(creator, key);
+        if (el) platformsContainer.appendChild(el);
       });
 
-      // Botón Twitch: usa links.twitch si existe; si no, fallback a twitch_id/username
+      // Botón Twitch: ahora sale desde socials (o fallback compat)
       const twitchUrl = getCreatorLink(creator, "twitch");
       if (twitchUrl) {
         twitchBtn.dataset.twitchUrl = twitchUrl;
