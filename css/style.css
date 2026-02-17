@@ -58,12 +58,12 @@
 }
 
 .site-title__stream{
-  font-family: "Montserrat", sans-serif;
+  font-family: "MontserratLocal", sans-serif;
   font-weight: 900; /* Black */
 }
 
 .site-title__hub{
-  font-family: "Montserrat", sans-serif;
+  font-family: "MontserratLocal", sans-serif;
   font-weight: 400; /* Regular */
 }
 

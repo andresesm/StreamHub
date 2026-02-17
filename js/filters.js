@@ -11,6 +11,11 @@
 
   const CLEAR_FILTERS_BTN = document.getElementById("clearFiltersBtn");
 
+  // Contenedor para pills de juegos (recomendado en HTML: <div id="gamesPillsContainer"></div>)
+  const GAMES_PILLS_CONTAINER =
+    document.getElementById("gamesPillsContainer") ||
+    (GAMES_PANEL ? GAMES_PANEL : null);
+
   // Debe coincidir con el orden/labels de infinite-scroll
   const SOCIAL_KEYS = ["twitch", "kick", "x", "ig", "tiktok", "youtube", "email"];
   const SOCIAL_TAG_LABEL = {
@@ -78,6 +83,57 @@
     });
 
     return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }
+
+  // NUEVO: juegos únicos desde la data
+  function extractUniqueGames(creators) {
+    const set = new Set();
+    creators.forEach(c => {
+      (c.games || []).forEach(g => {
+        const name = String(g || "").trim();
+        if (name) set.add(name);
+      });
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }
+
+  // NUEVO: construir los botones de juegos dinámicamente
+  function buildGamePills(uniqueGames) {
+    if (!GAMES_PILLS_CONTAINER) return;
+
+    // Si el contenedor es el panel completo, no queremos borrar headers/botones.
+    // Por eso: si existe #gamesPillsContainer lo limpiamos; si no existe, creamos uno dentro.
+    let container = document.getElementById("gamesPillsContainer");
+    if (!container) {
+      // Creamos un wrapper dentro del panel para no romper el layout
+      container = document.createElement("div");
+      container.id = "gamesPillsContainer";
+      container.className = "games-pills-container";
+      GAMES_PILLS_CONTAINER.appendChild(container);
+    }
+
+    container.innerHTML = "";
+
+    uniqueGames.forEach(game => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tag-pill game-pill"; // tag-pill para look & feel, game-pill para lógica
+      btn.dataset.game = game;
+
+      // Texto + contador (para que updateGameCounts solo actualice el span)
+      const label = document.createElement("span");
+      label.className = "game-label";
+      label.textContent = game;
+
+      const count = document.createElement("span");
+      count.className = "tag-count";
+      count.textContent = "0";
+
+      btn.appendChild(label);
+      btn.appendChild(count);
+
+      container.appendChild(btn);
+    });
   }
 
   function setFiltersPanelOpen(open) {
@@ -347,8 +403,13 @@
 
   function init(creators) {
     allCreators = creators.slice();
+
     const uniqueTags = extractUniqueTags(allCreators);
     buildTagPills(uniqueTags);
+
+    // NUEVO: construir pills de juegos desde la data
+    const uniqueGames = extractUniqueGames(allCreators);
+    buildGamePills(uniqueGames);
 
     attachPanelToggles();
     attachEvents();
