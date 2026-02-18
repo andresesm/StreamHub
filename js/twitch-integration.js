@@ -412,7 +412,6 @@
             .platform-icon-btn[title="Twitch"] {
                 position: relative;
                 transition: all 0.2s ease;
-                /* SIN COLOR ROJO - se mantiene el estilo original */
             }
 
             .twitch-card-tooltip {
