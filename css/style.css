@@ -424,8 +424,8 @@ body.header-hidden {
 .creators-grid{
   display: grid;
   grid-template-columns: 1fr;
-  row-gap: 42px;     /* vertical */
-  column-gap: 18px;  /* horizontal (igual que antes) */
+  row-gap: 55px;     /* vertical */
+  column-gap: 40px;  /* horizontal (igual que antes) */
 }
 
 /* BREAKPOINTS */
@@ -446,7 +446,7 @@ body.header-hidden {
   position: relative;
   background: var(--bg-surface);
   border-radius: 20px;
-  padding: 25px 14px 12px;
+  padding: 25px 45px 12px;
   box-shadow: var(--card-shadow);
   overflow: visible;
   border: 1px solid rgba(0, 0, 0, 0.02);
