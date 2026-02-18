@@ -1147,7 +1147,7 @@ body.header-hidden {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 20px 0;
+  padding: 10px 0 10px 0;
   background: transparent;
 }
 
@@ -1174,7 +1174,7 @@ body.header-hidden {
 /* Logo “pintable” (usa KM.svg como máscara) */
 .footer-logo {
   width: min(260px, 80vw);
-  height: 56px;              /* un poco más alto para asegurar visibilidad */
+  height: 40px;              /* un poco más alto para asegurar visibilidad */
   display: block;
 
   background-color: currentColor; /* currentColor = color del .footer-logo-link [web:915] */
