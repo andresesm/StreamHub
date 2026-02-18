@@ -1160,35 +1160,49 @@ body.header-hidden {
   max-width: 350px;
 }
 
-/* Link */
+/* Link (el color de aquí “pinta” el SVG gracias a currentColor) */
 .footer-logo-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: white; /* o tu variable de iconos, ej: var(--text-subtle) */
+
+  /* En vez de blanco fijo, usa los mismos tokens del theme */
+  color: var(--text-subtle);
+  text-decoration: none;
 }
 
 /* Logo “pintable” (usa KM.svg como máscara) */
 .footer-logo {
   width: min(260px, 80vw);
-  height: 48px;               /* ajusta si queda muy alto/bajo */
-  background-color: currentColor;
+  height: 56px;              /* un poco más alto para asegurar visibilidad */
+  display: block;
+
+  background-color: currentColor; /* currentColor = color del .footer-logo-link [web:915] */
   opacity: 0.9;
 
-  -webkit-mask-image: url("assets/KM.svg");
-  mask-image: url("assets/KM.svg");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
+  -webkit-mask: url("assets/KM.svg") center / contain no-repeat;
+  mask: url("assets/KM.svg") center / contain no-repeat;
 }
 
-/* Texto footer de acreditación (igual que antes) */
+/* Hover opcional */
+.footer-logo-link:hover {
+  color: var(--accent-main);
+}
+
+/* Texto footer de acreditación */
 .attribution {
   text-align: center;
   font-size: 0.55rem;
-  color: white;
+
+  /* Antes era blanco fijo; ahora adopta el theme */
+  color: var(--text-subtle);
+
   padding-bottom: 60px;
+}
+
+/* Links del footer: sin azul, heredan color */
+.attribution a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: currentColor;
 }
