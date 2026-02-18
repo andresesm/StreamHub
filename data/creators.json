@@ -365,5 +365,309 @@
     },
     "residence": "España",
     "nationality": "Venezuela"
+  },
+  {
+    "id": 12,
+    "username": "Puckry",
+/*    "avatar_url": "assets/avatars/Puckry.webp",*/
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Música",
+      "Calmado",
+      "Muy animado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual"
+    ],
+    "games": [
+      "Valorant",
+      "Pokémon",
+      "Minecraft",
+      "ARC Raiders"
+    ],
+    "socials": {
+      "twitch": "Puckry",
+      "kick": "Puckry",
+      "ig": "Puckry_",
+      "x": "Puckryx",
+      "youtube": "Puckryx",
+      "tiktok": "Puckry",
+      "email": "sebastiangmz99@gmail.com"
+    },
+    "residence": "Argentina",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 13,
+    "username": "RoboDiner",
+/*    "avatar_url": "assets/avatars/RoboDiner.webp",*/
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Música",
+      "Calmado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual",
+      "Challenges"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "League of Legends",
+      "Minecraft",
+      "Juegos indie",
+      "ARC Raiders"
+    ],
+    "socials": {
+      "twitch": "RoboDiner",
+      "ig": "RoboDiner",
+      "x": "RoboDiner",
+      "youtube": "RoboDiner_",
+      "tiktok": "RoboDiner",
+      "email": "RoboDiner00@gmail.com"
+    },
+    "residence": "Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 14,
+    "username": "UnaPalmera",
+    "avatar_url": "assets/avatars/UnaPalmera.webp",
+    "tags": [
+      "Just Chatting",
+      "Jugador casual"
+    ],
+    "games": [
+      "Valorant",
+      "Roblox",
+      "Fortnite",
+      "Minecraft",
+      "Juegos indie"
+    ],
+    "socials": {
+      "twitch": "UnaPalmera",
+      "ig": "unapalmeraa",
+      "x": "UnaPalmeraa",
+      "youtube": "OtraPalmera",
+      "tiktok": "unapalmeraa"
+    },
+    "residence": "",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 15,
+    "username": "MrFranda",
+    "avatar_url": "assets/avatars/MrFranda.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Calmado",
+      "Muy animado",
+      "Jugador casual"
+    ],
+    "games": [
+      "Minecraft",
+      "Juegos indie",
+      "Juegos de terror"
+    ],
+    "socials": {
+      "twitch": "MrFranda",
+      "kick": "MrFranda",
+      "ig": "mrfranda",
+      "x": "mrfranda",
+      "youtube": "mrfranda",
+      "tiktok": "mrfranda_"
+    },
+    "residence": "Caracas, Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 16,
+    "username": "Valentinarogil",
+    "avatar_url": "assets/avatars/Valentinarogil.webp",
+    "tags": [
+      "Just Chatting",
+      "Eventos especiales",
+      "Alta interacción con el chat",
+      "Jugador casual",
+      "Roleplayer"
+    ],
+    "games": [
+      "Roblox",
+      "Fortnite",
+      "Minecraft",
+      "Juegos indie",
+      "Juegos de terror"
+    ],
+    "socials": {
+      "twitch": "Valentinarogil",
+      "ig": "Valentinarogil",
+      "x": "Valentinarogil",
+      "youtube": "Valentinarogil",
+      "tiktok": "Valentinarogil",
+      "email": "Valentinarogil@gmail.com"
+    },
+    "residence": "Cumaná, Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 17,
+    "username": "Jevitaa_",
+/*    "avatar_url": "assets/avatars/Jevitaa_.webp",*/
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Muy animado",
+      "Jugador casual"
+    ],
+    "games": [
+      "Valorant",
+      "Roblox",
+      "Fortnite",
+      "Minecraft",
+      "Call of Duty"
+    ],
+    "socials": {
+      "twitch": "Jevitaa_",
+      "kick": "Jevitaa",
+      "ig": "jevitaa._",
+      "x": "j3vitaa_",
+      "youtube": "Jevitaa_",
+      "tiktok": "jevitaa_",
+      "email": "hibacontacto@gmail.com"
+    },
+    "residence": "Monterrey, Mexico",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 18,
+    "username": "Waltvg",
+/*    "avatar_url": "assets/avatars/Waltvg.webp",*/
+    "tags": [
+      "IRL",
+      "Eventos especiales",
+      "Alta interacción con el chat",
+      "Música",
+      "Calmado",
+      "Jugador casual",
+      "Cocina"
+    ],
+    "games": [
+      "Counter-Strike",
+      "League of Legends",
+      "Roblox",
+      "Minecraft",
+      "Juegos indie",
+      "Juegos de terror"
+    ],
+    "socials": {
+      "twitch": "Waltvg",
+      "kick": "Waltvg",
+      "ig": "Waltvg23",
+      "x": "Waltvg",
+      "youtube": "Waltvg",
+      "tiktok": "Waltvg",
+      "email": "walternegocios09@gmail.com"
+    },
+    "residence": "Orlando, Estados Unidos",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 19,
+    "username": "iSebzzz",
+/*    "avatar_url": "assets/avatars/iSebzzz.webp",*/
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Calmado",
+      "Muy animado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "League of Legends",
+      "Pokémon",
+      "Minecraft",
+      "Juegos indie"
+    ],
+    "socials": {
+      "twitch": "iSebzzz",
+      "kick": "iSebzZz",
+      "ig": "iragaa_",
+      "x": "iSebsjpg",
+      "youtube": "iSebsjpg",
+      "tiktok": "isebs.jpg",
+      "email": "isebz.tv@gmail.com"
+    },
+    "residence": "Barquisimeto, Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 20,
+    "username": "xamytc",
+    "avatar_url": "assets/avatars/xamytc.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Música",
+      "Arte",
+      "Anime",
+      "Muy animado",
+      "Jugador casual",
+      "Cocina",
+      "Co-working y estudio",
+      "ASMR"
+    ],
+    "games": [
+      "Roblox",
+      "Fortnite",
+      "Marvel Rivals",
+      "Garry's Mod",
+      "Juegos indie",
+      "Juegos de terror"
+    ],
+    "socials": {
+      "twitch": "xamytc",
+      "ig": "xamytc",
+      "x": "xamytc",
+      "youtube": "xamytc",
+      "tiktok": "xamytc7",
+      "email": "xamytc@gmail.com"
+    },
+    "residence": "Estados Unidos",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 21,
+    "username": "Carlitos_sg",
+    "avatar_url": "assets/avatars/Carlitos_sg.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual"
+    ],
+    "games": [
+      "Valorant",
+      "Fortnite",
+      "GTA V",
+      "Minecraft",
+      "Call of Duty"
+    ],
+    "socials": {
+      "twitch": "Carlitos_sg",
+      "kick": "Carlitos_sg",
+      "ig": "Carlitoss_sg",
+      "x": "Carlitoss_sg",
+      "youtube": "Carlitoss_sg",
+      "tiktok": "chamonutria",
+      "email": "contactocarlitosg@gmail.com"
+    },
+    "residence": "Caracas, Venezuela",
+    "nationality": "Venezuela"
   }
 ]
