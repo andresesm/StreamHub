@@ -119,6 +119,15 @@
     // History API: para que “atrás” cierre el modal en móvil en vez de salir del sitio
     let modalPushedState = false;
 
+    function setDisplay(el, show, displayValue) {
+      if (!el) return;
+      el.style.display = show ? (displayValue || "") : "none";
+    }
+
+    function hasText(v) {
+      return v != null && String(v).trim().length > 0;
+    }
+
     function close(opts) {
       const fromPopstate = opts && opts.fromPopstate;
 
@@ -147,7 +156,15 @@
       avatar.src = creator.avatar_url || "assets/avatar-placeholder-1.png";
       avatar.alt = `Avatar de ${creator.username}`;
       usernameEl.textContent = `@${creator.username}`;
-      bioEl.textContent = creator.bio || "Este creador aún no tiene biografía.";
+
+      // ✅ BIO: si no hay bio, se oculta el bloque (sin placeholder)
+      if (hasText(creator.bio)) {
+        bioEl.textContent = creator.bio;
+        setDisplay(bioEl, true);
+      } else {
+        bioEl.textContent = "";
+        setDisplay(bioEl, false); // display:none lo saca del layout [web:836]
+      }
 
       tagsContainer.innerHTML = "";
       (creator.tags || []).forEach(tag => {
@@ -165,7 +182,18 @@
         gamesContainer.appendChild(span);
       });
 
-      followersEl.textContent = creator.followers || "—";
+      // ✅ FOLLOWERS: si no hay followers, se oculta el bloque completo “Seguidores Twitch —”
+      const followersBlock =
+        followersEl && (followersEl.closest(".twitch-stat") || followersEl.parentElement); // closest() busca el ancestro más cercano [web:829]
+
+      if (followersEl && hasText(creator.followers)) {
+        followersEl.textContent = creator.followers;
+        setDisplay(followersBlock, true);
+      } else if (followersEl) {
+        followersEl.textContent = "";
+        setDisplay(followersBlock, false);
+      }
+
       residenceEl.textContent = creator.residence || "Desconocido";
       nationalityEl.textContent = creator.nationality || "Sin datos";
 
@@ -211,7 +239,7 @@
 
       modalPushedState = false;
       close({ fromPopstate: true });
-    }); // popstate se dispara cuando cambia la entrada activa del history. [web:590]
+    });
 
     backdrop.addEventListener("click", function (evt) {
       if (evt.target === backdrop) close();
