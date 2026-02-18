@@ -224,7 +224,7 @@
       "Counter-Strike",
       "Pokémon",
       "Minecraft",
-      "Arc Raiders"
+      "ARC Raiders"
     ],
     "socials": {
       "twitch": "KOrillo_",
@@ -353,7 +353,7 @@
     ],
     "games": [
       "Valorant",
-      "Call Of Duty"
+      "Call of Duty"
     ],
     "socials": {
       "twitch": "Tifani10p",
@@ -369,7 +369,7 @@
   {
     "id": 12,
     "username": "Puckry",
-    "avatar_url": "assets/avatar-placeholder-1.png",
+    "avatar_url": "assets/avatars/puckry.webp",
     "tags": [
       "Just Chatting",
       "Alta interacción con el chat",
@@ -400,7 +400,7 @@
   {
     "id": 13,
     "username": "RoboDiner",
-    "avatar_url": "assets/avatar-placeholder-1.png",
+    "avatar_url": "assets/avatars/Robodiner.webp",
     "tags": [
       "Just Chatting",
       "Alta interacción con el chat",
@@ -514,7 +514,7 @@
   {
     "id": 17,
     "username": "Jevitaa_",
-    "avatar_url": "assets/avatar-placeholder-1.png",
+    "avatar_url": "assets/avatars/Jevitaa.webp",
     "tags": [
       "Just Chatting",
       "Alta interacción con el chat",
@@ -543,7 +543,7 @@
   {
     "id": 18,
     "username": "Waltvg",
-    "avatar_url": "assets/avatar-placeholder-1.png",
+    "avatar_url": "assets/avatars/waltvg.webp",
     "tags": [
       "IRL",
       "Eventos especiales",
@@ -644,7 +644,7 @@
   {
     "id": 21,
     "username": "Carlitos_sg",
-    "avatar_url": "assets/avatar-placeholder-1.png",
+    "avatar_url": "assets/avatars/Carlitossg.webp",
     "tags": [
       "IRL",
       "Just Chatting",
