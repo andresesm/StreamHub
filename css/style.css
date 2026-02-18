@@ -318,7 +318,8 @@ body.header-hidden {
 }
 
 .filters-panel.is-open {
-  max-height: 260px;
+  max-height: 80vh;
+  overflow-y: auto;
   opacity: 1;
   transform: translateY(0);
 }
@@ -406,7 +407,8 @@ body.header-hidden {
 }
 
 .games-panel.is-open {
-  max-height: 120px;
+  max-height: 60vh;
+  overflow-y: auto;
   opacity: 1;
   transform: translateY(0);
 }

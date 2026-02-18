@@ -20,30 +20,51 @@
     btn.appendChild(badgeSpan);
   }
 
-  const mediaDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
-
-  function getSystemTheme() {
-    if (!mediaDark) return "day";
-    return mediaDark.matches ? "night" : "day";
+  function shouldUseNightThemeNow() {
+    const now = new Date();
+    const mins = now.getHours() * 60 + now.getMinutes(); // hora local [0..1439]
+    // Noche entre 18:00 y 07:30
+    return mins >= (18 * 60) || mins < (7 * 60 + 30);
   }
 
   function setButtonUI(mode, effectiveTheme) {
-    // Icono según tema efectivo
     iconSpan.textContent = effectiveTheme === "night" ? "☾" : "☀";
-
-    // Badge visible solo en AUTO
     const isAuto = mode === "auto";
     badgeSpan.style.display = isAuto ? "inline-flex" : "none";
-    badgeSpan.textContent = "A."; // si prefieres solo "A", cambia esto a "A"
+    badgeSpan.textContent = "A.";
+  }
+
+  let autoTimer = null;
+
+  function stopAutoWatcher() {
+    if (autoTimer) {
+      clearInterval(autoTimer);
+      autoTimer = null;
+    }
   }
 
   function applyMode(mode) {
-    const effectiveTheme = mode === "auto" ? getSystemTheme() : mode;
+    const effectiveTheme =
+      mode === "auto"
+        ? (shouldUseNightThemeNow() ? "night" : "day")
+        : mode;
 
     html.setAttribute("data-theme", effectiveTheme);
-    btn.setAttribute("aria-label", mode === "auto" ? "Tema automático" : `Tema ${effectiveTheme}`);
+
+    if (mode === "auto") btn.setAttribute("aria-label", "Tema automático (por horario)");
+    else btn.setAttribute("aria-label", `Tema ${effectiveTheme}`);
 
     setButtonUI(mode, effectiveTheme);
+  }
+
+  function startAutoWatcher(currentModeRef) {
+    stopAutoWatcher();
+    applyMode("auto");
+
+    // Re-evalúa cada minuto (suficiente para el cambio 07:30 / 18:00)
+    autoTimer = setInterval(function () {
+      if (currentModeRef.value === "auto") applyMode("auto");
+    }, 60 * 1000);
   }
 
   function getSavedMode() {
@@ -62,18 +83,19 @@
     return "auto";
   }
 
-  let mode = getSavedMode();
-  applyMode(mode);
+  const modeRef = { value: getSavedMode() };
+
+  if (modeRef.value === "auto") startAutoWatcher(modeRef);
+  else applyMode(modeRef.value);
 
   btn.addEventListener("click", function () {
-    mode = nextMode(mode);
-    saveMode(mode);
-    applyMode(mode);
-  });
+    modeRef.value = nextMode(modeRef.value);
+    saveMode(modeRef.value);
 
-  if (mediaDark && typeof mediaDark.addEventListener === "function") {
-    mediaDark.addEventListener("change", function () {
-      if (mode === "auto") applyMode("auto");
-    });
-  }
+    if (modeRef.value === "auto") startAutoWatcher(modeRef);
+    else {
+      stopAutoWatcher();
+      applyMode(modeRef.value);
+    }
+  });
 })();

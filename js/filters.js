@@ -16,48 +16,10 @@
     document.getElementById("gamesPillsContainer") ||
     (GAMES_PANEL ? GAMES_PANEL : null);
 
-  // Debe coincidir con el orden/labels de infinite-scroll
-  const SOCIAL_KEYS = ["twitch", "kick", "x", "ig", "tiktok", "youtube", "email"];
-  const SOCIAL_TAG_LABEL = {
-    twitch: "Twitch",
-    kick: "Kick",
-    x: "X",
-    ig: "Instagram",
-    tiktok: "TikTok",
-    youtube: "YouTube",
-    email: "Email",
-  };
-
   let allCreators = [];
-  let activeTags = new Set(); // tags + plataformas + idioma
+  let activeTags = new Set();  // SOLO tags + idioma (NO RRSS)
   let activeGames = new Set(); // videojuegos
   let searchTerm = "";
-
-  function hasSocialValue(creator, key) {
-    if (!creator) return false;
-
-    // Nuevo schema
-    if (creator.socials && creator.socials[key]) {
-      const v = String(creator.socials[key]).trim();
-      return v.length > 0;
-    }
-
-    // Compat antiguo
-    if (creator.links && creator.links[key]) {
-      const v = String(creator.links[key]).trim();
-      return v.length > 0;
-    }
-
-    return false;
-  }
-
-  function platformTagsForCreator(creator) {
-    const out = [];
-    SOCIAL_KEYS.forEach(k => {
-      if (hasSocialValue(creator, k)) out.push(SOCIAL_TAG_LABEL[k] || k);
-    });
-    return out;
-  }
 
   function buildTagPills(uniqueTags) {
     TAG_CONTAINER.innerHTML = "";
@@ -71,21 +33,18 @@
     });
   }
 
+  // ✅ Tags únicos: desde creators.tags + creators.language (SIN RRSS)
   function extractUniqueTags(creators) {
     const set = new Set();
     creators.forEach(c => {
       (c.tags || []).forEach(tag => set.add(tag));
-
-      // Derivar plataformas desde socials
-      platformTagsForCreator(c).forEach(p => set.add(p));
-
       if (c.language) set.add(c.language);
     });
 
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }
 
-  // NUEVO: juegos únicos desde la data
+  // Juegos únicos desde la data
   function extractUniqueGames(creators) {
     const set = new Set();
     creators.forEach(c => {
@@ -97,15 +56,13 @@
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }
 
-  // NUEVO: construir los botones de juegos dinámicamente
+  // Construir los botones de juegos dinámicamente
   function buildGamePills(uniqueGames) {
     if (!GAMES_PILLS_CONTAINER) return;
 
-    // Si el contenedor es el panel completo, no queremos borrar headers/botones.
-    // Por eso: si existe #gamesPillsContainer lo limpiamos; si no existe, creamos uno dentro.
+    // Si existe #gamesPillsContainer lo limpiamos; si no existe, creamos uno dentro.
     let container = document.getElementById("gamesPillsContainer");
     if (!container) {
-      // Creamos un wrapper dentro del panel para no romper el layout
       container = document.createElement("div");
       container.id = "gamesPillsContainer";
       container.className = "games-pills-container";
@@ -117,10 +74,9 @@
     uniqueGames.forEach(game => {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "tag-pill game-pill"; // tag-pill para look & feel, game-pill para lógica
+      btn.className = "tag-pill game-pill";
       btn.dataset.game = game;
 
-      // Texto + contador (para que updateGameCounts solo actualice el span)
       const label = document.createElement("span");
       label.className = "game-label";
       label.textContent = game;
@@ -136,18 +92,29 @@
     });
   }
 
+  // ✅ Paneles: alto dinámico (vh) + scroll interno para que no se corte
+  function setPanelOpen(panel, toggleBtn, open, maxHeightVh) {
+    if (!toggleBtn || !panel) return;
+
+    panel.classList.toggle("is-open", open);
+    panel.setAttribute("aria-hidden", String(!open));
+    toggleBtn.setAttribute("aria-expanded", String(open));
+
+    if (open) {
+      panel.style.maxHeight = maxHeightVh; // evita cortes con muchos tags/juegos
+      panel.style.overflowY = "auto";
+    } else {
+      panel.style.maxHeight = "0px";
+      panel.style.overflowY = "hidden";
+    }
+  }
+
   function setFiltersPanelOpen(open) {
-    if (!FILTERS_TOGGLE_BTN || !FILTERS_PANEL) return;
-    FILTERS_PANEL.classList.toggle("is-open", open);
-    FILTERS_PANEL.setAttribute("aria-hidden", String(!open));
-    FILTERS_TOGGLE_BTN.setAttribute("aria-expanded", String(open));
+    setPanelOpen(FILTERS_PANEL, FILTERS_TOGGLE_BTN, open, "80vh");
   }
 
   function setGamesPanelOpen(open) {
-    if (!GAMES_TOGGLE_BTN || !GAMES_PANEL) return;
-    GAMES_PANEL.classList.toggle("is-open", open);
-    GAMES_PANEL.setAttribute("aria-hidden", String(!open));
-    GAMES_TOGGLE_BTN.setAttribute("aria-expanded", String(open));
+    setPanelOpen(GAMES_PANEL, GAMES_TOGGLE_BTN, open, "60vh");
   }
 
   function attachPanelToggles() {
@@ -301,9 +268,9 @@
 
     if (activeTags.size === 0 && activeGames.size === 0) return true;
 
+    // ✅ SOLO tags + idioma (sin RRSS)
     const baseSet = new Set([
       ...(creator.tags || []),
-      ...platformTagsForCreator(creator),
       creator.language || ""
     ]);
 
@@ -326,9 +293,9 @@
     const gameCounts = {};
 
     creatorsSubset.forEach(c => {
+      // ✅ SOLO tags + idioma (sin RRSS)
       const appliedTags = new Set([
         ...(c.tags || []),
-        ...platformTagsForCreator(c),
         c.language || ""
       ]);
 
@@ -407,12 +374,15 @@
     const uniqueTags = extractUniqueTags(allCreators);
     buildTagPills(uniqueTags);
 
-    // NUEVO: construir pills de juegos desde la data
     const uniqueGames = extractUniqueGames(allCreators);
     buildGamePills(uniqueGames);
 
     attachPanelToggles();
     attachEvents();
+
+    // Estado inicial “cerrado” con estilos consistentes
+    setFiltersPanelOpen(false);
+    setGamesPanelOpen(false);
 
     if (ALL_TAG_BUTTON) ALL_TAG_BUTTON.classList.add("is-active");
     refreshCounts();
@@ -442,12 +412,16 @@ document.addEventListener("keydown", function (evt) {
   if (gamesPanel && gamesPanel.classList.contains("is-open")) {
     gamesPanel.classList.remove("is-open");
     gamesPanel.setAttribute("aria-hidden", "true");
+    gamesPanel.style.maxHeight = "0px";
+    gamesPanel.style.overflowY = "hidden";
     if (gamesToggle) gamesToggle.setAttribute("aria-expanded", "false");
   }
 
   if (panel && panel.classList.contains("is-open")) {
     panel.classList.remove("is-open");
     panel.setAttribute("aria-hidden", "true");
+    panel.style.maxHeight = "0px";
+    panel.style.overflowY = "hidden";
     if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
   }
 });
