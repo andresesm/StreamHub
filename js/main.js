@@ -302,4 +302,17 @@
       if (window.VSDInfiniteScroll) window.VSDInfiniteScroll.init(creators);
     });
   });
+
+  document.addEventListener("DOMContentLoaded", function () {
+      initModal();
+
+      fetchCreators().then(creators => {
+          if (window.VSDFilters) window.VSDFilters.init(creators);
+          if (window.VSDInfiniteScroll) window.VSDInfiniteScroll.init(creators);
+          
+          if (window.TwitchIntegration) {
+              window.TwitchIntegration.init(creators);
+          }
+      });
+  });
 })();
