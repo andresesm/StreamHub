@@ -669,5 +669,542 @@
     },
     "residence": "Caracas, Venezuela",
     "nationality": "Venezuela"
+  },
+  [
+  {
+    "id": 22,
+    "username": "chombie",
+    "avatar_url": "assets/avatars/chombie.webp",
+    "tags": [
+      "Just Chatting",
+      "Vtuber",
+      "Jugador casual"
+    ],
+    "games": [
+      "Dead by Daylight",
+      "Apex",
+      "Mortal Kombat 1",
+      "2XKO"
+    ],
+    "socials": {
+      "twitch": "chombie",
+      "kick": "chombie",
+      "ig": "igchombie",
+      "x": "chombiex",
+      "youtube": "chombie",
+      "tiktok": "chombiett",
+      "email": "losvsve@gmail.com"
+    },
+    "residence": "Maracay, Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 23,
+    "username": "Educastillo96",
+    "avatar_url": "assets/avatars/Educastillo96.webp",
+    "tags": [
+      "Just Chatting",
+      "Jugador competitivo/Tryhard"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "Fortnite",
+      "Garry's Mod"
+    ],
+    "socials": {
+      "twitch": "Educastillo96",
+      "kick": "Educastillo96",
+      "ig": "Educastillo96_",
+      "x": "Educastillo96",
+      "youtube": "Educastillo96",
+      "tiktok": "Educastillo96",
+      "email": "Eduardocastle96@gmail.com"
+    },
+    "residence": "Texas, Estados Unidos",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 24,
+    "username": "Catapocalipsis",
+    "avatar_url": "assets/avatars/Catapocalipsis.webp",
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Muy animado",
+      "Jugador casual",
+      "Roleplayer",
+      "Cocina"
+    ],
+    "games": [
+      "Valorant",
+      "League of Legends",
+      "Garry's Mod"
+    ],
+    "socials": {
+      "twitch": "Catapocalipsis",
+      "kick": "Catapocalipsis",
+      "ig": "Catapocalipsis",
+      "x": "Catapocalipsis",
+      "youtube": "Catapocalipsis8",
+      "tiktok": "Catapocalipsis",
+      "email": "Catapocalipsis@gmail.com"
+    },
+    "residence": "Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 25,
+    "username": "Polar0602",
+    "avatar_url": "assets/avatars/Polar0602.webp",
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Muy animado",
+      "Jugador casual",
+      "Variety"
+    ],
+    "games": [
+      "Juegos indie",
+      "Juegos de consolas viejas (Ps3, Ps2, Ps1, wii)"
+    ],
+    "socials": {
+      "twitch": "Polar0602",
+      "ig": "Polarr0602",
+      "x": "Polarrr0602",
+      "youtube": "Polarr0602",
+      "tiktok": "polar_0602",
+      "email": "polarb0602@gmail.com"
+    },
+    "residence": "Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 26,
+    "username": "Dechillgames",
+    "avatar_url": "assets/avatars/Dechillgames.webp",
+    "tags": [
+      "Just Chatting",
+      "Jugador competitivo/Tryhard",
+      "Challenges"
+    ],
+    "games": [
+      "Retos No Hit",
+      "Variedad de Juegos"
+    ],
+    "socials": {
+      "twitch": "Dechillgames",
+      "ig": "dechillgames",
+      "x": "dechillgames",
+      "tiktok": "dechillgames",
+      "email": "nortesurstudios@gmail.com"
+    },
+    "residence": "",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 27,
+    "username": "virginiaburgos",
+    "avatar_url": "assets/avatars/virginiaburgos.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Eventos especiales",
+      "Alta interacción con el chat",
+      "Música",
+      "Arte",
+      "Anime",
+      "Watchpartys",
+      "Calmado",
+      "Jugador casual"
+    ],
+    "games": [
+      "Fortnite",
+      "Juegos indie",
+      "Juegos de terror",
+      "TFT",
+      "Brawl Stars",
+      "Clash Royale"
+    ],
+    "socials": {
+      "twitch": "virginiaburgos",
+      "kick": "virginiaburgos",
+      "ig": "virginiaburgosh",
+      "x": "virginiaburgosh",
+      "youtube": "virginiaburgos",
+      "tiktok": "virginiaburgosh",
+      "email": "virginiatwitch@gmail.com"
+    },
+    "residence": "Maracaibo, Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 28,
+    "username": "LuiyoG",
+    "avatar_url": "assets/avatars/LuiyoG.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Jugador casual",
+      "Roleplayer"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "Juegos de terror",
+      "Call of Duty",
+      "ARC RAIDERS"
+    ],
+    "socials": {
+      "twitch": "LuiyoG",
+      "kick": "LuiyoG",
+      "ig": "luiyog",
+      "x": "LuiyoG",
+      "youtube": "luiyog",
+      "tiktok": "luiyog",
+      "email": "luiyog13@gmail.com"
+    },
+    "residence": "",
+    "nationality": ""
+  },
+  {
+    "id": 29,
+    "username": "Elizakyy",
+    "avatar_url": "assets/avatars/Elizakyy.webp",
+    "tags": [
+      "Just Chatting",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "Roblox",
+      "Minecraft",
+      "Juegos de terror"
+    ],
+    "socials": {
+      "twitch": "Elizakyy",
+      "kick": "Elizakyy",
+      "ig": "Elizakyy",
+      "x": "Elizakyy",
+      "youtube": "Elizakyy",
+      "tiktok": "Elizakyy",
+      "email": "Lizgaro28@gmail.com"
+    },
+    "residence": "Valencia, Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 30,
+    "username": "Ernescero",
+    "avatar_url": "assets/avatars/Ernescero.webp",
+    "tags": [
+      "Just Chatting",
+      "Calmado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "Minecraft",
+      "Juegos indie",
+      "Juegos de terror",
+      "Call of Duty"
+    ],
+    "socials": {
+      "twitch": "Ernescero",
+      "kick": "Ernescero",
+      "ig": "Ernescero",
+      "x": "Ernescero",
+      "youtube": "Ernescero",
+      "tiktok": "Ernescero",
+      "email": "ernescero@gmail.com"
+    },
+    "residence": "Carolina del Norte, Estados Unidos",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 31,
+    "username": "Elmisternixon",
+    "avatar_url": "assets/avatars/Elmisternixon.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Muy animado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual",
+      "Roleplayer",
+      "Challenges",
+      "disfrazarse de batman",
+      "una maid con un hilanchester y pikachu y hacer backflips a cambio de bits en tanga"
+    ],
+    "games": [
+      "League of Legends",
+      "Minecraft",
+      "Juegos indie",
+      "Juegos de terror",
+      "suelo jugar muchas campañas",
+      "death stranding",
+      "kingdome come",
+      "lies of p y singleplayers de ese estilo UwU"
+    ],
+    "socials": {
+      "twitch": "Elmisternixon",
+      "ig": "elmisternixon",
+      "x": "elmisternixon",
+      "youtube": "elmisternixon",
+      "tiktok": "elmisternixon",
+      "email": "themisternixon@gmail.com"
+    },
+    "residence": "Los Angeles, Estados Unidos",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 32,
+    "username": "RembertWTF",
+    "avatar_url": "assets/avatars/RembertWTF.webp",
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Arte",
+      "Vtuber",
+      "Anime",
+      "Muy animado",
+      "Jugador casual"
+    ],
+    "games": [
+      "Fortnite",
+      "Marvel Rivals",
+      "Terraria"
+    ],
+    "socials": {
+      "twitch": "RembertWTF",
+      "ig": "Rembert2001",
+      "x": "Rembert2001",
+      "youtube": "RembertWTF",
+      "tiktok": "Rembert2001"
+    },
+    "residence": "",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 33,
+    "username": "MrGolden20",
+    "avatar_url": "assets/avatars/MrGolden20.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Eventos especiales",
+      "Cocina"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "GTA V",
+      "Minecraft",
+      "Juegos indie",
+      "Juegos de terror",
+      "Call of Duty"
+    ],
+    "socials": {
+      "twitch": "MrGolden20",
+      "kick": "MrGolden",
+      "ig": "MrGolden.20",
+      "x": "MrGolden_20",
+      "youtube": "MrGolden_20",
+      "tiktok": "MrGolden20",
+      "email": "oliomar911@gmail.com"
+    },
+    "residence": "Chile",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 34,
+    "username": "maryroqui",
+    "avatar_url": "assets/avatars/maryroqui.webp",
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Muy animado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual"
+    ],
+    "games": [
+      "League of Legends",
+      "Roblox",
+      "Fortnite",
+      "Juegos indie",
+      "TFT",
+      "euro truck simulator 2"
+    ],
+    "socials": {
+      "twitch": "maryroqui",
+      "kick": "maryroqui",
+      "ig": "maryroqui",
+      "x": "maryroqui30",
+      "youtube": "maryroqui",
+      "tiktok": "maryroqui30",
+      "email": "maryroquiteam@gmail.com"
+    },
+    "residence": "Colombia",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 35,
+    "username": "itsxavyrios",
+    "avatar_url": "assets/avatars/itsxavyrios.webp",
+    "tags": [
+      "Alta interacción con el chat",
+      "Música",
+      "Calmado",
+      "Muy animado",
+      "Jugador competitivo/Tryhard",
+      "Jugador casual",
+      "Mobile"
+    ],
+    "games": [
+      "Minecraft",
+      "Call of Duty",
+      "Clash Royale"
+    ],
+    "socials": {
+      "ig": "xavyrios",
+      "x": "Xavyrios",
+      "youtube": "xavyrioscod",
+      "tiktok": "itsxavyrios",
+      "email": "xavyriosgamer@gmail.com"
+    },
+    "residence": "Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 36,
+    "username": "Veroskky",
+    "avatar_url": "assets/avatars/Veroskky.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Jugador casual",
+      "Roleplayer"
+    ],
+    "games": [
+      "Counter-Strike",
+      "Valorant",
+      "League of Legends",
+      "Pokémon",
+      "Garry's Mod",
+      "Minecraft",
+      "Juegos de terror"
+    ],
+    "socials": {
+      "twitch": "Veroskky",
+      "kick": "Veroskky",
+      "ig": "Veroskkyy",
+      "x": "Veroskky",
+      "youtube": "Veroskkyy",
+      "tiktok": "Veroskkyy",
+      "email": "Veronicandrea1820@gmail.com"
+    },
+    "residence": "Francia",
+    "nationality": "Venezuela, Portugal"
+  },
+  {
+    "id": 37,
+    "username": "genene666",
+    "avatar_url": "assets/avatars/genene666.webp",
+    "tags": [
+      "Just Chatting",
+      "Alta interacción con el chat",
+      "Arte",
+      "Muy animado",
+      "Jugador casual",
+      "Co-working y estudio"
+    ],
+    "games": [
+      "Roblox",
+      "Call of Duty",
+      "Blood Strike"
+    ],
+    "socials": {
+      "twitch": "genene666",
+      "ig": "genene.tv",
+      "x": "genene.me",
+      "youtube": "genene666",
+      "tiktok": "se7en.files",
+      "email": "genene666@gmail.com"
+    },
+    "residence": "Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 38,
+    "username": "Bambirini",
+    "avatar_url": "assets/avatars/Bambirini.webp",
+    "tags": [
+      "Just Chatting",
+      "Eventos especiales",
+      "Música",
+      "Vtuber",
+      "Muy animado",
+      "Jugador casual",
+      "Roleplayer"
+    ],
+    "games": [
+      "Valorant",
+      "Fortnite",
+      "Garry's Mod",
+      "Minecraft",
+      "Juegos indie",
+      "Juegos de terror"
+    ],
+    "socials": {
+      "twitch": "Bambirini",
+      "kick": "Bambirini",
+      "ig": "Bambiriniii",
+      "x": "Valen_ej",
+      "youtube": "Bambirini",
+      "tiktok": "Bambirini1",
+      "email": "Valentinaeizaguirre99@gmail.com"
+    },
+    "residence": "Estados Unidos",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 39,
+    "username": "SrEgg0",
+    "avatar_url": "assets/avatars/SrEgg0.webp",
+    "tags": [
+      "IRL",
+      "Just Chatting",
+      "Eventos especiales",
+      "Muy animado",
+      "Roleplayer"
+    ],
+    "games": [
+      "Valorant",
+      "League of Legends",
+      "Pokémon",
+      "Fortnite",
+      "Marvel Rivals",
+      "GTA V",
+      "Garry's Mod",
+      "Minecraft",
+      "Juegos indie",
+      "TFT"
+    ],
+    "socials": {
+      "twitch": "SrEgg0",
+      "ig": "SrEgg0",
+      "x": "SrEgg0",
+      "tiktok": "Soysregg0",
+      "email": "Info.sregg0@gmail.com"
+    },
+    "residence": "Estados Unidos",
+    "nationality": "Venezuela"
   }
+]
 ]
