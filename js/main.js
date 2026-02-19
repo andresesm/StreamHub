@@ -119,6 +119,10 @@
     const twitchBtn = document.getElementById("modalTwitchButton");
     const platformsContainer = document.getElementById("modalPlatformsContainer");
 
+    // ✅ NUEVO: elementos a ocultar (según flags en creators.json)
+    const twitchFollowersBlock = backdrop.querySelector("[data-modal-twitch-followers]");
+    const twitchButtonMarker = backdrop.querySelector("[data-modal-twitch-button]") || twitchBtn;
+
     let currentCreator = null;
     let modalPushedState = false;
 
@@ -129,6 +133,11 @@
 
     function hasText(v) {
       return v != null && String(v).trim().length > 0;
+    }
+
+    // ✅ NUEVO: helper para flags UI del JSON
+    function getUiFlag(creator, flagName) {
+      return !!(creator && creator.ui && creator.ui[flagName] === true);
     }
 
     function close(opts) {
@@ -183,10 +192,18 @@
         gamesContainer.appendChild(span);
       });
 
-      // ✅ FOLLOWERS: NO se oculta nunca. Se deja “—” hasta que llegue TwitchIntegration.
+      // ✅ NUEVO: aplicar regla de ocultación por perfil
+      // Si en creators.json viene: "ui": { "hide_twitch": true }
+      // -> oculta seguidores twitch y botón grande de twitch SOLO para ese perfil. [web:47]
+      const uiHideTwitch = getUiFlag(creator, "hide_twitch");
+      const twitchUrl = getCreatorLink(creator, "twitch");
+      const hasTwitch = !!twitchUrl;
+
+      if (twitchFollowersBlock) twitchFollowersBlock.hidden = uiHideTwitch;
+      if (twitchButtonMarker) twitchButtonMarker.hidden = uiHideTwitch || !hasTwitch;
+
+      // FOLLOWERS: si el bloque está visible, se deja “—” hasta que llegue TwitchIntegration.
       if (followersEl) {
-        const block = followersEl.closest(".twitch-stat") || followersEl.parentElement;
-        if (block) block.style.display = "";
         followersEl.textContent = hasText(creator.followers) ? String(creator.followers) : "—";
       }
 
@@ -204,7 +221,7 @@
         if (el) platformsContainer.appendChild(el);
       });
 
-      const twitchUrl = getCreatorLink(creator, "twitch");
+      // Botón grande Twitch: (aunque pueda estar hidden por arriba)
       if (twitchUrl) {
         twitchBtn.disabled = false;
         twitchBtn.dataset.twitchUrl = twitchUrl;

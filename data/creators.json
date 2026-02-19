@@ -761,7 +761,7 @@
       "Alta interacción con el chat",
       "Muy animado",
       "Jugador casual",
-      "Variety"
+      "Variedad"
     ],
     "games": [
       "Juegos indie",
@@ -1055,6 +1055,7 @@
     "id": 35,
     "username": "itsxavyrios",
     "avatar_url": "assets/avatars/itsxavyrios.webp",
+    "ui": { "hide_twitch": true },
     "tags": [
       "Alta interacción con el chat",
       "Música",

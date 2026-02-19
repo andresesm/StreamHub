@@ -152,31 +152,33 @@
             <h2 id="modalUsername" class="modal-username">@username</h2>
             <p id="modalBio" class="modal-bio">Biografía del creador.</p>
 
-            <div class="modal-twitch">
-              <h3 class="modal-section-title">Perfil</h3>
-              <div class="modal-twitch-grid">
-                <div class="twitch-stat">
-                  <span class="stat-label">Seguidores Twitch</span>
-                  <span class="stat-value" id="modalFollowers">—</span>
-                </div>
-                <div class="twitch-stat">
-                  <span class="stat-label">Residencia en</span>
-                  <span class="stat-value" id="modalLiveStatus">Desconocido</span>
-                </div>
-                <div class="twitch-stat">
-                  <span class="stat-label">Nacionalidad</span>
-                  <span class="stat-value" id="modalStreamTitle">Sin datos</span>
-                </div>
-              </div>
+<div class="modal-twitch">
+  <h3 class="modal-section-title">Perfil</h3>
+  <div class="modal-twitch-grid">
+    <div class="twitch-stat" data-modal-twitch-followers>
+      <span class="stat-label">Seguidores Twitch</span>
+      <span class="stat-value" id="modalFollowers">—</span>
+    </div>
+    <div class="twitch-stat">
+      <span class="stat-label">Residencia en</span>
+      <span class="stat-value" id="modalLiveStatus">Desconocido</span>
+    </div>
+    <div class="twitch-stat">
+      <span class="stat-label">Nacionalidad</span>
+      <span class="stat-value" id="modalStreamTitle">Sin datos</span>
+    </div>
+  </div>
 
-              <button
-                id="modalTwitchButton"
-                class="primary-btn"
-                type="button"
-                data-twitch-url="#">
-                Abrir perfil de Twitch
-              </button>
-            </div>
+  <button
+    id="modalTwitchButton"
+    class="primary-btn"
+    type="button"
+    data-modal-twitch-button
+    data-twitch-url="#">
+    Abrir perfil de Twitch
+  </button>
+</div>
+
 
             <div class="modal-platforms">
               <h3 class="modal-section-title">Redes</h3>
