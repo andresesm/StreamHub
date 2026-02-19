@@ -1117,7 +1117,7 @@
   {
     "id": 36,
     "username": "Veroskky",
-"streamPlatform": "twitch", 
+"streamPlatform": "kick", 
     "avatar_url": "assets/avatars/Veroskky.webp",
     "tags": [
       "IRL",
@@ -1179,7 +1179,7 @@
   {
     "id": 38,
     "username": "Bambirini",
-"streamPlatform": "youtube", 
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Bambirini.webp",
     "tags": [
       "Just Chatting",
@@ -1213,7 +1213,7 @@
   {
     "id": 39,
     "username": "SrEgg0",
-"streamPlatform": "kick", 
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/SrEgg0.webp",
     "tags": [
       "IRL",
