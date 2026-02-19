@@ -1176,17 +1176,25 @@ body.header-hidden {
   text-decoration: none;
 }
 
-/* Logo “pintable” (usa KM.svg como máscara) */
+/* Logo “pintable” (usa kuum.svg como máscara) */
 .footer-logo {
   width: min(260px, 80vw);
   height: 40px;              /* un poco más alto para asegurar visibilidad */
   display: block;
 
-  background-color: currentColor;
+  /* ✅ Evita el “bloque gris” antes de que cargue/aplique la máscara */
+  background-color: transparent;
   opacity: 0.9;
 
   -webkit-mask: url("/assets/kuum.svg") center / contain no-repeat;
-  mask: url("/assets/kuum.svg") center / contain no-repeat;
+  mask: url("/assets/kuum.svg") center / contain no-repeat; /* mask shorthand [web:15] */
+}
+
+/* ✅ Solo si hay soporte de mask, pintamos con currentColor */
+@supports (mask: url("") center / contain no-repeat) or (-webkit-mask: url("") center / contain no-repeat) {
+  .footer-logo {
+    background-color: currentColor; /* currentColor = valor de color del link [web:93] */
+  }
 }
 
 /* Hover opcional */
@@ -1211,6 +1219,7 @@ body.header-hidden {
   text-decoration: underline;
   text-decoration-color: currentColor;
 }
+
 
 /* Separación entre botones "Juegos" y "En vivo" */
 #gamesToggleBtn {
