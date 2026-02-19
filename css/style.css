@@ -483,22 +483,13 @@ body.header-hidden {
   cursor: pointer;
 }
 
+/* Cuando el creator está en vivo, resalta el avatar wrapper */
 .creator-avatar-wrapper:has(.creator-live-badge-card) {
-  box-sizing: border-box;
-  border: 3px solid rgba(255, 0, 0, 0.95);
-  border-radius: 16px; /* te recomiendo bajar de 50px si quieres rectangular suave */
-  overflow: hidden;
-  padding: 0;
+  outline: 3px solid rgba(255, 0, 0, 0.95);
+  outline-offset: 0px;
+  border-radius: 50px;
   box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.16);
-}
-
-/* Ajusta el selector del img si tu HTML es distinto */
-.creator-avatar-wrapper img {
-  display: block;       /* quita gaps raros */
-  width: 100%;
-  height: 100%;
-  border-radius: inherit; /* que copie el radio del wrapper */
-  object-fit: cover;
+  padding: 0;
 }
 
 
