@@ -766,6 +766,35 @@ body.header-hidden {
   filter: saturate(1.05);
 }
 
+/* Botón principal del popup: variantes por plataforma */
+.primary-btn.platform--twitch{
+  background: linear-gradient(135deg, #6441a5, #b9a3e3);
+  color: #f1f1f1;
+  border: 1px solid rgba(38, 38, 38, 0.35);
+  box-shadow: 0 10px 24px rgba(100, 65, 165, 0.35);
+}
+
+.primary-btn.platform--kick{
+  background: linear-gradient(135deg, #0b0e0f, #24272c);
+  color: #f1f1f1;
+  border: 1px solid rgba(0, 231, 1, 0.7);
+  box-shadow: 0 10px 24px rgba(0, 231, 1, 0.18);
+}
+
+.primary-btn.platform--youtube{
+  background: linear-gradient(135deg, #cc181e 0%, #2793e8 52%, #559900 100%);
+  color: #f1f1f1;
+  border: 1px solid rgba(241, 241, 241, 0.18);
+  box-shadow: 0 10px 24px rgba(204, 24, 30, 0.22);
+}
+
+.primary-btn.platform--tiktok{
+  background: linear-gradient(135deg, #000000 0%, #ff0050 48%, #00f2ea 100%);
+  color: #f1f1f1;
+  border: 1px solid rgba(0, 242, 234, 0.25);
+  box-shadow: 0 10px 24px rgba(255, 0, 80, 0.22);
+}
+
 /* REDES */
 .modal-platforms-list {
   display: flex;

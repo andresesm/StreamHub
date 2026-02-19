@@ -2,6 +2,7 @@
   {
     "id": 1,
     "username": "JuanTaich0",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/JuanTaich0.webp",
     "tags": [
       "Just Chatting",
@@ -32,6 +33,7 @@
   {
     "id": 2,
     "username": "BillyBillete",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/BillyBillete.webp",
     "tags": [
       "Just Chatting",
@@ -67,6 +69,7 @@
   {
     "id": 3,
     "username": "PuniPlayz",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/PuniPlayz.webp",
     "tags": [
       "IRL",
@@ -106,6 +109,7 @@
   {
     "id": 4,
     "username": "Titoaxzel",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Titoaxzel.webp",
     "tags": [
       "IRL",
@@ -144,6 +148,7 @@
 {
     "id": 5,
     "username": "TyferieL",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/TyferieL.webp",
     "tags": [
       "Just Chatting",
@@ -176,6 +181,7 @@
     {
     "id": 6,
     "username": "FeirlyGab",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/FeirlyGab.webp",
     "tags": [
       "IRL",
@@ -214,6 +220,7 @@
   {
     "id": 7,
     "username": "KOrillo_",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/KOrillop.webp",
     "tags": [
       "Just Chatting",
@@ -241,6 +248,7 @@
   {
     "id": 8,
     "username": "RealYisus_",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/RealYisus.webp",
     "tags": [
       "IRL",
@@ -282,6 +290,7 @@
   {
     "id": 9,
     "username": "Chiringooo",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Chiringooo.webp",
     "tags": [
       "Just Chatting",
@@ -311,6 +320,7 @@
   {
     "id": 10,
     "username": "DoggyKillah",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/DoggyKillahp.webp",
     "tags": [
       "Just Chatting",
@@ -345,6 +355,7 @@
   {
     "id": 11,
     "username": "Tifani10p",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Tifani10.webp",
     "tags": [
       "Just Chatting",
@@ -369,6 +380,7 @@
   {
     "id": 12,
     "username": "Puckry",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Puckry.webp", 
     "tags": [
       "Just Chatting",
@@ -400,6 +412,7 @@
   {
     "id": 13,
     "username": "RoboDiner",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Robodiner.webp",
     "tags": [
       "Just Chatting",
@@ -432,6 +445,7 @@
   {
     "id": 14,
     "username": "UnaPalmera",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/UnaPalmera.webp",
     "tags": [
       "Just Chatting",
@@ -457,6 +471,7 @@
   {
     "id": 15,
     "username": "MrFranda",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/MrFranda.webp",
     "tags": [
       "IRL",
@@ -485,6 +500,7 @@
   {
     "id": 16,
     "username": "Valentinarogil",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Valentinarogil.webp",
     "tags": [
       "Just Chatting",
@@ -514,6 +530,7 @@
   {
     "id": 17,
     "username": "Jevitaa_",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Jevitaa.webp",
     "tags": [
       "Just Chatting",
@@ -543,6 +560,7 @@
   {
     "id": 18,
     "username": "Waltvg",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/waltvg.webp",
     "tags": [
       "IRL",
@@ -576,6 +594,7 @@
   {
     "id": 19,
     "username": "iSebzzz",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/isebzzz.webp",
     "tags": [
       "Just Chatting",
@@ -608,6 +627,7 @@
   {
     "id": 20,
     "username": "xamytc",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/xamytc.webp",
     "tags": [
       "IRL",
@@ -644,6 +664,7 @@
   {
     "id": 21,
     "username": "Carlitos_sg",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Carlitossg.webp",
     "tags": [
       "IRL",
@@ -673,6 +694,7 @@
   {
     "id": 22,
     "username": "chombie",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/chombie.webp",
     "tags": [
       "Just Chatting",
@@ -700,6 +722,7 @@
   {
     "id": 23,
     "username": "Educastillo96",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Educastillo96.webp",
     "tags": [
       "Just Chatting",
@@ -726,6 +749,7 @@
   {
     "id": 24,
     "username": "Catapocalipsis",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Catapocalipsis.webp",
     "tags": [
       "Just Chatting",
@@ -755,6 +779,7 @@
   {
     "id": 25,
     "username": "Polar0602",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Polar0602.webp",
     "tags": [
       "Just Chatting",
@@ -781,6 +806,7 @@
   {
     "id": 26,
     "username": "Dechillgames",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Dechillgames.webp",
     "tags": [
       "Just Chatting",
@@ -804,6 +830,7 @@
   {
     "id": 27,
     "username": "virginiaburgos",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/virginiaburgos.webp",
     "tags": [
       "IRL",
@@ -840,6 +867,7 @@
   {
     "id": 28,
     "username": "LuiyoG",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/LuiyoG.webp",
     "tags": [
       "IRL",
@@ -869,6 +897,7 @@
   {
     "id": 29,
     "username": "Elizakyy",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Elizakyy.webp",
     "tags": [
       "Just Chatting",
@@ -897,6 +926,7 @@
   {
     "id": 30,
     "username": "Ernescero",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Ernescero.webp",
     "tags": [
       "Just Chatting",
@@ -927,6 +957,7 @@
   {
     "id": 31,
     "username": "Elmisternixon",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Elmisternixon.webp",
     "tags": [
       "IRL",
@@ -964,6 +995,7 @@
   {
     "id": 32,
     "username": "RembertWTF",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/RembertWTF.webp",
     "tags": [
       "Just Chatting",
@@ -992,6 +1024,7 @@
   {
     "id": 33,
     "username": "MrGolden20",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/MrGolden20.webp",
     "tags": [
       "IRL",
@@ -1023,6 +1056,7 @@
   {
     "id": 34,
     "username": "maryroqui",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/maryroqui.webp",
     "tags": [
       "Just Chatting",
@@ -1054,8 +1088,8 @@
   {
     "id": 35,
     "username": "itsxavyrios",
+"streamPlatform": "tiktok", 
     "avatar_url": "assets/avatars/itsxavyrios.webp",
-    "ui": { "hide_twitch": true },
     "tags": [
       "Alta interacción con el chat",
       "Música",
@@ -1083,6 +1117,7 @@
   {
     "id": 36,
     "username": "Veroskky",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Veroskky.webp",
     "tags": [
       "IRL",
@@ -1115,6 +1150,7 @@
   {
     "id": 37,
     "username": "genene666",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/genene666.webp",
     "tags": [
       "Just Chatting",
@@ -1143,6 +1179,7 @@
   {
     "id": 38,
     "username": "Bambirini",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/Bambirini.webp",
     "tags": [
       "Just Chatting",
@@ -1176,6 +1213,7 @@
   {
     "id": 39,
     "username": "SrEgg0",
+"streamPlatform": "twitch", 
     "avatar_url": "assets/avatars/SrEgg0.webp",
     "tags": [
       "IRL",

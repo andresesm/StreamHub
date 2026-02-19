@@ -119,9 +119,9 @@
     const twitchBtn = document.getElementById("modalTwitchButton");
     const platformsContainer = document.getElementById("modalPlatformsContainer");
 
-    // ✅ NUEVO: elementos a ocultar (según flags en creators.json)
+    // Elementos específicos a ocultar/mostrar
     const twitchFollowersBlock = backdrop.querySelector("[data-modal-twitch-followers]");
-    const twitchButtonMarker = backdrop.querySelector("[data-modal-twitch-button]") || twitchBtn;
+    const streamButtonMarker = backdrop.querySelector("[data-modal-twitch-button]") || twitchBtn;
 
     let currentCreator = null;
     let modalPushedState = false;
@@ -135,9 +135,53 @@
       return v != null && String(v).trim().length > 0;
     }
 
-    // ✅ NUEVO: helper para flags UI del JSON
     function getUiFlag(creator, flagName) {
       return !!(creator && creator.ui && creator.ui[flagName] === true);
+    }
+
+    // NUEVO: determinar plataforma principal desde creators.json
+    function getStreamPlatform(creator) {
+      const raw =
+        (creator && (creator.streamPlatform || creator.StreamPlatform || creator.stream_platform)) || "";
+      const p = String(raw).trim().toLowerCase();
+      if (["twitch", "kick", "youtube", "tiktok", "none"].includes(p)) return p;
+      // fallback para no romper perfiles existentes
+      return "twitch";
+    }
+
+    function setStreamButtonState(platform, url) {
+      // limpiar clases previas
+      const allPlatformClasses = ["platform--twitch", "platform--kick", "platform--youtube", "platform--tiktok"];
+      twitchBtn.classList.remove(...allPlatformClasses); // classList API [web:28]
+
+      // guardar plataforma actual (útil para click handler)
+      twitchBtn.dataset.platform = platform; // dataset [web:70]
+
+      if (platform === "none" || !url) {
+        // Oculta botón totalmente
+        if (streamButtonMarker) streamButtonMarker.hidden = true; // hidden [web:47]
+        twitchBtn.disabled = true;
+        twitchBtn.dataset.twitchUrl = "";
+        return;
+      }
+
+      // Muestra botón
+      if (streamButtonMarker) streamButtonMarker.hidden = false; // hidden [web:47]
+
+      const label =
+        platform === "twitch" ? "Twitch" :
+        platform === "kick" ? "Kick" :
+        platform === "youtube" ? "YouTube" :
+        platform === "tiktok" ? "TikTok" :
+        "Perfil";
+
+      twitchBtn.textContent = `Abrir perfil de ${label}`;
+      twitchBtn.classList.add(`platform--${platform}`);
+
+      twitchBtn.disabled = false;
+      twitchBtn.dataset.twitchUrl = url;
+      twitchBtn.style.opacity = "";
+      twitchBtn.style.cursor = "";
     }
 
     function close(opts) {
@@ -167,7 +211,7 @@
       avatar.alt = `Avatar de ${creator.username}`;
       usernameEl.textContent = `@${creator.username}`;
 
-      // BIO (mantengo tu comportamiento: ocultar si no hay bio)
+      // BIO
       if (hasText(creator.bio)) {
         bioEl.textContent = creator.bio;
         setDisplay(bioEl, true);
@@ -192,24 +236,25 @@
         gamesContainer.appendChild(span);
       });
 
-      // ✅ NUEVO: aplicar regla de ocultación por perfil
-      // Si en creators.json viene: "ui": { "hide_twitch": true }
-      // -> oculta seguidores twitch y botón grande de twitch SOLO para ese perfil. [web:47]
+      // Plataforma principal
+      // Si aún tienes ui.hide_twitch heredado, lo tratamos como "none" para no romper tu configuración anterior.
       const uiHideTwitch = getUiFlag(creator, "hide_twitch");
-      const twitchUrl = getCreatorLink(creator, "twitch");
-      const hasTwitch = !!twitchUrl;
+      const streamPlatform = uiHideTwitch ? "none" : getStreamPlatform(creator);
 
-      if (twitchFollowersBlock) twitchFollowersBlock.hidden = uiHideTwitch;
-      if (twitchButtonMarker) twitchButtonMarker.hidden = uiHideTwitch || !hasTwitch;
+      // Followers SOLO si la plataforma es Twitch
+      const showTwitchFollowers = (streamPlatform === "twitch");
+      if (twitchFollowersBlock) twitchFollowersBlock.hidden = !showTwitchFollowers; // hidden [web:47]
 
-      // FOLLOWERS: si el bloque está visible, se deja “—” hasta que llegue TwitchIntegration.
       if (followersEl) {
-        followersEl.textContent = hasText(creator.followers) ? String(creator.followers) : "—";
+        followersEl.textContent = showTwitchFollowers
+          ? (hasText(creator.followers) ? String(creator.followers) : "—")
+          : "";
       }
 
       residenceEl.textContent = creator.residence || "Desconocido";
       nationalityEl.textContent = creator.nationality || "Sin datos";
 
+      // Redes (iconitos)
       platformsContainer.innerHTML = "";
       const order =
         (window.VSDPlatformIcons && Array.isArray(window.VSDPlatformIcons.ORDER))
@@ -221,18 +266,9 @@
         if (el) platformsContainer.appendChild(el);
       });
 
-      // Botón grande Twitch: (aunque pueda estar hidden por arriba)
-      if (twitchUrl) {
-        twitchBtn.disabled = false;
-        twitchBtn.dataset.twitchUrl = twitchUrl;
-        twitchBtn.style.opacity = "";
-        twitchBtn.style.cursor = "";
-      } else {
-        twitchBtn.disabled = true;
-        twitchBtn.dataset.twitchUrl = "";
-        twitchBtn.style.opacity = "0.6";
-        twitchBtn.style.cursor = "not-allowed";
-      }
+      // Botón principal según plataforma
+      const streamUrl = (streamPlatform === "none") ? "" : getCreatorLink(creator, streamPlatform);
+      setStreamButtonState(streamPlatform, streamUrl);
 
       backdrop.setAttribute("aria-hidden", "false");
       backdrop.classList.add("is-visible");
@@ -262,13 +298,16 @@
       if (evt.key === "Escape") close();
     });
 
-    // Botón grande Twitch
+    // Botón grande (ahora multi-plataforma)
     if (twitchBtn) {
       twitchBtn.addEventListener("click", function (e) {
         e.preventDefault();
         if (twitchBtn.disabled) return;
 
-        const url = currentCreator ? getCreatorLink(currentCreator, "twitch") : "";
+        const platform = (twitchBtn.dataset.platform || "").toLowerCase(); // dataset [web:70]
+        if (!currentCreator || !platform || platform === "none") return;
+
+        const url = getCreatorLink(currentCreator, platform);
         if (!url) return;
         openInNewTab(url);
       });
@@ -281,7 +320,7 @@
     initModal();
 
     fetchCreators().then(creators => {
-      // ✅ Ideal: pedir Twitch al inicio (si TwitchIntegration existe)
+      // TwitchIntegration puede seguir existiendo; solo “importa” para los que tengan streamPlatform=twitch
       if (window.TwitchIntegration && typeof window.TwitchIntegration.init === "function") {
         window.TwitchIntegration.init(creators);
       }
