@@ -25,6 +25,18 @@
     return [...new Set(usernames)];
   }
 
+  // ✅ NUEVO (ordenado): emite el mapa { username: isLive }
+  function dispatchTwitchLiveUpdate(userDataMap) {
+    const liveByUser = {};
+    userDataMap.forEach((info, username) => {
+      liveByUser[String(username || '').toLowerCase()] = !!(info && info.isLive);
+    });
+
+    window.dispatchEvent(new CustomEvent("twitch:live-update", {
+      detail: { liveByUser }
+    })); // CustomEvent.detail [web:1067]
+  }
+
   const TwitchClient = {
     async getUsersData(usernames) {
       if (!Array.isArray(usernames) || usernames.length === 0) {
@@ -73,9 +85,7 @@
       try {
         const response = await fetch(TWITCH_API_URL, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(usernames),
           signal: abortController.signal,
           credentials: 'omit',
@@ -114,9 +124,13 @@
 
     _updateUserDataMap(data) {
       if (!data) return;
+
       for (const [username, info] of Object.entries(data)) {
         this._userDataMap.set(String(username).toLowerCase(), info);
       }
+
+      // ✅ NUEVO: notificar el estado live a la UI/filtros
+      dispatchTwitchLiveUpdate(this._userDataMap);
     },
 
     getUserData(username) {
@@ -160,7 +174,7 @@
     twitchBtn.dataset.followers = twitchData ? String(twitchData.followerCount || 0) : '0';
     twitchBtn.dataset.isLive = twitchData ? String(!!twitchData.isLive) : 'false';
 
-    // Mantengo tooltip en tarjetas (si lo quieres quitar también, dímelo).
+    // Tooltip en tarjetas (lo dejo tal cual)
     if (!twitchBtn.__twitchTooltipInit) {
       twitchBtn.__twitchTooltipInit = true;
 
@@ -206,17 +220,16 @@
     }
   }
 
-  // ✅ NUEVO: escribir followers en el stat “Seguidores Twitch” del popup
+  // Followers en popup
   function updateModalFollowersStat(followers) {
     const followersEl = document.getElementById('modalFollowers');
     if (!followersEl) return;
 
-    // Re-mostrar el bloque si main.js lo ocultó
     const block = followersEl.closest('.twitch-stat') || followersEl.parentElement;
     if (block) block.style.display = '';
 
     const n = parseInt(followers || 0, 10) || 0;
-    followersEl.textContent = n.toLocaleString(); // actualiza el texto [web:1026]
+    followersEl.textContent = n.toLocaleString();
   }
 
   function enhanceModalWithTwitchData(creator) {
@@ -237,10 +250,7 @@
     if (twitchData) {
       const followers = twitchData.followerCount || 0;
 
-      // Botón grande: sin hover tooltip (solo dataset si lo quieres guardar)
       updateModalTwitchButton(followers);
-
-      // ✅ Followers al stat del modal
       updateModalFollowersStat(followers);
 
       if (twitchData.isLive) {
@@ -249,18 +259,16 @@
     }
   }
 
-  // ✅ MOD: quitar tooltip hover del botón grande del modal
+  // Quitar tooltip hover del botón grande del modal
   function updateModalTwitchButton(followers) {
     const twitchBtn = document.getElementById('modalTwitchButton');
     if (!twitchBtn) return;
 
     twitchBtn.dataset.followers = String(followers || 0);
 
-    // Si existía tooltip, fuera
     const existing = twitchBtn.querySelector('.twitch-followers-tooltip');
     if (existing) existing.remove();
 
-    // Marcar como “inicializado” para no agregar listeners
     twitchBtn.__twitchTooltipInit = true;
   }
 
@@ -286,7 +294,6 @@
 
     allCreators = creators;
     allTwitchUsernames = extractTwitchUsernames(creators);
-
     if (allTwitchUsernames.length === 0) return;
 
     console.log(`🎮 [Twitch] Consultando ${allTwitchUsernames.length} usuarios...`);
@@ -312,7 +319,7 @@
 
     observeGridChanges();
 
-    // Auto update (opcional). Si no lo usas, deja comentado.
+    // Auto update (opcional)
     // if (updateTimer) clearInterval(updateTimer);
     // updateTimer = setInterval(async () => {
     //   await TwitchClient.getUsersData(allTwitchUsernames);

@@ -11,7 +11,6 @@
 
   const CLEAR_FILTERS_BTN = document.getElementById("clearFiltersBtn");
 
-  // Contenedor para pills de juegos (recomendado en HTML: <div id="gamesPillsContainer"></div>)
   const GAMES_PILLS_CONTAINER =
     document.getElementById("gamesPillsContainer") ||
     (GAMES_PANEL ? GAMES_PANEL : null);
@@ -20,6 +19,47 @@
   let activeTags = new Set();  // SOLO tags + idioma (NO RRSS)
   let activeGames = new Set(); // videojuegos
   let searchTerm = "";
+
+  // ✅ NUEVO: filtro “En vivo”
+  let liveOnly = false;         // por defecto desactivado
+  let liveByUser = {};          // { twitchUsername: boolean }
+
+  function normalizeTwitchHandle(v) {
+    return String(v || '').trim().replace(/^@/, '').toLowerCase();
+  }
+
+  // ✅ NUEVO: crear el botón y ponerlo junto al de Juegos
+  function ensureLiveToggleButton() {
+    if (!GAMES_TOGGLE_BTN) return;
+    if (document.getElementById("liveToggleBtn")) return;
+
+    const btn = document.createElement("button");
+    btn.id = "liveToggleBtn";
+    btn.type = "button";
+    btn.className = GAMES_TOGGLE_BTN.className; // reutiliza estilos del de juegos
+    btn.setAttribute("aria-expanded", "false");
+    btn.setAttribute("aria-pressed", "false");
+    btn.textContent = "En vivo";
+
+    function syncUI() {
+      btn.classList.toggle("is-active", liveOnly);
+      btn.setAttribute("aria-pressed", liveOnly ? "true" : "false");
+    }
+
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      liveOnly = !liveOnly;
+      syncUI();
+
+      // No abrir/cerrar paneles: solo aplicar filtros
+      window.VSDFilters && window.VSDFilters.onFilterChange();
+    });
+
+    syncUI();
+
+    // Insertarlo inmediatamente después del botón de juegos
+    GAMES_TOGGLE_BTN.parentNode.insertBefore(btn, GAMES_TOGGLE_BTN.nextSibling);
+  }
 
   function buildTagPills(uniqueTags) {
     TAG_CONTAINER.innerHTML = "";
@@ -33,7 +73,6 @@
     });
   }
 
-  // ✅ Tags únicos: desde creators.tags + creators.language (SIN RRSS)
   function extractUniqueTags(creators) {
     const set = new Set();
     creators.forEach(c => {
@@ -44,7 +83,6 @@
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }
 
-  // Juegos únicos desde la data
   function extractUniqueGames(creators) {
     const set = new Set();
     creators.forEach(c => {
@@ -56,11 +94,9 @@
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }
 
-  // Construir los botones de juegos dinámicamente
   function buildGamePills(uniqueGames) {
     if (!GAMES_PILLS_CONTAINER) return;
 
-    // Si existe #gamesPillsContainer lo limpiamos; si no existe, creamos uno dentro.
     let container = document.getElementById("gamesPillsContainer");
     if (!container) {
       container = document.createElement("div");
@@ -92,7 +128,6 @@
     });
   }
 
-  // ✅ Paneles: alto dinámico (vh) + scroll interno para que no se corte
   function setPanelOpen(panel, toggleBtn, open, maxHeightVh) {
     if (!toggleBtn || !panel) return;
 
@@ -101,7 +136,7 @@
     toggleBtn.setAttribute("aria-expanded", String(open));
 
     if (open) {
-      panel.style.maxHeight = maxHeightVh; // evita cortes con muchos tags/juegos
+      panel.style.maxHeight = maxHeightVh;
       panel.style.overflowY = "auto";
     } else {
       panel.style.maxHeight = "0px";
@@ -123,8 +158,6 @@
         e.stopPropagation();
         const isOpen = !FILTERS_PANEL.classList.contains("is-open");
         setFiltersPanelOpen(isOpen);
-
-        // Regla: al usar el botón de Filtros, se cierra el panel de videojuegos
         setGamesPanelOpen(false);
       });
     }
@@ -142,10 +175,16 @@
     activeTags.clear();
     activeGames.clear();
     searchTerm = "";
+    liveOnly = false; // ✅ NUEVO: reset del toggle
+
+    const liveBtn = document.getElementById("liveToggleBtn");
+    if (liveBtn) {
+      liveBtn.classList.remove("is-active");
+      liveBtn.setAttribute("aria-pressed", "false");
+    }
 
     if (SEARCH_INPUT) SEARCH_INPUT.value = "";
 
-    // Tags (sin tocar AtoZ)
     document.querySelectorAll(".tag-pill").forEach(el => {
       if (el.id === "sortAlphaBtn") return;
       if (el.classList.contains("game-pill")) return;
@@ -153,10 +192,8 @@
     });
     if (ALL_TAG_BUTTON) ALL_TAG_BUTTON.classList.add("is-active");
 
-    // Games
     document.querySelectorAll(".game-pill").forEach(el => el.classList.remove("is-active"));
 
-    // Papelera cierra todo
     setGamesPanelOpen(false);
     setFiltersPanelOpen(false);
 
@@ -165,18 +202,13 @@
 
   function attachEvents() {
     document.addEventListener("click", function (evt) {
-      // Ignorar el botón de orden
-      if (evt.target && evt.target.closest && evt.target.closest("#sortAlphaBtn")) {
-        return;
-      }
+      if (evt.target && evt.target.closest && evt.target.closest("#sortAlphaBtn")) return;
 
-      // Papelera
       if (evt.target && evt.target.closest && evt.target.closest("#clearFiltersBtn")) {
         clearAllFilters();
         return;
       }
 
-      // Click afuera: cierra SOLO filtersPanel (gamesPanel NO se cierra aquí)
       const clickedInsideFiltersPanel = evt.target.closest && evt.target.closest("#filtersPanel");
       const clickedFiltersToggle = evt.target.closest && evt.target.closest("#filtersToggleBtn");
       if (FILTERS_PANEL && FILTERS_PANEL.classList.contains("is-open")) {
@@ -185,7 +217,6 @@
         }
       }
 
-      // Tags
       const tagBtn = evt.target.closest(".tag-pill");
       if (tagBtn && !tagBtn.classList.contains("game-pill")) {
         if (tagBtn.id === "sortAlphaBtn") return;
@@ -194,10 +225,16 @@
         if (!tag) return;
 
         if (tag === "all") {
-          // "Todos" muestra a todos
           activeTags.clear();
           activeGames.clear();
           searchTerm = "";
+          liveOnly = false; // ✅ NUEVO: “Todos” apaga live-only
+          const liveBtn = document.getElementById("liveToggleBtn");
+          if (liveBtn) {
+            liveBtn.classList.remove("is-active");
+            liveBtn.setAttribute("aria-pressed", "false");
+          }
+
           if (SEARCH_INPUT) SEARCH_INPUT.value = "";
 
           document.querySelectorAll(".tag-pill").forEach(el => {
@@ -208,7 +245,6 @@
 
           document.querySelectorAll(".game-pill").forEach(el => el.classList.remove("is-active"));
 
-          // "Todos" cierra panel videojuegos y panel filtros
           setGamesPanelOpen(false);
           setFiltersPanelOpen(false);
         } else {
@@ -225,15 +261,12 @@
             if (anyActive) ALL_TAG_BUTTON.classList.remove("is-active");
             else ALL_TAG_BUTTON.classList.add("is-active");
           }
-
-          // Importante: NO cerrar gamesPanel al tocar tags
         }
 
         window.VSDFilters && window.VSDFilters.onFilterChange();
         return;
       }
 
-      // Games
       const gameBtn = evt.target.closest(".game-pill");
       if (gameBtn) {
         const game = gameBtn.dataset.game;
@@ -266,9 +299,15 @@
       if (!uname.includes(term)) return false;
     }
 
+    // ✅ NUEVO: filtro live-only (si está activo)
+    if (liveOnly) {
+      const twitch = normalizeTwitchHandle(creator?.socials?.twitch);
+      if (!twitch) return false;
+      if (liveByUser[twitch] !== true) return false;
+    }
+
     if (activeTags.size === 0 && activeGames.size === 0) return true;
 
-    // ✅ SOLO tags + idioma (sin RRSS)
     const baseSet = new Set([
       ...(creator.tags || []),
       creator.language || ""
@@ -293,7 +332,6 @@
     const gameCounts = {};
 
     creatorsSubset.forEach(c => {
-      // ✅ SOLO tags + idioma (sin RRSS)
       const appliedTags = new Set([
         ...(c.tags || []),
         c.language || ""
@@ -380,7 +418,17 @@
     attachPanelToggles();
     attachEvents();
 
-    // Estado inicial “cerrado” con estilos consistentes
+    // ✅ NUEVO: botón “En vivo”
+    ensureLiveToggleButton();
+
+    // ✅ NUEVO: escuchar estado live desde TwitchIntegration
+    window.addEventListener("twitch:live-update", function (e) {
+      liveByUser = (e && e.detail && e.detail.liveByUser) ? e.detail.liveByUser : {};
+      if (liveOnly) {
+        window.VSDFilters && window.VSDFilters.onFilterChange();
+      }
+    }); // CustomEvent.detail [web:1067]
+
     setFiltersPanelOpen(false);
     setGamesPanelOpen(false);
 
@@ -408,7 +456,6 @@ document.addEventListener("keydown", function (evt) {
   const gamesToggle = document.getElementById("gamesToggleBtn");
   const gamesPanel = document.getElementById("gamesPanel");
 
-  // Si quieres que ESC NO cierre el panel de videojuegos, borra este bloque.
   if (gamesPanel && gamesPanel.classList.contains("is-open")) {
     gamesPanel.classList.remove("is-open");
     gamesPanel.setAttribute("aria-hidden", "true");

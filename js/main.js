@@ -47,8 +47,6 @@
     return null;
   }
 
-  // Nuevo schema: creator.socials[key] = handle/url/email
-  // Mantengo compat con creator.links por si quedan datos viejos.
   function getSocialValue(creator, key) {
     if (!creator) return "";
 
@@ -64,17 +62,13 @@
   }
 
   function getCreatorLink(creator, key) {
-    // Si infinite-scroll ya expuso helpers, úsalo (así home y popup son idénticos)
     if (window.VSDPlatformIcons && typeof window.VSDPlatformIcons.getLink === "function") {
       return window.VSDPlatformIcons.getLink(creator, key);
     }
-
-    // fallback interno
     const v = getSocialValue(creator, key);
     return buildUrlFromHandle(key, v);
   }
 
-  // Crea el icono para el popup (clase distinta a la del home)
   function createModalSocialIcon(creator, key) {
     const url = getCreatorLink(creator, key);
     if (!url) return null;
@@ -95,7 +89,6 @@
     return a;
   }
 
-  // ✅ Método robusto para abrir nueva pestaña (especialmente en móvil)
   function openInNewTab(url) {
     if (!url) return;
     const a = document.createElement("a");
@@ -127,8 +120,6 @@
     const platformsContainer = document.getElementById("modalPlatformsContainer");
 
     let currentCreator = null;
-
-    // History API: para que “atrás” cierre el modal en móvil en vez de salir del sitio
     let modalPushedState = false;
 
     function setDisplay(el, show, displayValue) {
@@ -140,27 +131,6 @@
       return v != null && String(v).trim().length > 0;
     }
 
-    function setTwitchCtaState(url) {
-      if (!twitchBtn) return;
-
-      // Si es un <button>, asegura que no dispare submits accidentales
-      if (twitchBtn.tagName === "BUTTON") twitchBtn.type = "button";
-
-      if (url) {
-        twitchBtn.dataset.twitchUrl = url;
-        twitchBtn.disabled = false;
-        twitchBtn.style.opacity = "";
-        twitchBtn.style.cursor = "";
-        twitchBtn.setAttribute("aria-disabled", "false");
-      } else {
-        twitchBtn.dataset.twitchUrl = "";
-        twitchBtn.disabled = true;
-        twitchBtn.style.opacity = "0.6";
-        twitchBtn.style.cursor = "not-allowed";
-        twitchBtn.setAttribute("aria-disabled", "true");
-      }
-    }
-
     function close(opts) {
       const fromPopstate = opts && opts.fromPopstate;
 
@@ -170,7 +140,6 @@
       document.body.style.overflow = "";
       currentCreator = null;
 
-      // Si se cerró por UI (X/click afuera/ESC), limpiamos el estado extra del history
       if (!fromPopstate && modalPushedState) {
         modalPushedState = false;
         history.back();
@@ -180,7 +149,6 @@
     function open(creator) {
       currentCreator = creator;
 
-      // Empuja un estado al abrir para que “atrás” cierre el modal (no salga del sitio)
       if (!modalPushedState) {
         history.pushState({ vsdModal: true }, "", window.location.href);
         modalPushedState = true;
@@ -190,7 +158,7 @@
       avatar.alt = `Avatar de ${creator.username}`;
       usernameEl.textContent = `@${creator.username}`;
 
-      // BIO: si no hay bio, se oculta el elemento completo (sin placeholder)
+      // BIO (mantengo tu comportamiento: ocultar si no hay bio)
       if (hasText(creator.bio)) {
         bioEl.textContent = creator.bio;
         setDisplay(bioEl, true);
@@ -215,22 +183,16 @@
         gamesContainer.appendChild(span);
       });
 
-      // FOLLOWERS: si no hay followers, oculta el bloque completo
-      const followersBlock =
-        followersEl && (followersEl.closest(".twitch-stat") || followersEl.parentElement);
-
-      if (followersEl && hasText(creator.followers)) {
-        followersEl.textContent = creator.followers;
-        setDisplay(followersBlock, true);
-      } else if (followersEl) {
-        followersEl.textContent = "";
-        setDisplay(followersBlock, false);
+      // ✅ FOLLOWERS: NO se oculta nunca. Se deja “—” hasta que llegue TwitchIntegration.
+      if (followersEl) {
+        const block = followersEl.closest(".twitch-stat") || followersEl.parentElement;
+        if (block) block.style.display = "";
+        followersEl.textContent = hasText(creator.followers) ? String(creator.followers) : "—";
       }
 
       residenceEl.textContent = creator.residence || "Desconocido";
       nationalityEl.textContent = creator.nationality || "Sin datos";
 
-      // Redes en orden fijo
       platformsContainer.innerHTML = "";
       const order =
         (window.VSDPlatformIcons && Array.isArray(window.VSDPlatformIcons.ORDER))
@@ -242,9 +204,18 @@
         if (el) platformsContainer.appendChild(el);
       });
 
-      // ✅ CTA Twitch: usa EXACTAMENTE el mismo generador de link que el icono
       const twitchUrl = getCreatorLink(creator, "twitch");
-      setTwitchCtaState(twitchUrl);
+      if (twitchUrl) {
+        twitchBtn.disabled = false;
+        twitchBtn.dataset.twitchUrl = twitchUrl;
+        twitchBtn.style.opacity = "";
+        twitchBtn.style.cursor = "";
+      } else {
+        twitchBtn.disabled = true;
+        twitchBtn.dataset.twitchUrl = "";
+        twitchBtn.style.opacity = "0.6";
+        twitchBtn.style.cursor = "not-allowed";
+      }
 
       backdrop.setAttribute("aria-hidden", "false");
       backdrop.classList.add("is-visible");
@@ -254,7 +225,6 @@
       if (closeBtn) closeBtn.focus();
     }
 
-    // Atrás (gesto/botón): cerrar modal
     window.addEventListener("popstate", function () {
       const isOpen = backdrop.classList.contains("is-visible");
       if (!isOpen) return;
@@ -275,18 +245,14 @@
       if (evt.key === "Escape") close();
     });
 
-    // ✅ Botón grande Twitch: abre en nueva pestaña, mismo URL que el icono
+    // Botón grande Twitch
     if (twitchBtn) {
       twitchBtn.addEventListener("click", function (e) {
         e.preventDefault();
-
-        // Si está disabled, no hacemos nada
         if (twitchBtn.disabled) return;
 
-        // No dependemos del dataset: recalculamos desde currentCreator para que sea 1:1 con el icono
         const url = currentCreator ? getCreatorLink(currentCreator, "twitch") : "";
         if (!url) return;
-
         openInNewTab(url);
       });
     }
@@ -295,15 +261,16 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-      initModal();
+    initModal();
 
-      fetchCreators().then(creators => {
-          if (window.VSDFilters) window.VSDFilters.init(creators);
-          if (window.VSDInfiniteScroll) window.VSDInfiniteScroll.init(creators);
-          
-          if (window.TwitchIntegration) {
-              window.TwitchIntegration.init(creators);
-          }
-      });
+    fetchCreators().then(creators => {
+      // ✅ Ideal: pedir Twitch al inicio (si TwitchIntegration existe)
+      if (window.TwitchIntegration && typeof window.TwitchIntegration.init === "function") {
+        window.TwitchIntegration.init(creators);
+      }
+
+      if (window.VSDFilters) window.VSDFilters.init(creators);
+      if (window.VSDInfiniteScroll) window.VSDInfiniteScroll.init(creators);
+    });
   });
 })();
