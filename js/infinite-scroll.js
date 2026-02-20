@@ -96,7 +96,7 @@
     a.title = SOCIAL_LABEL[key] || key;
     a.setAttribute("aria-label", SOCIAL_LABEL[key] || key);
 
-    // ✅ NUEVO: para selección/estilos sin depender de title
+    // Para selección/estilos sin depender de title
     a.dataset.platform = key;
 
     const icon = document.createElement("span");
@@ -171,7 +171,7 @@
     card.className = "creator-card";
     if (creator && creator.id != null) card.dataset.id = creator.id;
 
-    // ✅ NUEVO: guardar handle twitch en el DOM (para TwitchIntegration sin buscar por username)
+    // Guardar handle twitch en el DOM (para TwitchIntegration)
     card.dataset.twitch = (creator && creator.socials && creator.socials.twitch) ? String(creator.socials.twitch) : "";
 
     const avatarWrapper = document.createElement("div");
@@ -239,10 +239,19 @@
     isRendering = false;
   }
 
+  // ✅ Fix adecuado: rearmar el observer después de reset
+  function rearmObserver() {
+    if (!observer || !SENTINEL) return;
+    observer.unobserve(SENTINEL);
+    observer.observe(SENTINEL);
+  }
+
   function resetAndRender() {
     if (!GRID) return;
 
-    GRID.innerHTML = "";
+    // Limpia el grid sin tocar el sentinel (el sentinel está fuera del grid en tu HTML)
+    GRID.replaceChildren();
+
     renderedCount = 0;
 
     if (sortMode === "random") {
@@ -250,7 +259,18 @@
     }
 
     recomputeFiltered();
+
+    // Render inicial
     renderUntilSentinelOutOfView();
+
+    // Re-evaluación segura tras el reset (observer “pegado”)
+    rearmObserver();
+
+    // Segunda pasada tras layout (ayuda cuando el sentinel cambia de posición tras el repaint)
+    requestAnimationFrame(() => {
+      renderUntilSentinelOutOfView();
+      rearmObserver();
+    });
   }
 
   function initObserverOnce() {
@@ -320,7 +340,7 @@
       return;
     }
 
-    // Si ya estaba inicializado (por ejemplo hot-reload), solo re-render
+    // Si ya estaba inicializado, solo re-render
     randomOrder = shuffle(allCreators);
     updateSortButtonUI();
     resetAndRender();
