@@ -899,7 +899,7 @@ body.header-hidden .filters-section{
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.4);
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.4);
   z-index: 50;
   transition:
     transform var(--transition-fast),
@@ -1151,7 +1151,7 @@ body.header-hidden .filters-section{
   line-height: 1;
   font-size: 18px;
 
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.4);
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.4);
   z-index: 50;
   transition:
     transform var(--transition-fast),
@@ -1342,4 +1342,14 @@ body.header-hidden .filters-section{
   background: linear-gradient(135deg, #000000 0%, #ff0050 48%, #00f2ea 100%);
   color: #f1f1f1;
   border-color: rgba(0, 242, 234, 0.25);
+}
+
+/* Quitar sombra SOLO al selector de plataforma */
+#platformSelectBtn.platform-select-btn{
+  box-shadow: none;
+}
+
+/* Por si tu hover le agrega sombra desde otro selector */
+#platformSelectBtn.platform-select-btn:hover{
+  box-shadow: none;
 }
