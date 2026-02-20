@@ -1,4 +1,7 @@
 (function () {
+  // ✅ Guarda global (por si el archivo se carga 2 veces)
+  if (window.VSDFilters && window.VSDFilters.__initialized) return;
+
   const TAG_CONTAINER = document.getElementById("dynamicTagPills");
   const ALL_TAG_BUTTON = document.querySelector('.tag-pill[data-tag="all"]');
   const TAG_COUNT_ALL = document.getElementById("tag-count-all");
@@ -9,26 +12,27 @@
   const GAMES_TOGGLE_BTN = document.getElementById("gamesToggleBtn");
   const GAMES_PANEL = document.getElementById("gamesPanel");
 
-  const CLEAR_FILTERS_BTN = document.getElementById("clearFiltersBtn");
-
   const GAMES_PILLS_CONTAINER =
     document.getElementById("gamesPillsContainer") ||
     (GAMES_PANEL ? GAMES_PANEL : null);
+
+  let initialized = false; // ✅ NUEVO: init guard
 
   let allCreators = [];
   let activeTags = new Set();  // SOLO tags + idioma (NO RRSS)
   let activeGames = new Set(); // videojuegos
   let searchTerm = "";
 
-  // ✅ NUEVO: filtro “En vivo”
+  // ✅ filtro “En vivo”
   let liveOnly = false;         // por defecto desactivado
   let liveByUser = {};          // { twitchUsername: boolean }
+  let liveUpdateListenerAttached = false; // ✅ NUEVO
 
   function normalizeTwitchHandle(v) {
     return String(v || '').trim().replace(/^@/, '').toLowerCase();
   }
 
-  // ✅ NUEVO: crear el botón y ponerlo junto al de Juegos
+  // ✅ crear el botón y ponerlo junto al de Juegos
   function ensureLiveToggleButton() {
     if (!GAMES_TOGGLE_BTN) return;
     if (document.getElementById("liveToggleBtn")) return;
@@ -175,7 +179,7 @@
     activeTags.clear();
     activeGames.clear();
     searchTerm = "";
-    liveOnly = false; // ✅ NUEVO: reset del toggle
+    liveOnly = false;
 
     const liveBtn = document.getElementById("liveToggleBtn");
     if (liveBtn) {
@@ -201,6 +205,10 @@
   }
 
   function attachEvents() {
+    // ✅ Guarda interna: evita enganchar 2 veces si init() se ejecuta de nuevo
+    if (document.__vsdFiltersClickInit) return;
+    document.__vsdFiltersClickInit = true;
+
     document.addEventListener("click", function (evt) {
       if (evt.target && evt.target.closest && evt.target.closest("#sortAlphaBtn")) return;
 
@@ -228,7 +236,8 @@
           activeTags.clear();
           activeGames.clear();
           searchTerm = "";
-          liveOnly = false; // ✅ NUEVO: “Todos” apaga live-only
+          liveOnly = false;
+
           const liveBtn = document.getElementById("liveToggleBtn");
           if (liveBtn) {
             liveBtn.classList.remove("is-active");
@@ -284,7 +293,9 @@
       }
     });
 
-    if (SEARCH_INPUT) {
+    if (SEARCH_INPUT && !SEARCH_INPUT.__vsdSearchInit) {
+      SEARCH_INPUT.__vsdSearchInit = true;
+
       SEARCH_INPUT.addEventListener("input", function () {
         searchTerm = this.value.trim().toLowerCase();
         window.VSDFilters && window.VSDFilters.onFilterChange();
@@ -299,7 +310,7 @@
       if (!uname.includes(term)) return false;
     }
 
-    // ✅ NUEVO: filtro live-only (si está activo)
+    // filtro live-only
     if (liveOnly) {
       const twitch = normalizeTwitchHandle(creator?.socials?.twitch);
       if (!twitch) return false;
@@ -407,6 +418,10 @@
   }
 
   function init(creators) {
+    // ✅ Guarda de init real
+    if (initialized) return;
+    initialized = true;
+
     allCreators = creators.slice();
 
     const uniqueTags = extractUniqueTags(allCreators);
@@ -418,16 +433,21 @@
     attachPanelToggles();
     attachEvents();
 
-    // ✅ NUEVO: botón “En vivo”
+    // botón “En vivo”
     ensureLiveToggleButton();
 
-    // ✅ NUEVO: escuchar estado live desde TwitchIntegration
-    window.addEventListener("twitch:live-update", function (e) {
-      liveByUser = (e && e.detail && e.detail.liveByUser) ? e.detail.liveByUser : {};
-      if (liveOnly) {
-        window.VSDFilters && window.VSDFilters.onFilterChange();
-      }
-    }); // CustomEvent.detail [web:1067]
+    // escuchar live-update (solo una vez)
+    if (!liveUpdateListenerAttached) {
+      liveUpdateListenerAttached = true;
+
+      window.addEventListener("twitch:live-update", function (e) {
+        // CustomEvent.detail trae el payload del evento. [web:162]
+        liveByUser = (e && e.detail && e.detail.liveByUser) ? e.detail.liveByUser : {};
+        if (liveOnly) {
+          window.VSDFilters && window.VSDFilters.onFilterChange();
+        }
+      });
+    }
 
     setFiltersPanelOpen(false);
     setGamesPanelOpen(false);
@@ -437,6 +457,7 @@
   }
 
   window.VSDFilters = {
+    __initialized: true,
     init,
     matches: creatorMatchesFilters,
     onFilterChange: function () {
@@ -447,28 +468,34 @@
   };
 })();
 
-document.addEventListener("keydown", function (evt) {
-  if (evt.key !== "Escape") return;
+// Escape para cerrar paneles (con guarda anti-duplicados)
+(function () {
+  if (document.__vsdFiltersEscapeInit) return;
+  document.__vsdFiltersEscapeInit = true;
 
-  const toggleBtn = document.getElementById("filtersToggleBtn");
-  const panel = document.getElementById("filtersPanel");
+  document.addEventListener("keydown", function (evt) {
+    if (evt.key !== "Escape") return;
 
-  const gamesToggle = document.getElementById("gamesToggleBtn");
-  const gamesPanel = document.getElementById("gamesPanel");
+    const toggleBtn = document.getElementById("filtersToggleBtn");
+    const panel = document.getElementById("filtersPanel");
 
-  if (gamesPanel && gamesPanel.classList.contains("is-open")) {
-    gamesPanel.classList.remove("is-open");
-    gamesPanel.setAttribute("aria-hidden", "true");
-    gamesPanel.style.maxHeight = "0px";
-    gamesPanel.style.overflowY = "hidden";
-    if (gamesToggle) gamesToggle.setAttribute("aria-expanded", "false");
-  }
+    const gamesToggle = document.getElementById("gamesToggleBtn");
+    const gamesPanel = document.getElementById("gamesPanel");
 
-  if (panel && panel.classList.contains("is-open")) {
-    panel.classList.remove("is-open");
-    panel.setAttribute("aria-hidden", "true");
-    panel.style.maxHeight = "0px";
-    panel.style.overflowY = "hidden";
-    if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
-  }
-});
+    if (gamesPanel && gamesPanel.classList.contains("is-open")) {
+      gamesPanel.classList.remove("is-open");
+      gamesPanel.setAttribute("aria-hidden", "true");
+      gamesPanel.style.maxHeight = "0px";
+      gamesPanel.style.overflowY = "hidden";
+      if (gamesToggle) gamesToggle.setAttribute("aria-expanded", "false");
+    }
+
+    if (panel && panel.classList.contains("is-open")) {
+      panel.classList.remove("is-open");
+      panel.setAttribute("aria-hidden", "true");
+      panel.style.maxHeight = "0px";
+      panel.style.overflowY = "hidden";
+      if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
+    }
+  });
+})();

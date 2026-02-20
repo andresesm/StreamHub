@@ -5,8 +5,6 @@
   const SORT_BTN = document.getElementById("sortAlphaBtn");
   const BATCH_SIZE = 20;
 
-  // Orden fijo requerido:
-  // 1. Twitch 2. Kick 3. Twitter(X) 4. Instagram 5. TikTok 6. YouTube 7. Email
   const SOCIAL_ORDER = ["twitch", "kick", "x", "ig", "tiktok", "youtube", "email"];
   const SOCIAL_LABEL = {
     twitch: "Twitch",
@@ -18,19 +16,20 @@
     email: "Email",
   };
 
+  let initialized = false;
+
   let allCreators = [];
   let filteredCreators = [];
   let renderedCount = 0;
   let observer = null;
 
+  let creatorById = new Map(); // id -> creator
+
   // sortMode: "random" | "az" | "za"
   let sortMode = "random";
   let randomOrder = [];
 
-  // Anti spam-click
   let lastSortClickTs = 0;
-
-  // Simple render lock (evita renders superpuestos por observer + resets)
   let isRendering = false;
 
   function shuffle(arr) {
@@ -67,14 +66,11 @@
     return null;
   }
 
-  // Lee SOLO de creator.socials (nuevo schema). Mantiene compat con creator.links si aún existe.
   function getSocialValue(creator, key) {
     if (!creator) return "";
 
-    // Nuevo schema
     if (creator.socials && creator.socials[key]) return creator.socials[key];
 
-    // Compat (por si quedan datos antiguos)
     if (creator.links && creator.links[key]) return creator.links[key];
     if (key === "x" && creator.links && creator.links.twitter) return creator.links.twitter;
     if (key === "ig" && creator.links && creator.links.instagram) return creator.links.instagram;
@@ -100,8 +96,8 @@
     a.title = SOCIAL_LABEL[key] || key;
     a.setAttribute("aria-label", SOCIAL_LABEL[key] || key);
 
-    // Que el click en el icono NO abra modal ni active otras cosas
-    a.addEventListener("click", (e) => e.stopPropagation());
+    // ✅ NUEVO: para selección/estilos sin depender de title
+    a.dataset.platform = key;
 
     const icon = document.createElement("span");
     icon.className = `rrss-icon rrss--${key}`;
@@ -144,11 +140,9 @@
     if (now - lastSortClickTs < 180) return;
     lastSortClickTs = now;
 
-    // Alt+click vuelve a random (opcional)
     if (evt && evt.altKey) {
       sortMode = "random";
     } else {
-      // 3 estados: random → az → za → random
       if (sortMode === "random") sortMode = "az";
       else if (sortMode === "az") sortMode = "za";
       else sortMode = "random";
@@ -177,6 +171,9 @@
     card.className = "creator-card";
     if (creator && creator.id != null) card.dataset.id = creator.id;
 
+    // ✅ NUEVO: guardar handle twitch en el DOM (para TwitchIntegration sin buscar por username)
+    card.dataset.twitch = (creator && creator.socials && creator.socials.twitch) ? String(creator.socials.twitch) : "";
+
     const avatarWrapper = document.createElement("div");
     avatarWrapper.className = "creator-avatar-wrapper";
 
@@ -189,11 +186,6 @@
     avatarWrapper.appendChild(img);
     card.appendChild(avatarWrapper);
 
-    function openModal() {
-      if (window.VSDModal) window.VSDModal.open(creator);
-    }
-    avatarWrapper.addEventListener("click", openModal);
-
     const body = document.createElement("div");
     body.className = "creator-card-body";
 
@@ -201,13 +193,11 @@
     usernameBtn.type = "button";
     usernameBtn.className = "creator-username-btn";
     usernameBtn.textContent = `@${creator.username || ""}`;
-    usernameBtn.addEventListener("click", openModal);
     body.appendChild(usernameBtn);
 
     const platformsRow = document.createElement("div");
     platformsRow.className = "creator-platforms";
 
-    // Orden fijo + no dibujar si no hay handle
     SOCIAL_ORDER.forEach(key => {
       const el = createSocialIcon(creator, key);
       if (el) platformsRow.appendChild(el);
@@ -223,7 +213,6 @@
   function sentinelNeedsMoreContent() {
     if (!SENTINEL) return false;
     const rect = SENTINEL.getBoundingClientRect();
-    // Debe calzar con rootMargin del observer (200px)
     return rect.top <= (window.innerHeight + 200);
   }
 
@@ -235,7 +224,6 @@
     isRendering = true;
     if (LOADER) LOADER.classList.add("is-visible");
 
-    // Renderiza múltiples batches si el sentinel sigue “cerca” del viewport
     while (renderedCount < filteredCreators.length && sentinelNeedsMoreContent()) {
       const start = renderedCount;
       const end = Math.min(start + BATCH_SIZE, filteredCreators.length);
@@ -257,7 +245,6 @@
     GRID.innerHTML = "";
     renderedCount = 0;
 
-    // “Siempre aleatorio” mientras sortMode sea random
     if (sortMode === "random") {
       randomOrder = shuffle(allCreators);
     }
@@ -266,8 +253,9 @@
     renderUntilSentinelOutOfView();
   }
 
-  function initObserver() {
+  function initObserverOnce() {
     if (!SENTINEL) return;
+    if (observer) return;
 
     observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -278,24 +266,64 @@
     observer.observe(SENTINEL);
   }
 
+  function attachGridDelegatedClicksOnce() {
+    if (!GRID) return;
+    if (GRID.__vsdDelegationInit) return;
+    GRID.__vsdDelegationInit = true;
+
+    GRID.addEventListener("click", function (e) {
+      // Click en icono RRSS: deja que el <a> navegue y no abras modal
+      if (e.target.closest(".platform-icon-btn")) return;
+
+      const card = e.target.closest(".creator-card");
+      if (!card) return;
+
+      // Mantener el comportamiento original: solo avatar/username abren modal
+      const wantsOpen =
+        !!e.target.closest(".creator-avatar-wrapper") ||
+        !!e.target.closest(".creator-username-btn");
+
+      if (!wantsOpen) return;
+
+      const id = Number(card.dataset.id);
+      const creator = creatorById.get(id);
+      if (!creator) return;
+
+      if (window.VSDModal) window.VSDModal.open(creator);
+    });
+  }
+
   function init(creators) {
     allCreators = (creators || []).slice();
+    creatorById = new Map(allCreators.map(c => [Number(c.id), c]));
 
-    // Aleatorio al cargar
-    randomOrder = shuffle(allCreators);
+    if (!initialized) {
+      initialized = true;
 
-    updateSortButtonUI();
-    recomputeFiltered();
-    renderUntilSentinelOutOfView();
-    initObserver();
+      // Aleatorio al cargar
+      randomOrder = shuffle(allCreators);
 
-    if (SORT_BTN) {
-      SORT_BTN.addEventListener("click", function (e) {
-        // Evita que filters.js lo trate como pill y desactive "Todos"
-        e.stopPropagation();
-        cycleSortMode(e);
-      });
+      updateSortButtonUI();
+      recomputeFiltered();
+      renderUntilSentinelOutOfView();
+
+      initObserverOnce();
+      attachGridDelegatedClicksOnce();
+
+      if (SORT_BTN) {
+        SORT_BTN.addEventListener("click", function (e) {
+          e.stopPropagation();
+          cycleSortMode(e);
+        });
+      }
+
+      return;
     }
+
+    // Si ya estaba inicializado (por ejemplo hot-reload), solo re-render
+    randomOrder = shuffle(allCreators);
+    updateSortButtonUI();
+    resetAndRender();
   }
 
   window.VSDInfiniteScroll = {

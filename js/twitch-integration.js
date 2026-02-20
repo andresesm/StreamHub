@@ -5,12 +5,19 @@
   const CACHE_DURATION = 30000;
   const UPDATE_INTERVAL = 60000;
 
+  let initialized = false;
+
   let twitchDataCache = new Map();
   let pendingRequests = new Map();
   let abortController = null;
   let updateTimer = null;
+
   let allTwitchUsernames = [];
   let allCreators = [];
+
+  let gridMutationObserver = null;
+  let modalWrapped = false;
+  let originalModalOpen = null;
 
   function normalizeTwitchHandle(v) {
     return String(v || '').trim().replace(/^@/, '').toLowerCase();
@@ -25,7 +32,13 @@
     return [...new Set(usernames)];
   }
 
-  // ✅ NUEVO (ordenado): emite el mapa { username: isLive }
+  function getStreamPlatform(creator) {
+    const raw = (creator && (creator.streamPlatform || creator.StreamPlatform || creator.stream_platform)) || "";
+    const p = String(raw).trim().toLowerCase();
+    if (["twitch", "kick", "youtube", "tiktok", "none"].includes(p)) return p;
+    return "twitch";
+  }
+
   function dispatchTwitchLiveUpdate(userDataMap) {
     const liveByUser = {};
     userDataMap.forEach((info, username) => {
@@ -34,7 +47,7 @@
 
     window.dispatchEvent(new CustomEvent("twitch:live-update", {
       detail: { liveByUser }
-    })); // CustomEvent.detail [web:1067]
+    }));
   }
 
   const TwitchClient = {
@@ -129,77 +142,37 @@
         this._userDataMap.set(String(username).toLowerCase(), info);
       }
 
-      // ✅ NUEVO: notificar el estado live a la UI/filtros
       dispatchTwitchLiveUpdate(this._userDataMap);
     },
 
     getUserData(username) {
       return this._userDataMap.get(String(username || '').toLowerCase()) || null;
-    },
-
-    isUserLive(username) {
-      const data = this.getUserData(username);
-      return data ? !!data.isLive : false;
-    },
-
-    getUserFollowers(username) {
-      const data = this.getUserData(username);
-      return data ? (data.followerCount || 0) : 0;
-    },
-
-    getUserError(username) {
-      const data = this.getUserData(username);
-      return data ? data.error : null;
     }
   };
 
   function updateAllCreatorCards() {
     const cards = document.querySelectorAll('.creator-card');
+
     cards.forEach(card => {
-      const usernameEl = card.querySelector('.creator-username-btn');
-      if (!usernameEl) return;
+      const twitchHandle = normalizeTwitchHandle(card?.dataset?.twitch);
+      if (!twitchHandle) return;
 
-      const username = usernameEl.textContent.replace('@', '').trim().toLowerCase();
-      const twitchData = TwitchClient.getUserData(username);
-
-      updateCardTwitchButton(card, username, twitchData);
+      const twitchData = TwitchClient.getUserData(twitchHandle);
+      updateCardTwitchIcon(card, twitchData);
       updateCardLiveIndicator(card, twitchData);
     });
   }
 
-  function updateCardTwitchButton(card, username, twitchData) {
-    const twitchBtn = card.querySelector('.platform-icon-btn[title="Twitch"]');
-    if (!twitchBtn) return;
+  function updateCardTwitchIcon(card, twitchData) {
+    const twitchIcon = card.querySelector('.platform-icon-btn[data-platform="twitch"]');
+    if (!twitchIcon) return;
 
-    twitchBtn.dataset.followers = twitchData ? String(twitchData.followerCount || 0) : '0';
-    twitchBtn.dataset.isLive = twitchData ? String(!!twitchData.isLive) : 'false';
+    const followers = twitchData ? (twitchData.followerCount || 0) : 0;
+    const isLive = twitchData ? !!twitchData.isLive : false;
 
-    // Tooltip en tarjetas (lo dejo tal cual)
-    if (!twitchBtn.__twitchTooltipInit) {
-      twitchBtn.__twitchTooltipInit = true;
-
-      twitchBtn.addEventListener('mouseenter', function () {
-        const followers = parseInt(this.dataset.followers || '0', 10) || 0;
-        const existingTooltip = this.querySelector('.twitch-card-tooltip');
-        if (existingTooltip) existingTooltip.remove();
-
-        const tip = document.createElement('span');
-        tip.className = 'twitch-card-tooltip';
-        tip.textContent = `${followers.toLocaleString()} seguidores`;
-        this.appendChild(tip);
-      });
-
-      twitchBtn.addEventListener('mouseleave', function () {
-        const tooltip = this.querySelector('.twitch-card-tooltip');
-        if (tooltip) tooltip.remove();
-      });
-    } else {
-      const visible = twitchBtn.querySelector('.twitch-card-tooltip');
-      if (visible) {
-        const n = parseInt(twitchBtn.dataset.followers || '0', 10) || 0;
-        visible.textContent = `${n.toLocaleString()} seguidores`;
-      }
-    }
+    twitchIcon.dataset.followers = String(followers);
+    twitchIcon.dataset.isLive = String(isLive);
+    twitchIcon.dataset.tooltip = `${Number(followers).toLocaleString()} seguidores`; // lo lee CSS via attr()
   }
 
   function updateCardLiveIndicator(card, twitchData) {
@@ -220,26 +193,22 @@
     }
   }
 
-  // Followers en popup
   function updateModalFollowersStat(followers) {
     const followersEl = document.getElementById('modalFollowers');
     if (!followersEl) return;
-
-    const block = followersEl.closest('.twitch-stat') || followersEl.parentElement;
-    if (block) block.style.display = '';
 
     const n = parseInt(followers || 0, 10) || 0;
     followersEl.textContent = n.toLocaleString();
   }
 
   function enhanceModalWithTwitchData(creator) {
+    if (getStreamPlatform(creator) !== "twitch") return;
+
     const twitchHandle = normalizeTwitchHandle(creator?.socials?.twitch);
     if (!twitchHandle) return;
 
     const twitchData = TwitchClient.getUserData(twitchHandle);
-
-    const modalContent = document.querySelector('.modal-content');
-    if (!modalContent) return;
+    if (!twitchData) return;
 
     const oldLiveIndicator = document.getElementById('twitch-live-indicator');
     if (oldLiveIndicator) oldLiveIndicator.remove();
@@ -247,29 +216,12 @@
     const avatar = document.getElementById('modalAvatar');
     if (avatar) avatar.style.boxShadow = '';
 
-    if (twitchData) {
-      const followers = twitchData.followerCount || 0;
+    const followers = twitchData.followerCount || 0;
+    updateModalFollowersStat(followers);
 
-      updateModalTwitchButton(followers);
-      updateModalFollowersStat(followers);
-
-      if (twitchData.isLive) {
-        addLiveIndicatorToModal();
-      }
+    if (twitchData.isLive) {
+      addLiveIndicatorToModal();
     }
-  }
-
-  // Quitar tooltip hover del botón grande del modal
-  function updateModalTwitchButton(followers) {
-    const twitchBtn = document.getElementById('modalTwitchButton');
-    if (!twitchBtn) return;
-
-    twitchBtn.dataset.followers = String(followers || 0);
-
-    const existing = twitchBtn.querySelector('.twitch-followers-tooltip');
-    if (existing) existing.remove();
-
-    twitchBtn.__twitchTooltipInit = true;
   }
 
   function addLiveIndicatorToModal() {
@@ -289,18 +241,41 @@
     avatarWrapper.parentNode.insertBefore(liveContainer, avatarWrapper.nextSibling);
   }
 
+  function observeGridChanges() {
+    const grid = document.getElementById('creatorsGrid');
+    if (!grid) return;
+
+    if (gridMutationObserver) {
+      gridMutationObserver.disconnect();
+      gridMutationObserver = null;
+    }
+
+    gridMutationObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+          setTimeout(updateAllCreatorCards, 50);
+          break;
+        }
+      }
+    });
+
+    gridMutationObserver.observe(grid, { childList: true, subtree: true });
+  }
+
   async function initTwitchIntegration(creators) {
     if (!creators || creators.length === 0) return;
 
+    // ✅ Guard: si vuelven a llamar init, no dupliques wrappers/observers
     allCreators = creators;
     allTwitchUsernames = extractTwitchUsernames(creators);
     if (allTwitchUsernames.length === 0) return;
 
-    console.log(`🎮 [Twitch] Consultando ${allTwitchUsernames.length} usuarios...`);
+    // Si se re-inicializa, corta timers/requests anteriores
+    if (abortController) abortController.abort();
+    if (updateTimer) clearInterval(updateTimer);
 
     const data = await TwitchClient.getUsersData(allTwitchUsernames);
     if (!data) {
-      console.warn('⚠️ [Twitch] Primera consulta falló — programando retry.');
       setTimeout(async () => {
         await TwitchClient.getUsersData(allTwitchUsernames);
         updateAllCreatorCards();
@@ -309,8 +284,11 @@
       updateAllCreatorCards();
     }
 
-    const originalModalOpen = window.VSDModal?.open;
-    if (originalModalOpen) {
+    // Wrap modal open SOLO una vez
+    if (!modalWrapped && window.VSDModal && typeof window.VSDModal.open === "function") {
+      modalWrapped = true;
+      originalModalOpen = window.VSDModal.open;
+
       window.VSDModal.open = function(creator) {
         originalModalOpen.call(window.VSDModal, creator);
         setTimeout(() => enhanceModalWithTwitchData(creator), 50);
@@ -318,32 +296,14 @@
     }
 
     observeGridChanges();
-
-    // Auto update (opcional)
-    // if (updateTimer) clearInterval(updateTimer);
-    // updateTimer = setInterval(async () => {
-    //   await TwitchClient.getUsersData(allTwitchUsernames);
-    //   updateAllCreatorCards();
-    // }, UPDATE_INTERVAL);
-  }
-
-  function observeGridChanges() {
-    const grid = document.getElementById('creatorsGrid');
-    if (!grid) return;
-
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.addedNodes.length > 0) {
-          setTimeout(updateAllCreatorCards, 100);
-        }
-      });
-    });
-
-    observer.observe(grid, { childList: true, subtree: true });
+    initialized = true;
   }
 
   function addTwitchStyles() {
+    if (document.getElementById("twitchIntegrationStyles")) return;
+
     const style = document.createElement('style');
+    style.id = "twitchIntegrationStyles";
     style.textContent = `
       .twitch-live-container {
         text-align: center;
@@ -417,12 +377,13 @@
         font-weight: 700;
       }
 
-      .platform-icon-btn[title="Twitch"] {
+      /* ✅ Tooltip Twitch SIN listeners: usa data-tooltip */
+      .platform-icon-btn[data-platform="twitch"]{
         position: relative;
-        transition: all 0.2s ease;
       }
 
-      .twitch-card-tooltip {
+      .platform-icon-btn[data-platform="twitch"][data-tooltip]:hover::after{
+        content: attr(data-tooltip);
         position: absolute;
         bottom: 100%;
         left: 50%;
@@ -437,15 +398,14 @@
         margin-bottom: 8px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         border: 1px solid rgba(255,255,255,0.2);
-        animation: tooltipFade 0.2s ease;
         pointer-events: none;
         font-weight: 500;
       }
 
-      .twitch-card-tooltip::after {
+      .platform-icon-btn[data-platform="twitch"][data-tooltip]:hover::before{
         content: '';
         position: absolute;
-        top: 100%;
+        bottom: calc(100% + 2px);
         left: 50%;
         transform: translateX(-50%);
         border-width: 5px;
@@ -465,15 +425,11 @@
         100% { opacity: 1; transform: scale(1); }
       }
 
-      @keyframes tooltipFade {
-        from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-        to { opacity: 1; transform: translateX(-50%) translateY(0); }
-      }
-
       [data-theme="night"] .twitch-live-badge {
         border: 1px solid rgba(255,255,255,0.45);
       }
     `;
+
     document.head.appendChild(style);
   }
 

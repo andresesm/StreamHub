@@ -1262,3 +1262,9 @@ body.header-hidden {
   color: #ffffff;
   box-shadow: 0 4px 14px rgba(255, 0, 0, 0.35);
 }
+
+/* Rendimiento: evita layout/pintado de cards fuera de pantalla */
+.creator-card{
+  content-visibility: auto;
+  contain-intrinsic-size: 260px 140px; /* ajusta si tus cards son mucho más grandes */
+}
