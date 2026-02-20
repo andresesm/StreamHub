@@ -644,7 +644,7 @@ body.header-hidden .filters-section{
   inset: 0;
 
   /* SIN glass */
-  background: rgba(15, 23, 42, 0.72);
+  background: rgba(15, 23, 42, 0.95);
 
   display: flex;
   align-items: center;
@@ -659,7 +659,7 @@ body.header-hidden .filters-section{
 }
 
 [data-theme="night"] .modal-backdrop{
-  background: rgba(0, 0, 0, 0.78);
+  background: rgba(0, 0, 0, 0.90);
 }
 
 
@@ -1011,7 +1011,7 @@ body.header-hidden .filters-section{
 
 [data-theme="night"] .splash {
   /* ✅ Nuevo: casi sólido en oscuro */
-  background: rgba(0, 0, 0, 0.92);
+  background: rgba(0, 0, 0, 0.95);
 }
 
 .splash.is-visible {
