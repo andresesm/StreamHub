@@ -169,6 +169,11 @@ body.header-hidden {
   padding: 10px 0;
 }
 
+.filters-section{
+  --site-header-h: 141px; /* el valor que quieras */
+}
+
+
 .filters-bar {
   display: flex;
   align-items: center;
