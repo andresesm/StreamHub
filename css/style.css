@@ -3,7 +3,7 @@
   --transition-fast: 150ms cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-medium: 220ms cubic-bezier(0.25, 0.1, 0.25, 1);
   --transition-slow: 320ms cubic-bezier(0.25, 0.8, 0.25, 1);
-  
+
   /* Day theme */
   --day-bg: #f3f2ed;
   --day-surface: #ffffff;
@@ -52,19 +52,19 @@
 @font-face{
   font-family: "MontserratLocal";
   src: url("/assets/Montserrat.ttf") format("truetype");
-  font-weight: 100 900; /* rango típico variable */
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 .site-title__stream{
   font-family: "MontserratLocal", sans-serif;
-  font-weight: 900; /* Black */
+  font-weight: 900;
 }
 
 .site-title__hub{
   font-family: "MontserratLocal", sans-serif;
-  font-weight: 400; /* Regular */
+  font-weight: 400;
 }
 
 /* NIGHT THEME OVERRIDES */
@@ -122,7 +122,7 @@ body {
 /* HEADER (auto-hide) */
 .site-header {
   padding: 20px 0 8px;
-  position: fixed; /* antes sticky */
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -133,7 +133,6 @@ body {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), transparent);
   border-bottom: 1px solid var(--border-subtle);
 
-  /* safe-area top sin romper tu layout */
   padding-top: calc(20px + var(--safe-top));
 
   transform: translateY(0);
@@ -155,7 +154,7 @@ body.header-hidden .site-header {
 
 /* En header-hidden, los filtros suben a top:0, pero el contenido NO debe saltar */
 body.header-hidden {
-  --site-header-h: 0px; /* solo afecta a .filters-section (top), no al padding del main */
+  --site-header-h: 0px;
 }
 
 /* FILTER BAR */
@@ -164,7 +163,7 @@ body.header-hidden {
   top: var(--site-header-h);
   left: 0;
   right: 0;
-  z-index: 25; /* por encima del header */
+  z-index: 25;
   padding: 10px 0;
 }
 
@@ -176,18 +175,10 @@ body.header-hidden {
   padding: 5px 0;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  /* background: rgba(255, 255, 255, 0.86); */
   transition:
     background var(--transition-medium),
     box-shadow var(--transition-medium);
 }
-
-/*
-[data-theme="night"] .filters-bar {
-  background: linear-gradient(120deg, rgba(15, 23, 42, 0.98), rgba(17, 24, 39, 0.96), rgba(15, 23, 42, 0.98));
-  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.8);
-}
-*/
 
 .filters-left {
   display: flex;
@@ -244,7 +235,12 @@ body.header-hidden {
   background: var(--bg-surface-elevated);
   color: var(--text-subtle);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .filters-toggle-btn:hover {
@@ -275,7 +271,12 @@ body.header-hidden {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .tag-pill:hover {
@@ -313,6 +314,7 @@ body.header-hidden {
     max-height var(--transition-medium),
     opacity var(--transition-medium),
     transform var(--transition-medium);
+  border-radius: 16px;
 }
 
 .filters-panel.is-open {
@@ -320,39 +322,29 @@ body.header-hidden {
   overflow-y: auto;
   opacity: 1;
   transform: translateY(0);
-}
-
-/* ===== Mejora contraste: borde + fondo en dropdowns ===== */
-/* Aplicamos estilos SOLO cuando están abiertos para no afectar la animación */
-
-.filters-panel{
-  border-radius: 16px;
-}
-
-.filters-panel.is-open{
   padding: 10px;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
   box-shadow: 0 14px 40px rgba(15, 23, 42, 0.18);
 }
 
-[data-theme="night"] .filters-panel.is-open{
+[data-theme="night"] .filters-panel.is-open {
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
 }
 
 /* Opcional: mismo tratamiento para el dropdown de juegos */
-.games-panel{
+.games-panel {
   border-radius: 14px;
 }
 
-.games-panel.is-open{
+.games-panel.is-open {
   padding: 8px;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
   box-shadow: 0 14px 40px rgba(15, 23, 42, 0.16);
 }
 
-[data-theme="night"] .games-panel.is-open{
+[data-theme="night"] .games-panel.is-open {
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
 }
 
@@ -374,7 +366,12 @@ body.header-hidden {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .games-toggle-btn:hover {
@@ -410,9 +407,9 @@ body.header-hidden {
   transform: translateY(0);
 }
 
-/* MAIN */
+/* MAIN (layout final, el fallback queda sobrescrito más abajo) */
 .site-main {
-  padding: 5px 0 40px; /* fallback */
+  padding: 5px 0 40px;
 }
 
 .creators-section {
@@ -420,11 +417,11 @@ body.header-hidden {
 }
 
 /* GRID */
-.creators-grid{
+.creators-grid {
   display: grid;
   grid-template-columns: 1fr;
-  row-gap: 55px;     /* vertical */
-  column-gap: 40px;  /* horizontal (igual que antes) */
+  row-gap: 55px;
+  column-gap: 40px;
 }
 
 /* BREAKPOINTS */
@@ -451,7 +448,16 @@ body.header-hidden {
   border: 1px solid rgba(0, 0, 0, 0.02);
   transform: translateY(6px) scale(0.99);
   opacity: 0;
-  transition: all var(--transition-medium);
+  transition:
+    transform var(--transition-medium),
+    opacity var(--transition-medium),
+    box-shadow var(--transition-medium),
+    background var(--transition-medium),
+    border-color var(--transition-medium);
+
+  /* Rendimiento: evita layout/pintado de cards fuera de pantalla */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 220px; /* ajusta 220px al alto típico de la card */
 }
 
 [data-theme="night"] .creator-card {
@@ -480,13 +486,26 @@ body.header-hidden {
   cursor: pointer;
 }
 
-/* Cuando el creator está en vivo, resalta el avatar wrapper */
-.creator-avatar-wrapper:has(.creator-live-badge-card) {
+/* ✅ Reemplazo de :has() por clase (más barato). 
+   Tu JS debe togglear .is-live cuando el creador esté en vivo. */
+.creator-avatar-wrapper.is-live {
   outline: 3px solid rgba(255, 0, 0, 0.95);
   outline-offset: 0px;
   border-radius: 50px;
   box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.16);
   padding: 0;
+}
+
+/* (Opcional) Fallback temporal si todavía no actualizaste el JS:
+   Elimina este bloque cuando ya uses .is-live. */
+@supports selector(:has(*)) {
+  .creator-avatar-wrapper:has(.creator-live-badge-card) {
+    outline: 3px solid rgba(255, 0, 0, 0.95);
+    outline-offset: 0px;
+    border-radius: 50px;
+    box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.16);
+    padding: 0;
+  }
 }
 
 .creator-avatar {
@@ -513,7 +532,9 @@ body.header-hidden {
   padding: 0;
   color: var(--text-main);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .creator-username-btn:hover {
@@ -538,7 +559,10 @@ body.header-hidden {
   justify-content: center;
   cursor: pointer;
   padding: 0;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .platform-icon-btn:hover {
@@ -565,7 +589,9 @@ body.header-hidden {
   margin-top: 10px;
   opacity: 0;
   transform: translateY(4px);
-  transition: all var(--transition-fast);
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .loading-indicator.is-visible {
@@ -581,23 +607,12 @@ body.header-hidden {
   animation: loaderPulse 900ms infinite alternate;
 }
 
-.loader-dot:nth-child(2) {
-  animation-delay: 120ms;
-}
-
-.loader-dot:nth-child(3) {
-  animation-delay: 240ms;
-}
+.loader-dot:nth-child(2) { animation-delay: 120ms; }
+.loader-dot:nth-child(3) { animation-delay: 240ms; }
 
 @keyframes loaderPulse {
-  from {
-    transform: translateY(0);
-    opacity: 0.4;
-  }
-  to {
-    transform: translateY(-4px);
-    opacity: 1;
-  }
+  from { transform: translateY(0); opacity: 0.4; }
+  to { transform: translateY(-4px); opacity: 1; }
 }
 
 /* MODAL */
@@ -657,7 +672,10 @@ body.header-hidden {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .modal-close-btn:hover {
@@ -683,9 +701,7 @@ body.header-hidden {
   border: 3px solid var(--bg-surface-elevated);
 }
 
-.modal-body {
-  text-align: left;
-}
+.modal-body { text-align: left; }
 
 .modal-username {
   margin: 10px 0 6px;
@@ -732,9 +748,7 @@ body.header-hidden {
   margin: 6px 0 20px;
 }
 
-.twitch-stat {
-  font-size: 0.78rem;
-}
+.twitch-stat { font-size: 0.78rem; }
 
 .stat-label {
   display: block;
@@ -742,11 +756,9 @@ body.header-hidden {
   margin-bottom: 2px;
 }
 
-.stat-value {
-  font-weight: 600;
-}
+.stat-value { font-weight: 600; }
 
-/* BOTÓN TWITCH */
+/* BOTÓN PRINCIPAL */
 .primary-btn {
   width: 100%;
   border-radius: 999px;
@@ -757,7 +769,10 @@ body.header-hidden {
   color: #ffffff;
   cursor: pointer;
   box-shadow: 0 6px 6px rgba(79, 70, 229, 0.45);
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    filter var(--transition-fast);
 }
 
 .primary-btn:hover {
@@ -835,7 +850,10 @@ body.header-hidden {
   z-index: 30;
   backdrop-filter: blur(0px);
   -webkit-backdrop-filter: blur(0px);
-  transition: all var(--transition-medium);
+  transition:
+    opacity var(--transition-medium),
+    backdrop-filter var(--transition-medium),
+    -webkit-backdrop-filter var(--transition-medium);
 }
 
 .app-blur-overlay.is-active {
@@ -861,7 +879,12 @@ body.header-hidden {
   justify-content: center;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.4);
   z-index: 50;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .floating-theme-toggle:hover {
@@ -877,7 +900,6 @@ body.header-hidden {
 /* SMALL SCREENS */
 @media (max-width: 599px) {
   .site-header {
-    /* mantiene el header más compacto, sumando safe-area */
     padding-top: calc(25px + var(--safe-top));
   }
 
@@ -890,14 +912,13 @@ body.header-hidden {
     height: 40px;
   }
 
-  /* OJO: NO top fijo aquí, lo maneja var(--site-header-h) */
   .filters-bar {
     flex-direction: column;
     align-items: stretch;
   }
 
   .creators-grid {
-    gap: 40px; /* gap más grande solo en teléfono */
+    gap: 40px;
   }
 
   .modal-dialog {
@@ -985,9 +1006,10 @@ body.header-hidden {
   opacity: 0;
   visibility: hidden;
   transform: scale(1.03);
-  transition: opacity 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
-              transform 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
-              visibility 0ms linear 520ms;
+  transition:
+    opacity 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    visibility 0ms linear 520ms;
 }
 
 [data-theme="night"] .splash {
@@ -1001,9 +1023,10 @@ body.header-hidden {
   opacity: 1;
   visibility: visible;
   transform: scale(1);
-  transition: opacity 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
-              transform 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
-              visibility 0ms;
+  transition:
+    opacity 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    visibility 0ms;
 }
 
 .splash-inner {
@@ -1044,9 +1067,10 @@ body.header-hidden {
 
 /* Fondo “home” mientras splash está arriba */
 .app-content {
-  transition: filter 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
-              transform 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
-              opacity 520ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition:
+    filter 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    transform 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    opacity 520ms cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .app-content.is-hidden-by-splash {
@@ -1056,17 +1080,7 @@ body.header-hidden {
   pointer-events: none;
 }
 
-/* Accesibilidad: reducir movimiento */
-@media (prefers-reduced-motion: reduce) {
-  .splash,
-  .app-content {
-    transition: none !important;
-  }
-}
-
 /* --- Layout final (sobrescribe el fallback de .site-main) --- */
-/* Importante: usamos el alto REAL del header para el padding del contenido,
-   así el contenido no "salta" cuando el header se oculta. */
 .site-main {
   padding: calc(var(--site-header-real-h) + var(--filters-h) + 28px) 0 40px;
 }
@@ -1128,27 +1142,16 @@ body.header-hidden {
 .pulse-ring.ring2{ animation-delay: 0.28s; }
 .pulse-ring.ring3{ animation-delay: 0.56s; }
 
-/* La animación “vive” al inicio y luego queda en pausa (sin generar ondas nuevas) */
 @keyframes pulseWave{
   0%   { transform: scale(1);   opacity: 0.75; }
   38%  { transform: scale(3.2); opacity: 0; }
-  100% { transform: scale(3.2); opacity: 0; } /* pausa hasta reiniciar */
-}
-
-/* Respeta “reducir movimiento” */
-@media (prefers-reduced-motion: reduce){
-  .pulse-dot::after,
-  .pulse-ring{
-    animation: none !important;
-    opacity: 0.25;
-    transform: scale(2.2);
-  }
+  100% { transform: scale(3.2); opacity: 0; }
 }
 
 .floating-note-btn{
   position: fixed;
   right: 16px;
-  bottom: 70px; /* 18px (bottom del toggle) + 42px (alto) + ~10px (separación) */
+  bottom: 70px;
   width: 42px;
   height: 42px;
 
@@ -1167,7 +1170,12 @@ body.header-hidden {
 
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.4);
   z-index: 50;
-  transition: all var(--transition-fast);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .floating-note-btn:hover{
@@ -1194,61 +1202,49 @@ body.header-hidden {
   max-width: 350px;
 }
 
-/* Link (el color de aquí “pinta” el SVG gracias a currentColor) */
+/* Link */
 .footer-logo-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  /* En vez de blanco fijo, usa los mismos tokens del theme */
   color: var(--text-subtle);
   text-decoration: none;
 }
 
-/* Logo “pintable” (usa kuum.svg como máscara) */
+/* Logo “pintable” */
 .footer-logo {
   width: min(260px, 80vw);
-  height: 40px;              /* un poco más alto para asegurar visibilidad */
+  height: 40px;
   display: block;
-
-  /* ✅ Evita el “bloque gris” antes de que cargue/aplique la máscara */
   background-color: transparent;
   opacity: 0.9;
 
   -webkit-mask: url("/assets/kuum.svg") center / contain no-repeat;
-  mask: url("/assets/kuum.svg") center / contain no-repeat; /* mask shorthand [web:15] */
+  mask: url("/assets/kuum.svg") center / contain no-repeat;
 }
 
-/* ✅ Solo si hay soporte de mask, pintamos con currentColor */
 @supports (mask: url("") center / contain no-repeat) or (-webkit-mask: url("") center / contain no-repeat) {
   .footer-logo {
-    background-color: currentColor; /* currentColor = valor de color del link [web:93] */
+    background-color: currentColor;
   }
 }
 
-/* Hover opcional */
 .footer-logo-link:hover {
   color: var(--accent-main);
 }
 
-/* Texto footer de acreditación */
 .attribution {
   text-align: center;
   font-size: 0.55rem;
-
-  /* Antes era blanco fijo; ahora adopta el theme */
   color: var(--text-subtle);
-
   padding-bottom: 60px;
 }
 
-/* Links del footer: sin azul, heredan color */
 .attribution a {
   color: inherit;
   text-decoration: underline;
   text-decoration-color: currentColor;
 }
-
 
 /* Separación entre botones "Juegos" y "En vivo" */
 #gamesToggleBtn {
@@ -1258,13 +1254,59 @@ body.header-hidden {
 /* Accent rojo cuando "En vivo" está activo */
 #liveToggleBtn.is-active {
   background: linear-gradient(135deg, #ff0000, #cc0000);
-  border-color: rgba(255, 255, 255, 0.25); /* border-color es válido para el borde [web:37] */
+  border-color: rgba(255, 255, 255, 0.25);
   color: #ffffff;
   box-shadow: 0 4px 14px rgba(255, 0, 0, 0.35);
 }
 
-/* Rendimiento: evita layout/pintado de cards fuera de pantalla */
-.creator-card{
-  content-visibility: auto;
-  contain-intrinsic-size: 260px 140px; /* ajusta si tus cards son mucho más grandes */
+/* Fallback rendimiento: si no hay backdrop-filter, evita costo/bugs visuales */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header {
+    background: rgba(255, 255, 255, 0.92);
+  }
+  [data-theme="night"] .site-header {
+    background: rgba(15, 23, 42, 0.96);
+  }
+
+  .filters-bar {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: rgba(255, 255, 255, 0.92);
+  }
+  [data-theme="night"] .filters-bar {
+    background: rgba(15, 23, 42, 0.92);
+  }
+
+  .modal-backdrop,
+  .splash,
+  .app-blur-overlay {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* Accesibilidad + rendimiento: reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .splash,
+  .app-content {
+    transition: none !important;
+  }
+
+  .loader-dot,
+  .pulse-dot::after,
+  .pulse-ring {
+    animation: none !important;
+  }
+
+  .creator-card:hover,
+  .platform-icon-btn:hover,
+  .tag-pill:hover,
+  .floating-theme-toggle:hover,
+  .floating-note-btn:hover,
+  .filters-toggle-btn:hover,
+  .games-toggle-btn:hover,
+  .creator-username-btn:hover,
+  .primary-btn:hover {
+    transform: none !important;
+  }
 }
