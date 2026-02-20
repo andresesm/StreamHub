@@ -183,7 +183,8 @@ body.header-hidden .filters-section{
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 5px 0;
+  padding: 5px 5px;
+  border-radius: 0px 0px 20px 20px; /*bordes inferiores*/
 
   /* SIN glass */
   background: rgba(255, 255, 255, 0.94);
@@ -1253,4 +1254,83 @@ body.header-hidden .filters-section{
   .primary-btn:hover {
     transform: none !important;
   }
+}
+
+/* --- Platform dropdown --- */
+.platform-select{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.platform-select-btn{
+  padding-right: 12px;
+}
+
+.platform-caret{
+  margin-left: 6px;
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+/* Menú */
+.platform-menu{
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 160px;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-elevated);
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.16);
+  z-index: 60;
+
+  display: none;
+}
+
+.platform-menu.is-open{
+  display: block;
+}
+
+.platform-menu-item{
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: var(--text-main);
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.platform-menu-item:hover{
+  background: var(--accent-soft);
+  color: var(--accent-main);
+}
+
+/* Colores por plataforma (reusa tus nombres) */
+.platform-select-btn.platform--twitch.is-active{
+  background: linear-gradient(135deg, #6441a5, #b9a3e3);
+  color: #f1f1f1;
+  border-color: rgba(38, 38, 38, 0.35);
+}
+
+.platform-select-btn.platform--kick.is-active{
+  background: linear-gradient(135deg, #0b0e0f, #24272c);
+  color: #f1f1f1;
+  border-color: rgba(0, 231, 1, 0.7);
+}
+
+.platform-select-btn.platform--youtube.is-active{
+  background: linear-gradient(135deg, #cc181e 0%, #2793e8 52%, #559900 100%);
+  color: #f1f1f1;
+  border-color: rgba(241, 241, 241, 0.18);
+}
+
+.platform-select-btn.platform--tiktok.is-active{
+  background: linear-gradient(135deg, #000000 0%, #ff0050 48%, #00f2ea 100%);
+  color: #f1f1f1;
+  border-color: rgba(0, 242, 234, 0.25);
 }

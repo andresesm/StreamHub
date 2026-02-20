@@ -1,10 +1,8 @@
 (function () {
-  // ✅ Guarda global (por si el archivo se carga 2 veces)
   if (window.VSDFilters && window.VSDFilters.__initialized) return;
 
   const TAG_CONTAINER = document.getElementById("dynamicTagPills");
-  const ALL_TAG_BUTTON = document.querySelector('.tag-pill[data-tag="all"]');
-  const TAG_COUNT_ALL = document.getElementById("tag-count-all");
+  const TAG_COUNT_ALL = document.getElementById("tag-count-all"); // si ya no lo usas, puedes eliminarlo del HTML
   const SEARCH_INPUT = document.getElementById("searchInput");
 
   const FILTERS_TOGGLE_BTN = document.getElementById("filtersToggleBtn");
@@ -12,57 +10,72 @@
   const GAMES_TOGGLE_BTN = document.getElementById("gamesToggleBtn");
   const GAMES_PANEL = document.getElementById("gamesPanel");
 
+  const CLEAR_FILTERS_BTN = document.getElementById("clearFiltersBtn");
+
   const GAMES_PILLS_CONTAINER =
     document.getElementById("gamesPillsContainer") ||
     (GAMES_PANEL ? GAMES_PANEL : null);
 
-  let initialized = false; // ✅ NUEVO: init guard
+  // ✅ Platform UI
+  const PLATFORM_BTN = document.getElementById("platformSelectBtn");
+  const PLATFORM_MENU = document.getElementById("platformMenu");
+  const PLATFORM_WRAP = document.getElementById("platformSelectWrap");
+
+  const PLATFORMS = [
+    { key: "twitch", label: "Twitch" },
+    { key: "kick", label: "Kick" },
+    { key: "youtube", label: "Youtube" },
+    { key: "tiktok", label: "Tiktok" }
+  ];
+
+  let initialized = false;
 
   let allCreators = [];
-  let activeTags = new Set();  // SOLO tags + idioma (NO RRSS)
-  let activeGames = new Set(); // videojuegos
+  let activeTags = new Set();
+  let activeGames = new Set();
   let searchTerm = "";
 
-  // ✅ filtro “En vivo”
-  let liveOnly = false;         // por defecto desactivado
-  let liveByUser = {};          // { twitchUsername: boolean }
-  let liveUpdateListenerAttached = false; // ✅ NUEVO
+  // ✅ Plataforma seleccionada (por defecto Twitch)
+  let selectedPlatform = "twitch";
+
+  // ✅ Live-only (solo Twitch)
+  let liveOnly = false;
+  let liveByUser = {};
+  let liveUpdateListenerAttached = false;
 
   function normalizeTwitchHandle(v) {
-    return String(v || '').trim().replace(/^@/, '').toLowerCase();
+    return String(v || "").trim().replace(/^@/, "").toLowerCase();
   }
 
-  // ✅ crear el botón y ponerlo junto al de Juegos
-  function ensureLiveToggleButton() {
-    if (!GAMES_TOGGLE_BTN) return;
-    if (document.getElementById("liveToggleBtn")) return;
+  // ✅ SOLO streamPlatform (sin fallback a creator.platform)
+  function getCreatorPlatform(creator) {
+    const p = String(creator?.streamPlatform ?? "").trim().toLowerCase();
+    if (!p || p === "none") return "";
+    return p;
+  }
 
-    const btn = document.createElement("button");
-    btn.id = "liveToggleBtn";
-    btn.type = "button";
-    btn.className = GAMES_TOGGLE_BTN.className; // reutiliza estilos del de juegos
-    btn.setAttribute("aria-expanded", "false");
-    btn.setAttribute("aria-pressed", "false");
-    btn.textContent = "En vivo";
+  function setPanelOpen(panel, toggleBtn, open, maxHeightVh) {
+    if (!toggleBtn || !panel) return;
 
-    function syncUI() {
-      btn.classList.toggle("is-active", liveOnly);
-      btn.setAttribute("aria-pressed", liveOnly ? "true" : "false");
+    panel.classList.toggle("is-open", open);
+    panel.setAttribute("aria-hidden", String(!open));
+    toggleBtn.setAttribute("aria-expanded", String(open));
+
+    if (open) {
+      panel.style.maxHeight = maxHeightVh;
+      panel.style.overflowY = "auto";
+    } else {
+      panel.style.maxHeight = "0px";
+      panel.style.overflowY = "hidden";
     }
+  }
 
-    btn.addEventListener("click", function (e) {
-      e.stopPropagation();
-      liveOnly = !liveOnly;
-      syncUI();
+  function setFiltersPanelOpen(open) {
+    setPanelOpen(FILTERS_PANEL, FILTERS_TOGGLE_BTN, open, "80vh");
+  }
 
-      // No abrir/cerrar paneles: solo aplicar filtros
-      window.VSDFilters && window.VSDFilters.onFilterChange();
-    });
-
-    syncUI();
-
-    // Insertarlo inmediatamente después del botón de juegos
-    GAMES_TOGGLE_BTN.parentNode.insertBefore(btn, GAMES_TOGGLE_BTN.nextSibling);
+  function setGamesPanelOpen(open) {
+    setPanelOpen(GAMES_PANEL, GAMES_TOGGLE_BTN, open, "60vh");
   }
 
   function buildTagPills(uniqueTags) {
@@ -83,7 +96,6 @@
       (c.tags || []).forEach(tag => set.add(tag));
       if (c.language) set.add(c.language);
     });
-
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }
 
@@ -127,74 +139,104 @@
 
       btn.appendChild(label);
       btn.appendChild(count);
-
       container.appendChild(btn);
     });
   }
 
-  function setPanelOpen(panel, toggleBtn, open, maxHeightVh) {
-    if (!toggleBtn || !panel) return;
+  // ✅ LIVE TOGGLE (solo Twitch)
+  function ensureLiveToggleButton() {
+    if (!GAMES_TOGGLE_BTN) return;
 
-    panel.classList.toggle("is-open", open);
-    panel.setAttribute("aria-hidden", String(!open));
-    toggleBtn.setAttribute("aria-expanded", String(open));
+    let btn = document.getElementById("liveToggleBtn");
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.id = "liveToggleBtn";
+      btn.type = "button";
+      btn.className = GAMES_TOGGLE_BTN.className;
+      btn.setAttribute("aria-expanded", "false");
+      btn.setAttribute("aria-pressed", "false");
+      btn.textContent = "En vivo";
 
-    if (open) {
-      panel.style.maxHeight = maxHeightVh;
-      panel.style.overflowY = "auto";
-    } else {
-      panel.style.maxHeight = "0px";
-      panel.style.overflowY = "hidden";
-    }
-  }
-
-  function setFiltersPanelOpen(open) {
-    setPanelOpen(FILTERS_PANEL, FILTERS_TOGGLE_BTN, open, "80vh");
-  }
-
-  function setGamesPanelOpen(open) {
-    setPanelOpen(GAMES_PANEL, GAMES_TOGGLE_BTN, open, "60vh");
-  }
-
-  function attachPanelToggles() {
-    if (FILTERS_TOGGLE_BTN && FILTERS_PANEL) {
-      FILTERS_TOGGLE_BTN.addEventListener("click", function (e) {
+      btn.addEventListener("click", function (e) {
         e.stopPropagation();
-        const isOpen = !FILTERS_PANEL.classList.contains("is-open");
-        setFiltersPanelOpen(isOpen);
-        setGamesPanelOpen(false);
+        liveOnly = !liveOnly;
+        syncLiveUI();
+        window.VSDFilters && window.VSDFilters.onFilterChange();
       });
+
+      GAMES_TOGGLE_BTN.parentNode.insertBefore(btn, GAMES_TOGGLE_BTN.nextSibling);
     }
 
-    if (GAMES_TOGGLE_BTN && GAMES_PANEL) {
-      GAMES_TOGGLE_BTN.addEventListener("click", function (e) {
-        e.stopPropagation();
-        const isOpen = !GAMES_PANEL.classList.contains("is-open");
-        setGamesPanelOpen(isOpen);
-      });
+    // mostrar/ocultar según plataforma
+    btn.style.display = (selectedPlatform === "twitch") ? "" : "none";
+
+    if (selectedPlatform !== "twitch") {
+      liveOnly = false;
     }
+
+    syncLiveUI();
   }
 
-  function clearAllFilters() {
+  function syncLiveUI() {
+    const liveBtn = document.getElementById("liveToggleBtn");
+    if (!liveBtn) return;
+
+    liveBtn.classList.toggle("is-active", !!liveOnly);
+    liveBtn.setAttribute("aria-pressed", liveOnly ? "true" : "false");
+  }
+
+  // ✅ Platform dropdown
+  function openPlatformMenu(open) {
+    if (!PLATFORM_MENU || !PLATFORM_BTN) return;
+
+    PLATFORM_MENU.classList.toggle("is-open", open);
+    PLATFORM_MENU.setAttribute("aria-hidden", String(!open));
+    PLATFORM_BTN.setAttribute("aria-expanded", String(open));
+  }
+
+  function setPlatform(key) {
+    const normalized = String(key || "").trim().toLowerCase();
+    if (!PLATFORMS.some(p => p.key === normalized)) return;
+
+    selectedPlatform = normalized;
+
+    // actualiza label + clase para colores
+    if (PLATFORM_BTN) {
+      const label = PLATFORMS.find(p => p.key === normalized)?.label || "Twitch";
+      PLATFORM_BTN.textContent = label + " ";
+      const caret = document.createElement("span");
+      caret.className = "platform-caret";
+      caret.textContent = "▾";
+      PLATFORM_BTN.appendChild(caret);
+
+      PLATFORM_BTN.classList.remove("platform--twitch", "platform--kick", "platform--youtube", "platform--tiktok");
+      PLATFORM_BTN.classList.add(`platform--${normalized}`);
+      PLATFORM_BTN.classList.add("is-active");
+    }
+
+    // live toggle solo twitch
+    ensureLiveToggleButton();
+
+    // al cambiar plataforma, refrescamos todo
+    window.VSDFilters && window.VSDFilters.onFilterChange();
+  }
+
+  function clearNonPlatformFilters() {
     activeTags.clear();
     activeGames.clear();
     searchTerm = "";
     liveOnly = false;
 
-    const liveBtn = document.getElementById("liveToggleBtn");
-    if (liveBtn) {
-      liveBtn.classList.remove("is-active");
-      liveBtn.setAttribute("aria-pressed", "false");
-    }
+    syncLiveUI();
 
     if (SEARCH_INPUT) SEARCH_INPUT.value = "";
 
     document.querySelectorAll(".tag-pill").forEach(el => {
       if (el.id === "sortAlphaBtn") return;
       if (el.classList.contains("game-pill")) return;
+      if (el.id === "platformSelectBtn") return;
       el.classList.remove("is-active");
     });
-    if (ALL_TAG_BUTTON) ALL_TAG_BUTTON.classList.add("is-active");
 
     document.querySelectorAll(".game-pill").forEach(el => el.classList.remove("is-active"));
 
@@ -204,18 +246,66 @@
     window.VSDFilters && window.VSDFilters.onFilterChange();
   }
 
+  function attachPanelToggles() {
+    if (FILTERS_TOGGLE_BTN && FILTERS_PANEL) {
+      FILTERS_TOGGLE_BTN.addEventListener("click", function (e) {
+        e.stopPropagation();
+        openPlatformMenu(false);
+        const isOpen = !FILTERS_PANEL.classList.contains("is-open");
+        setFiltersPanelOpen(isOpen);
+        setGamesPanelOpen(false);
+      });
+    }
+
+    if (GAMES_TOGGLE_BTN && GAMES_PANEL) {
+      GAMES_TOGGLE_BTN.addEventListener("click", function (e) {
+        e.stopPropagation();
+        openPlatformMenu(false);
+        const isOpen = !GAMES_PANEL.classList.contains("is-open");
+        setGamesPanelOpen(isOpen);
+      });
+    }
+  }
+
   function attachEvents() {
-    // ✅ Guarda interna: evita enganchar 2 veces si init() se ejecuta de nuevo
-    if (document.__vsdFiltersClickInit) return;
-    document.__vsdFiltersClickInit = true;
+    if (document.__vsdFiltersInitClicks) return;
+    document.__vsdFiltersInitClicks = true;
 
+    // Papelera: limpia filtros NO plataforma
+    if (CLEAR_FILTERS_BTN && !CLEAR_FILTERS_BTN.__vsdInit) {
+      CLEAR_FILTERS_BTN.__vsdInit = true;
+      CLEAR_FILTERS_BTN.addEventListener("click", function (e) {
+        e.stopPropagation();
+        clearNonPlatformFilters();
+      });
+    }
+
+    // Platform dropdown: toggle
+    if (PLATFORM_BTN && !PLATFORM_BTN.__vsdInit) {
+      PLATFORM_BTN.__vsdInit = true;
+      PLATFORM_BTN.addEventListener("click", function (e) {
+        e.stopPropagation();
+        const open = !(PLATFORM_MENU && PLATFORM_MENU.classList.contains("is-open"));
+        openPlatformMenu(open);
+      });
+    }
+
+    // Platform menu items
+    if (PLATFORM_MENU && !PLATFORM_MENU.__vsdInit) {
+      PLATFORM_MENU.__vsdInit = true;
+      PLATFORM_MENU.addEventListener("click", function (e) {
+        const item = e.target.closest(".platform-menu-item");
+        if (!item) return;
+        const key = item.dataset.platform;
+        setPlatform(key);
+        openPlatformMenu(false);
+      });
+    }
+
+    // Click afuera: cerrar platform menu + cerrar panel filtros si está abierto
     document.addEventListener("click", function (evt) {
-      if (evt.target && evt.target.closest && evt.target.closest("#sortAlphaBtn")) return;
-
-      if (evt.target && evt.target.closest && evt.target.closest("#clearFiltersBtn")) {
-        clearAllFilters();
-        return;
-      }
+      const insidePlatform = PLATFORM_WRAP && evt.target.closest && evt.target.closest("#platformSelectWrap");
+      if (!insidePlatform) openPlatformMenu(false);
 
       const clickedInsideFiltersPanel = evt.target.closest && evt.target.closest("#filtersPanel");
       const clickedFiltersToggle = evt.target.closest && evt.target.closest("#filtersToggleBtn");
@@ -225,57 +315,28 @@
         }
       }
 
+      // Tags (solo los del panel dinámico)
       const tagBtn = evt.target.closest(".tag-pill");
       if (tagBtn && !tagBtn.classList.contains("game-pill")) {
         if (tagBtn.id === "sortAlphaBtn") return;
+        if (tagBtn.id === "platformSelectBtn") return; // no es tag
 
         const tag = tagBtn.dataset.tag;
         if (!tag) return;
 
-        if (tag === "all") {
-          activeTags.clear();
-          activeGames.clear();
-          searchTerm = "";
-          liveOnly = false;
-
-          const liveBtn = document.getElementById("liveToggleBtn");
-          if (liveBtn) {
-            liveBtn.classList.remove("is-active");
-            liveBtn.setAttribute("aria-pressed", "false");
-          }
-
-          if (SEARCH_INPUT) SEARCH_INPUT.value = "";
-
-          document.querySelectorAll(".tag-pill").forEach(el => {
-            if (el.id === "sortAlphaBtn") return;
-            if (!el.classList.contains("game-pill")) el.classList.remove("is-active");
-          });
-          if (ALL_TAG_BUTTON) ALL_TAG_BUTTON.classList.add("is-active");
-
-          document.querySelectorAll(".game-pill").forEach(el => el.classList.remove("is-active"));
-
-          setGamesPanelOpen(false);
-          setFiltersPanelOpen(false);
+        if (activeTags.has(tag)) {
+          activeTags.delete(tag);
+          tagBtn.classList.remove("is-active");
         } else {
-          if (activeTags.has(tag)) {
-            activeTags.delete(tag);
-            tagBtn.classList.remove("is-active");
-          } else {
-            activeTags.add(tag);
-            tagBtn.classList.add("is-active");
-          }
-
-          const anyActive = activeTags.size > 0;
-          if (ALL_TAG_BUTTON) {
-            if (anyActive) ALL_TAG_BUTTON.classList.remove("is-active");
-            else ALL_TAG_BUTTON.classList.add("is-active");
-          }
+          activeTags.add(tag);
+          tagBtn.classList.add("is-active");
         }
 
         window.VSDFilters && window.VSDFilters.onFilterChange();
         return;
       }
 
+      // Games
       const gameBtn = evt.target.closest(".game-pill");
       if (gameBtn) {
         const game = gameBtn.dataset.game;
@@ -295,35 +356,48 @@
 
     if (SEARCH_INPUT && !SEARCH_INPUT.__vsdSearchInit) {
       SEARCH_INPUT.__vsdSearchInit = true;
-
       SEARCH_INPUT.addEventListener("input", function () {
         searchTerm = this.value.trim().toLowerCase();
         window.VSDFilters && window.VSDFilters.onFilterChange();
       });
     }
+
+    // Escape: cierra menús/paneles
+    if (!document.__vsdFiltersEscapeInit) {
+      document.__vsdFiltersEscapeInit = true;
+      document.addEventListener("keydown", function (evt) {
+        if (evt.key !== "Escape") return;
+        openPlatformMenu(false);
+        setGamesPanelOpen(false);
+        setFiltersPanelOpen(false);
+      });
+    }
   }
 
   function creatorMatchesFilters(creator) {
+    // ✅ 1) Plataforma (primero)
+    const p = getCreatorPlatform(creator);
+    if (!p) return false;
+    if (p !== selectedPlatform) return false;
+
+    // ✅ 2) Search
     const term = searchTerm;
     if (term) {
       const uname = (creator.username || "").toLowerCase();
       if (!uname.includes(term)) return false;
     }
 
-    // filtro live-only
-    if (liveOnly) {
+    // ✅ 3) Live-only SOLO Twitch
+    if (selectedPlatform === "twitch" && liveOnly) {
       const twitch = normalizeTwitchHandle(creator?.socials?.twitch);
       if (!twitch) return false;
       if (liveByUser[twitch] !== true) return false;
     }
 
+    // ✅ 4) Tags/Games
     if (activeTags.size === 0 && activeGames.size === 0) return true;
 
-    const baseSet = new Set([
-      ...(creator.tags || []),
-      creator.language || ""
-    ]);
-
+    const baseSet = new Set([...(creator.tags || []), creator.language || ""]);
     for (const t of activeTags) {
       if (!baseSet.has(t)) return false;
     }
@@ -343,11 +417,7 @@
     const gameCounts = {};
 
     creatorsSubset.forEach(c => {
-      const appliedTags = new Set([
-        ...(c.tags || []),
-        c.language || ""
-      ]);
-
+      const appliedTags = new Set([...(c.tags || []), c.language || ""]);
       appliedTags.forEach(tag => {
         if (!tag) return;
         tagCounts[tag] = (tagCounts[tag] || 0) + 1;
@@ -365,21 +435,9 @@
   function updateTagCounts(counts) {
     if (TAG_COUNT_ALL) TAG_COUNT_ALL.textContent = counts.all;
 
-    Object.keys(counts.tags).forEach(tag => {
-      const btn = document.querySelector(`.tag-pill[data-tag="${CSS.escape(tag)}"]`);
-      if (!btn) return;
-      let span = btn.querySelector(".tag-count");
-      if (!span) {
-        span = document.createElement("span");
-        span.className = "tag-count";
-        btn.appendChild(span);
-      }
-      span.textContent = counts.tags[tag];
-    });
-
     document.querySelectorAll('.tag-pill[data-tag]').forEach(btn => {
       const tag = btn.dataset.tag;
-      if (!tag || tag === "all") return;
+      if (!tag) return;
       if (btn.id === "sortAlphaBtn") return;
       if (btn.classList.contains("game-pill")) return;
 
@@ -418,12 +476,12 @@
   }
 
   function init(creators) {
-    // ✅ Guarda de init real
     if (initialized) return;
     initialized = true;
 
     allCreators = creators.slice();
 
+    // Construimos pills en base al dataset completo (pero el filtrado final depende de plataforma)
     const uniqueTags = extractUniqueTags(allCreators);
     buildTagPills(uniqueTags);
 
@@ -433,17 +491,16 @@
     attachPanelToggles();
     attachEvents();
 
-    // botón “En vivo”
+    // Default platform: Twitch
+    setPlatform("twitch");
     ensureLiveToggleButton();
 
-    // escuchar live-update (solo una vez)
+    // Live updates desde TwitchIntegration
     if (!liveUpdateListenerAttached) {
       liveUpdateListenerAttached = true;
-
       window.addEventListener("twitch:live-update", function (e) {
-        // CustomEvent.detail trae el payload del evento. [web:162]
         liveByUser = (e && e.detail && e.detail.liveByUser) ? e.detail.liveByUser : {};
-        if (liveOnly) {
+        if (selectedPlatform === "twitch" && liveOnly) {
           window.VSDFilters && window.VSDFilters.onFilterChange();
         }
       });
@@ -452,7 +509,6 @@
     setFiltersPanelOpen(false);
     setGamesPanelOpen(false);
 
-    if (ALL_TAG_BUTTON) ALL_TAG_BUTTON.classList.add("is-active");
     refreshCounts();
   }
 
@@ -464,38 +520,6 @@
       refreshCounts();
       if (window.VSDInfiniteScroll) window.VSDInfiniteScroll.resetAndRender();
     },
-    clearAll: clearAllFilters
+    clearAll: clearNonPlatformFilters
   };
-})();
-
-// Escape para cerrar paneles (con guarda anti-duplicados)
-(function () {
-  if (document.__vsdFiltersEscapeInit) return;
-  document.__vsdFiltersEscapeInit = true;
-
-  document.addEventListener("keydown", function (evt) {
-    if (evt.key !== "Escape") return;
-
-    const toggleBtn = document.getElementById("filtersToggleBtn");
-    const panel = document.getElementById("filtersPanel");
-
-    const gamesToggle = document.getElementById("gamesToggleBtn");
-    const gamesPanel = document.getElementById("gamesPanel");
-
-    if (gamesPanel && gamesPanel.classList.contains("is-open")) {
-      gamesPanel.classList.remove("is-open");
-      gamesPanel.setAttribute("aria-hidden", "true");
-      gamesPanel.style.maxHeight = "0px";
-      gamesPanel.style.overflowY = "hidden";
-      if (gamesToggle) gamesToggle.setAttribute("aria-expanded", "false");
-    }
-
-    if (panel && panel.classList.contains("is-open")) {
-      panel.classList.remove("is-open");
-      panel.setAttribute("aria-hidden", "true");
-      panel.style.maxHeight = "0px";
-      panel.style.overflowY = "hidden";
-      if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
-    }
-  });
 })();

@@ -95,10 +95,25 @@
                 AtoZ
               </button>
 
-              <button class="tag-pill is-active" data-tag="all" data-tag-group="meta">
-                Todos
-                <span class="tag-count" id="tag-count-all">0</span>
-              </button>
+              <div class="platform-select" id="platformSelectWrap">
+  <button
+    type="button"
+    id="platformSelectBtn"
+    class="tag-pill platform-select-btn platform--twitch is-active"
+    aria-expanded="false"
+    aria-controls="platformMenu"
+    aria-label="Seleccionar plataforma">
+    Twitch <span class="platform-caret">▾</span>
+  </button>
+
+  <div id="platformMenu" class="platform-menu" role="menu" aria-hidden="true">
+    <button type="button" class="platform-menu-item" role="menuitem" data-platform="twitch">Twitch</button>
+    <button type="button" class="platform-menu-item" role="menuitem" data-platform="kick">Kick</button>
+    <button type="button" class="platform-menu-item" role="menuitem" data-platform="youtube">Youtube</button>
+    <button type="button" class="platform-menu-item" role="menuitem" data-platform="tiktok">Tiktok</button>
+  </div>
+</div>
+
             </div>
 
             <div class="filters-panel" id="filtersPanel" aria-hidden="true">
