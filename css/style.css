@@ -532,11 +532,18 @@ body.header-hidden .filters-section{
 .creator-card-body {
   text-align: center;
 
-  /* ✅ Performance sin clipear el avatar:
-     content-visibility SOLO en el body, no en el contenedor absoluto del avatar */
+  /* PERF: skip render cuando está idle */
   content-visibility: auto;
   contain-intrinsic-size: auto 160px;
 }
+
+/* UX: al interactuar, no clipear sombras/popups */
+.creator-card:hover .creator-card-body,
+.creator-card:focus-within .creator-card-body{
+  content-visibility: visible;
+  contain-intrinsic-size: auto;
+}
+
 
 .creator-username-btn {
   margin-top: 22px;
