@@ -173,6 +173,10 @@ body.header-hidden {
   --site-header-h: 141px; /* el valor que quieras */
 }
 
+body.header-hidden .filters-section{
+  --site-header-h: -11px;
+}
+
 
 .filters-bar {
   display: flex;
