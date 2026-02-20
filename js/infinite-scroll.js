@@ -8,15 +8,15 @@
   // Orden fijo requerido:
   // 1. Twitch 2. Kick 3. Twitter(X) 4. Instagram 5. TikTok 6. YouTube 7. Email
   const SOCIAL_ORDER = ["twitch", "kick", "x", "ig", "tiktok", "youtube", "email"];
-const SOCIAL_LABEL = {
-  twitch: "Twitch",
-  kick: "Kick",
-  x: "X",
-  ig: "Instagram",
-  tiktok: "TikTok",
-  youtube: "YouTube",
-  email: "Email",
-};
+  const SOCIAL_LABEL = {
+    twitch: "Twitch",
+    kick: "Kick",
+    x: "X",
+    ig: "Instagram",
+    tiktok: "TikTok",
+    youtube: "YouTube",
+    email: "Email",
+  };
 
   let allCreators = [];
   let filteredCreators = [];
@@ -220,7 +220,14 @@ const SOCIAL_LABEL = {
     return card;
   }
 
-  function renderNextBatch() {
+  function sentinelNeedsMoreContent() {
+    if (!SENTINEL) return false;
+    const rect = SENTINEL.getBoundingClientRect();
+    // Debe calzar con rootMargin del observer (200px)
+    return rect.top <= (window.innerHeight + 200);
+  }
+
+  function renderUntilSentinelOutOfView() {
     if (!GRID) return;
     if (isRendering) return;
     if (renderedCount >= filteredCreators.length) return;
@@ -228,14 +235,18 @@ const SOCIAL_LABEL = {
     isRendering = true;
     if (LOADER) LOADER.classList.add("is-visible");
 
-    const start = renderedCount;
-    const end = Math.min(start + BATCH_SIZE, filteredCreators.length);
+    // Renderiza múltiples batches si el sentinel sigue “cerca” del viewport
+    while (renderedCount < filteredCreators.length && sentinelNeedsMoreContent()) {
+      const start = renderedCount;
+      const end = Math.min(start + BATCH_SIZE, filteredCreators.length);
 
-    for (let i = start; i < end; i++) {
-      GRID.appendChild(createCard(filteredCreators[i]));
+      for (let i = start; i < end; i++) {
+        GRID.appendChild(createCard(filteredCreators[i]));
+      }
+
+      renderedCount = end;
     }
 
-    renderedCount = end;
     if (LOADER) LOADER.classList.remove("is-visible");
     isRendering = false;
   }
@@ -252,7 +263,7 @@ const SOCIAL_LABEL = {
     }
 
     recomputeFiltered();
-    renderNextBatch();
+    renderUntilSentinelOutOfView();
   }
 
   function initObserver() {
@@ -260,7 +271,7 @@ const SOCIAL_LABEL = {
 
     observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) renderNextBatch();
+        if (entry.isIntersecting) renderUntilSentinelOutOfView();
       });
     }, { rootMargin: "200px 0px" });
 
@@ -275,7 +286,7 @@ const SOCIAL_LABEL = {
 
     updateSortButtonUI();
     recomputeFiltered();
-    renderNextBatch();
+    renderUntilSentinelOutOfView();
     initObserver();
 
     if (SORT_BTN) {
