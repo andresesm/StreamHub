@@ -37,16 +37,19 @@
   --accent-soft: var(--day-accent-soft);
   --card-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
   --card-shadow-hover: 0 18px 50px rgba(15, 23, 42, 0.22);
-  --glass-blur: 16px;
 
   /* RRSS icons (tema claro por defecto) */
   --rrss-icon-color: #11181C;
 
   /* --- Layout offsets (header fixed + filtros fixed) --- */
   --safe-top: env(safe-area-inset-top, 0px);
-  --site-header-h: 0px;       /* offset "efectivo" para colocar filtros (se vuelve 0 cuando el header se esconde) */
-  --site-header-real-h: 0px;  /* alto real para animación del header */
+  --site-header-h: 0px;
+  --site-header-real-h: 0px;
   --filters-h: 0px;
+
+  /* Pulse */
+  --pulse-dot-color: var(--accent-main);
+  --pulse-dot-glow: rgba(59, 125, 216, 0.33);
 }
 
 @font-face{
@@ -70,8 +73,8 @@
 /* NIGHT THEME OVERRIDES */
 [data-theme="night"] {
   --bg-body: radial-gradient(circle at top left, #0b1120 0, #020617 45%, #000000 100%);
-  --bg-surface: var(--night-surface);
-  --bg-surface-elevated: var(--night-surface-strong);
+  --bg-surface: rgba(17, 24, 39, 0.96);
+  --bg-surface-elevated: rgba(15, 23, 42, 0.98);
   --border-subtle: var(--night-border-subtle);
   --text-main: var(--night-text);
   --text-subtle: var(--night-subtext);
@@ -80,8 +83,10 @@
   --card-shadow: 0 18px 40px rgba(15, 23, 42, 0.8);
   --card-shadow-hover: 0 26px 80px rgba(56, 189, 248, 0.6);
 
-  /* RRSS icon color (tema oscuro) */
   --rrss-icon-color: #2bc20e;
+
+  --pulse-dot-color: var(--rrss-icon-color);
+  --pulse-dot-glow: rgba(43, 194, 14, 0.28);
 }
 
 /* BASE */
@@ -128,9 +133,8 @@ body {
   right: 0;
   z-index: 20;
 
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.85), transparent);
+  /* SIN glass: sin backdrop-filter */
+  background: rgba(255, 255, 255, 0.96);
   border-bottom: 1px solid var(--border-subtle);
 
   padding-top: calc(20px + var(--safe-top));
@@ -144,15 +148,13 @@ body {
 }
 
 [data-theme="night"] .site-header {
-  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.8), transparent);
+  background: rgba(2, 6, 23, 0.92);
 }
 
-/* Cuando scrolleas hacia abajo */
 body.header-hidden .site-header {
   transform: translateY(calc(-1 * var(--site-header-real-h)));
 }
 
-/* En header-hidden, los filtros suben a top:0, pero el contenido NO debe saltar */
 body.header-hidden {
   --site-header-h: 0px;
 }
@@ -173,11 +175,17 @@ body.header-hidden {
   justify-content: space-between;
   gap: 12px;
   padding: 5px 0;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+
+  /* SIN glass */
+  background: rgba(255, 255, 255, 0.94);
+
   transition:
     background var(--transition-medium),
     box-shadow var(--transition-medium);
+}
+
+[data-theme="night"] .filters-bar {
+  background: rgba(2, 6, 23, 0.88);
 }
 
 .filters-left {
@@ -328,23 +336,23 @@ body.header-hidden {
   box-shadow: 0 14px 40px rgba(15, 23, 42, 0.18);
 }
 
-[data-theme="night"] .filters-panel.is-open {
+[data-theme="night"] .filters-panel.is-open{
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
 }
 
-/* Opcional: mismo tratamiento para el dropdown de juegos */
-.games-panel {
+/* Dropdown de juegos */
+.games-panel{
   border-radius: 14px;
 }
 
-.games-panel.is-open {
+.games-panel.is-open{
   padding: 8px;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
   box-shadow: 0 14px 40px rgba(15, 23, 42, 0.16);
 }
 
-[data-theme="night"] .games-panel.is-open {
+[data-theme="night"] .games-panel.is-open{
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
 }
 
@@ -407,7 +415,7 @@ body.header-hidden {
   transform: translateY(0);
 }
 
-/* MAIN (layout final, el fallback queda sobrescrito más abajo) */
+/* MAIN */
 .site-main {
   padding: 5px 0 40px;
 }
@@ -417,7 +425,7 @@ body.header-hidden {
 }
 
 /* GRID */
-.creators-grid {
+.creators-grid{
   display: grid;
   grid-template-columns: 1fr;
   row-gap: 55px;
@@ -454,17 +462,12 @@ body.header-hidden {
     box-shadow var(--transition-medium),
     background var(--transition-medium),
     border-color var(--transition-medium);
-
-  /* Rendimiento: evita layout/pintado de cards fuera de pantalla */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 220px; /* ajusta 220px al alto típico de la card */
 }
 
+/* Night card (sin glass) */
 [data-theme="night"] .creator-card {
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.98));
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.985));
   border-color: var(--border-subtle);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .creator-card.is-visible {
@@ -486,8 +489,7 @@ body.header-hidden {
   cursor: pointer;
 }
 
-/* ✅ Reemplazo de :has() por clase (más barato). 
-   Tu JS debe togglear .is-live cuando el creador esté en vivo. */
+/* ✅ Estado live sin :has() (tu JS debe togglear .is-live) */
 .creator-avatar-wrapper.is-live {
   outline: 3px solid rgba(255, 0, 0, 0.95);
   outline-offset: 0px;
@@ -496,8 +498,7 @@ body.header-hidden {
   padding: 0;
 }
 
-/* (Opcional) Fallback temporal si todavía no actualizaste el JS:
-   Elimina este bloque cuando ya uses .is-live. */
+/* (Opcional) Fallback temporal si aún no migraste JS */
 @supports selector(:has(*)) {
   .creator-avatar-wrapper:has(.creator-live-badge-card) {
     outline: 3px solid rgba(255, 0, 0, 0.95);
@@ -520,6 +521,11 @@ body.header-hidden {
 /* CARD CONTENT */
 .creator-card-body {
   text-align: center;
+
+  /* ✅ Performance sin clipear el avatar:
+     content-visibility SOLO en el body, no en el contenedor absoluto del avatar */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 160px;
 }
 
 .creator-username-btn {
@@ -619,9 +625,10 @@ body.header-hidden {
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.32);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+
+  /* SIN glass */
+  background: rgba(15, 23, 42, 0.55);
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -841,25 +848,18 @@ body.header-hidden {
   color: var(--text-subtle);
 }
 
-/* APP BLUR OVERLAY */
+/* APP BLUR OVERLAY (sin blur/glass) */
 .app-blur-overlay {
   position: fixed;
   inset: 0;
   pointer-events: none;
   opacity: 0;
   z-index: 30;
-  backdrop-filter: blur(0px);
-  -webkit-backdrop-filter: blur(0px);
-  transition:
-    opacity var(--transition-medium),
-    backdrop-filter var(--transition-medium),
-    -webkit-backdrop-filter var(--transition-medium);
+  transition: opacity var(--transition-medium);
 }
 
 .app-blur-overlay.is-active {
   opacity: 1;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 /* TOGGLE TEMA FLOTANTE */
@@ -946,7 +946,6 @@ body.header-hidden {
   mask-size: contain;
 }
 
-/* Ajustes finos por icono */
 .rrss-icon.rrss--email { width: 16px; height: 16px; }
 .rrss-icon.rrss--ig { width: 17px; height: 17px; }
 .rrss-icon.rrss--kick { width: 16px; height: 16px; }
@@ -956,40 +955,19 @@ body.header-hidden {
 .rrss-icon.rrss--tiktok { width: 16px; height: 16px; }
 
 /* Mapeo de archivos */
-.rrss--email {
-  -webkit-mask-image: url("../assets/rrss/email.svg");
-  mask-image: url("../assets/rrss/email.svg");
-}
-.rrss--tiktok {
-  -webkit-mask-image: url("../assets/rrss/tiktok.svg");
-  mask-image: url("../assets/rrss/tiktok.svg");
-}
-.rrss--ig {
-  -webkit-mask-image: url("../assets/rrss/ig.svg");
-  mask-image: url("../assets/rrss/ig.svg");
-}
-.rrss--kick {
-  -webkit-mask-image: url("../assets/rrss/kick.svg");
-  mask-image: url("../assets/rrss/kick.svg");
-}
-.rrss--twitch {
-  -webkit-mask-image: url("../assets/rrss/twitch.svg");
-  mask-image: url("../assets/rrss/twitch.svg");
-}
-.rrss--x {
-  -webkit-mask-image: url("../assets/rrss/x.svg");
-  mask-image: url("../assets/rrss/x.svg");
-}
-.rrss--youtube {
-  -webkit-mask-image: url("../assets/rrss/youtube.svg");
-  mask-image: url("../assets/rrss/youtube.svg");
-}
+.rrss--email { -webkit-mask-image: url("../assets/rrss/email.svg"); mask-image: url("../assets/rrss/email.svg"); }
+.rrss--tiktok { -webkit-mask-image: url("../assets/rrss/tiktok.svg"); mask-image: url("../assets/rrss/tiktok.svg"); }
+.rrss--ig { -webkit-mask-image: url("../assets/rrss/ig.svg"); mask-image: url("../assets/rrss/ig.svg"); }
+.rrss--kick { -webkit-mask-image: url("../assets/rrss/kick.svg"); mask-image: url("../assets/rrss/kick.svg"); }
+.rrss--twitch { -webkit-mask-image: url("../assets/rrss/twitch.svg"); mask-image: url("../assets/rrss/twitch.svg"); }
+.rrss--x { -webkit-mask-image: url("../assets/rrss/x.svg"); mask-image: url("../assets/rrss/x.svg"); }
+.rrss--youtube { -webkit-mask-image: url("../assets/rrss/youtube.svg"); mask-image: url("../assets/rrss/youtube.svg"); }
 
 /* Tus contenedores actuales */
 .platform-icon-btn svg { display: none; }
 .modal-platform-icon svg { display: none; }
 
-/* Splash screen */
+/* Splash screen (sin blur) */
 .splash {
   position: fixed;
   inset: 0;
@@ -1000,8 +978,6 @@ body.header-hidden {
     radial-gradient(1200px circle at 20% 10%, rgba(43, 194, 14, 0.25), transparent 45%),
     radial-gradient(900px circle at 80% 40%, rgba(59, 125, 216, 0.18), transparent 45%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.92));
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
 
   opacity: 0;
   visibility: hidden;
@@ -1065,16 +1041,14 @@ body.header-hidden {
   font-size: 0.95rem;
 }
 
-/* Fondo “home” mientras splash está arriba */
+/* Fondo “home” mientras splash está arriba (sin blur) */
 .app-content {
   transition:
-    filter 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
     transform 520ms cubic-bezier(0.25, 0.1, 0.25, 1),
     opacity 520ms cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .app-content.is-hidden-by-splash {
-  filter: blur(10px);
   transform: scale(0.985);
   opacity: 0.35;
   pointer-events: none;
@@ -1086,16 +1060,6 @@ body.header-hidden {
 }
 
 /* Multi-pulse (3 ondas) con pausa entre ciclos */
-:root{
-  --pulse-dot-color: var(--accent-main);
-  --pulse-dot-glow: rgba(59, 125, 216, 0.33);
-}
-
-[data-theme="night"]{
-  --pulse-dot-color: var(--rrss-icon-color);
-  --pulse-dot-glow: rgba(43, 194, 14, 0.28);
-}
-
 .splash-badge--dot{
   background: transparent;
   border: none;
@@ -1114,7 +1078,7 @@ body.header-hidden {
   position: relative;
 }
 
-/* Ring #1 (el principal) */
+/* Ring #1 */
 .pulse-dot::after{
   content: "";
   position: absolute;
@@ -1202,7 +1166,6 @@ body.header-hidden {
   max-width: 350px;
 }
 
-/* Link */
 .footer-logo-link {
   display: inline-flex;
   align-items: center;
@@ -1211,14 +1174,12 @@ body.header-hidden {
   text-decoration: none;
 }
 
-/* Logo “pintable” */
 .footer-logo {
   width: min(260px, 80vw);
   height: 40px;
   display: block;
   background-color: transparent;
   opacity: 0.9;
-
   -webkit-mask: url("/assets/kuum.svg") center / contain no-repeat;
   mask: url("/assets/kuum.svg") center / contain no-repeat;
 }
@@ -1257,32 +1218,6 @@ body.header-hidden {
   border-color: rgba(255, 255, 255, 0.25);
   color: #ffffff;
   box-shadow: 0 4px 14px rgba(255, 0, 0, 0.35);
-}
-
-/* Fallback rendimiento: si no hay backdrop-filter, evita costo/bugs visuales */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .site-header {
-    background: rgba(255, 255, 255, 0.92);
-  }
-  [data-theme="night"] .site-header {
-    background: rgba(15, 23, 42, 0.96);
-  }
-
-  .filters-bar {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    background: rgba(255, 255, 255, 0.92);
-  }
-  [data-theme="night"] .filters-bar {
-    background: rgba(15, 23, 42, 0.92);
-  }
-
-  .modal-backdrop,
-  .splash,
-  .app-blur-overlay {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
 }
 
 /* Accesibilidad + rendimiento: reducir movimiento */
