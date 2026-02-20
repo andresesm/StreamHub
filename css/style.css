@@ -644,7 +644,7 @@ body.header-hidden .filters-section{
   inset: 0;
 
   /* SIN glass */
-  background: rgba(15, 23, 42, 0.55);
+  background: rgba(15, 23, 42, 0.72);
 
   display: flex;
   align-items: center;
@@ -657,6 +657,11 @@ body.header-hidden .filters-section{
     opacity var(--transition-medium),
     transform var(--transition-medium);
 }
+
+[data-theme="night"] .modal-backdrop{
+  background: rgba(0, 0, 0, 0.78);
+}
+
 
 .modal-backdrop.is-visible {
   opacity: 1;
@@ -984,17 +989,16 @@ body.header-hidden .filters-section{
 .platform-icon-btn svg { display: none; }
 .modal-platform-icon svg { display: none; }
 
-/* Splash screen (sin blur) */
+/* Splash screen (fondo casi sólido, sin blur) */
 .splash {
   position: fixed;
   inset: 0;
   z-index: 1000;
   display: grid;
   place-items: center;
-  background:
-    radial-gradient(1200px circle at 20% 10%, rgba(43, 194, 14, 0.25), transparent 45%),
-    radial-gradient(900px circle at 80% 40%, rgba(59, 125, 216, 0.18), transparent 45%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.92));
+
+  /* ✅ Nuevo: casi sólido para que se vea “premium” sin glass */
+  background: rgba(255, 255, 255, 0.985);
 
   opacity: 0;
   visibility: hidden;
@@ -1006,10 +1010,8 @@ body.header-hidden .filters-section{
 }
 
 [data-theme="night"] .splash {
-  background:
-    radial-gradient(1200px circle at 20% 10%, rgba(43, 194, 14, 0.18), transparent 45%),
-    radial-gradient(900px circle at 80% 40%, rgba(34, 211, 238, 0.12), transparent 45%),
-    linear-gradient(180deg, rgba(2, 6, 23, 0.96), rgba(0, 0, 0, 0.92));
+  /* ✅ Nuevo: casi sólido en oscuro */
+  background: rgba(0, 0, 0, 0.92);
 }
 
 .splash.is-visible {
