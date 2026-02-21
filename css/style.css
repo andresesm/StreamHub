@@ -35,8 +35,8 @@
   --text-subtle: var(--day-subtext);
   --accent-main: var(--day-accent);
   --accent-soft: var(--day-accent-soft);
-  --card-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
-  --card-shadow-hover: 0 18px 50px rgba(15, 23, 42, 0.22);
+  --card-shadow: 0 5px 5px rgba(15, 23, 42, 0.12);
+  --card-shadow-hover: 0 10px 15px rgba(15, 23, 42, 0.22);
 
   /* RRSS icons (tema claro por defecto) */
   --rrss-icon-color: #11181C;
@@ -911,7 +911,7 @@ body.header-hidden .filters-section{
 
 .floating-theme-toggle:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.65);
+  box-shadow: 0 10px 15px rgba(15, 23, 42, 0.65);
   color: var(--accent-main);
 }
 
