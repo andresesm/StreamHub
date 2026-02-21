@@ -6,32 +6,45 @@ Sitio web estático para que fuinciona com odirectorio de creadores/streamers en
 
 ---
 
-## Demo 
-`https://streamhub.kuumedia.com.es/`
+## Live Demo 
+[https://streamhub.kuumedia.com.es/](https://streamhub.kuumedia.com.es/)
 
 ---
 
 ## Funciones destacables
-- Lista de tarjetas responsive (grid).
+- Grid de tarjetas responsive con carga incremental (infinite scroll).
 - Buscador por nombre de usuario.
 - Filtros dinámicos por:
-  - Tags (desde `creator.tags`)
-  - Juegos (desde `creator.games`)
+  - Tags (desde creator.tags)
+  - Juegos (desde creator.games)
 - Contadores por filtro (cuántas personas coinciden con las categorías seleccionadas).
-- Popup/modal por persona con:
-  - Avatar, usuario, tags, juegos
-  - Redes sociales (iconos+links)
-  - Botón de acceso rápido al stream “Abrir perfil de Twitch”
-  - Selector de tema (day/night/auto basado en hora del equipo (modo oscuro 18:00 y 07:30.))
+- Selector de plataforma (dropdown):
+  - Plataformas: Twitch, Kick, Youtube, Tiktok (en ese orden).
+  - Por defecto: Twitch seleccionada.
+  - Colores del selector adaptados por plataforma (estilo “badge”).
+- Botón “En vivo” solo disponible cuando la plataforma seleccionada es Twitch.
+- Botón de papelera: limpia filtros (tags/juegos/búsqueda/en vivo) pero mantiene la plataforma seleccionada.
+- Modal / popup de perfil por persona con:
+  - Avatar, usuario, bio/tags/juegos (según datos disponibles).
+  - Redes sociales (íconos + links).
+  - Integración Twitch (cuando aplica): botón “Abrir perfil de Twitch”, y datos extra como seguidores/en vivo si están disponibles.
+- Selector de tema (day/night).
+- Splash screen de entrada.
+- Modal extra de Información/FAQ al hacer click en el logo del footer (en vez de link externo).
 
 
 ---
 
 ### Estructura de creadores
+
+NOTA:
+streamPlatform define la plataforma principal y se usa para el filtro de plataforma.
+
 ```json
 {
   "id": 1,
   "username": "Nombre",
+  "streamPlatform": "twitch",
   "avatar_url": "assets/avatars/Nombre.png",
   "tags": ["Just Chatting", "Vtuber"],
   "games": ["Valorant", "Minecraft"],
@@ -50,20 +63,29 @@ Sitio web estático para que fuinciona com odirectorio de creadores/streamers en
   }
 }
 ```
+Valores válidos para "streamPlatform":
+- twitch
+- kick
+- youtube
+- tiktok
+- none (opcional interno; no se muestra como plataforma filtrable)
+
 ---
 
 ### Conocimientos y herramientas necesarias
 
 * Conocimientos ***básicos-intermedios*** de Github, HTML, CSS, JS/JSON.
-* Editor de código, no importa si es super básico *(Bloc de notas)*, simple *(Notepad++)* o más completo *(Visual Code)*
+- Editor de código ***(Notepad++ / VS Code / etc).***
 
 ## Usabilidad
 
-Si bien es un proyecto libre se apreciaría la mención en caso de ser usado.
+Si bien es un proyecto libre, se apreciaría la mención en caso de ser usado.
+
 
 ## Autor
 
 [Billy Billete](https://billy.kuumedia.com.es/)
+Co autor: [Lightdx](https://github.com/Lighdx)
 
 ## Créditos
 
@@ -71,4 +93,6 @@ Si bien es un proyecto libre se apreciaría la mención en caso de ser usado.
 
 ## Descargo de responsabilidad
 
-Este es un proyecto solo por diversión, no lucrativo y sin ninguna intención de tomar créditos por nada. Todas las personas que figuran en la web llenaron un formulario. Cualquier persona que usa el template lo hace bajo su propia responsabilidad.
+Proyecto solo por diversión, no lucrativo.
+Las personas que figuran en la web llenaron un formulario accediendo a que su información sea pública.
+Cualquier persona que use el template lo hace bajo su propia responsabilidad.
