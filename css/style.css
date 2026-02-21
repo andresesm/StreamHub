@@ -1353,3 +1353,36 @@ body.header-hidden .filters-section{
 #platformSelectBtn.platform-select-btn:hover{
   box-shadow: none;
 }
+
+/* ===== Credits modal (footer) ===== */
+#creditsModal .modal-dialog{
+  max-width: 900px;             /* desktop */
+  width: min(900px, 92vw);      /* responsive */
+}
+
+/* Scroll interno (no crece infinito en alto) */
+#creditsModal .modal-content{
+  max-height: min(82vh, 720px); /* límite razonable */
+  overflow: hidden;            /* el scroll va en el body interno */
+}
+
+/* Contenedor scroll del texto */
+#creditsModal .credits-scroll{
+  max-height: calc(min(82vh, 720px) - 90px); /* 90px aprox: header/padding/X */
+  overflow-y: auto;
+  padding-right: 6px; /* espacio para scrollbar */
+}
+
+/* Mobile: usa casi toda la pantalla */
+@media (max-width: 599px){
+  #creditsModal .modal-dialog{
+    width: 94vw;
+    padding: 10px;
+  }
+  #creditsModal .modal-content{
+    max-height: 86vh;
+  }
+  #creditsModal .credits-scroll{
+    max-height: calc(86vh - 90px);
+  }
+}
