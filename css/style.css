@@ -911,7 +911,7 @@ body.header-hidden .filters-section{
 
 .floating-theme-toggle:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 15px rgba(15, 23, 42, 0.65);
+  box-shadow: 0 8px 13px rgba(15, 23, 42, 0.65);
   color: var(--accent-main);
 }
 
@@ -1163,7 +1163,7 @@ body.header-hidden .filters-section{
 
 .floating-note-btn:hover{
   transform: translateY(-3px);
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.65);
+  box-shadow: 0 8px 13px rgba(15, 23, 42, 0.65);
   color: var(--accent-main);
 }
 
