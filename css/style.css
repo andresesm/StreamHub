@@ -1356,21 +1356,22 @@ body.header-hidden .filters-section{
 
 /* ===== Credits modal (footer) ===== */
 #creditsModal .modal-dialog{
-  max-width: 900px;             /* desktop */
-  width: min(900px, 92vw);      /* responsive */
+  max-width: 900px;          /* desktop */
+  width: min(900px, 92vw);   /* responsive */
 }
 
-/* Scroll interno (no crece infinito en alto) */
+/* Limita el alto total del modal */
 #creditsModal .modal-content{
-  max-height: min(82vh, 720px); /* límite razonable */
-  overflow: hidden;            /* el scroll va en el body interno */
+  max-height: 86vh;
+  overflow: hidden;          /* el scroll va dentro del body */
 }
 
-/* Contenedor scroll del texto */
-#creditsModal .credits-scroll{
-  max-height: calc(min(82vh, 720px) - 90px); /* 90px aprox: header/padding/X */
-  overflow-y: auto;
-  padding-right: 6px; /* espacio para scrollbar */
+/* ✅ Scroll y alineación SOLO para este modal */
+#creditsModal .modal-body{
+  max-height: calc(86vh - 40px); /* margen para padding/cerrar */
+  overflow-y: auto;              /* scrollbar si hace falta */
+  text-align: left;              /* no toca los otros modales */
+  padding-right: 6px;            /* espacio para scrollbar */
 }
 
 /* Mobile: usa casi toda la pantalla */
@@ -1379,10 +1380,12 @@ body.header-hidden .filters-section{
     width: 94vw;
     padding: 10px;
   }
+
   #creditsModal .modal-content{
-    max-height: 86vh;
+    max-height: 90vh;
   }
-  #creditsModal .credits-scroll{
-    max-height: calc(86vh - 90px);
+
+  #creditsModal .modal-body{
+    max-height: calc(90vh - 40px);
   }
 }
