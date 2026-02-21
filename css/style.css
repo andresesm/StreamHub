@@ -1389,3 +1389,15 @@ body.header-hidden .filters-section{
     max-height: calc(90vh - 40px);
   }
 }
+
+/* Solo para el popup del footer: fuerza alineación izquierda */
+#creditsModal .modal-bio,
+#creditsModal .modal-username,
+#creditsModal .modal-section-title{
+  text-align: left;
+}
+
+/* (Opcional) si quieres que los títulos sigan centrados pero el texto no: */
+#creditsModal .modal-username{
+  text-align: center;
+}
