@@ -229,14 +229,15 @@
 <footer class="footer-container">
   <div class="footer-table footer-single">
     <a
-      class="footer-logo-link"
-      href="https://billy.kuumedia.com.es/"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Créditos"
-    >
-      <span class="footer-logo" aria-hidden="true"></span>
-    </a>
+  id="footerCreditsBtn"
+  class="footer-logo-link"
+  href="#"
+  role="button"
+  aria-label="Créditos"
+>
+  <span class="footer-logo" aria-hidden="true"></span>
+</a>
+
   </div>
 </footer>
 
@@ -278,5 +279,35 @@
   <script src="js/layout-offsets.js"></script>
   <script src="js/header-autohide.js"></script>
   <script src="js/twitch-integration.js"></script>
+  <script src="js/credits-modal.js"></script>
+
+  <div
+  id="creditsModal"
+  class="modal-backdrop"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="creditsTitle"
+  aria-describedby="creditsText"
+>
+  <div class="modal-dialog" role="document">
+    <button class="modal-close-btn" type="button" id="creditsCloseBtn" aria-label="Cerrar">×</button>
+
+    <div class="modal-content">
+      <div class="modal-body">
+        <h2 id="creditsTitle" class="modal-username">Créditos</h2>
+        <p id="creditsText" class="modal-bio">
+          Aquí va tu texto. Puedes poner 2–4 líneas: quién hizo la web, enlaces, etc.
+        </p>
+
+        <div style="margin-top:14px;">
+          <a class="primary-btn" href="https://billy.kuumedia.com.es/" target="_blank" rel="noopener noreferrer">
+            Visitar sitio
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
