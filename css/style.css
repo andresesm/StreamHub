@@ -1401,3 +1401,26 @@ body.header-hidden .filters-section{
 #creditsModal .modal-username{
   text-align: center;
 }
+
+/* Footer logo: pulso rojo para incentivar click */
+@keyframes footerLogoPulse {
+  0%, 100% { color: var(--text-subtle); }
+  50%      { color: #ff0000; } /* rojo "en vivo" */
+}
+
+.footer-logo-link{
+  animation: footerLogoPulse 1.6s ease-in-out infinite;
+}
+
+/* Opcional: cuando pasas el mouse, detén el pulso y deja rojo fijo */
+.footer-logo-link:hover{
+  animation: none;
+  color: #ff0000;
+}
+
+/* Accesibilidad: si el usuario prefiere menos movimiento, no pulses */
+@media (prefers-reduced-motion: reduce){
+  .footer-logo-link{
+    animation: none;
+  }
+}
