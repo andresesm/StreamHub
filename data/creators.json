@@ -1819,5 +1819,632 @@
     },
     "residence": "Portugal",
     "nationality": "Venezuela"
+  },
+  [
+  {
+    "id": 60,
+    "username": "Rubenchojuega",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Just Chatting", "Alta interacción con el chat", "Muy animado"],
+    "games": ["Free fire"],
+    "bio": "",
+    "followers": "",
+    "residence": "Panamá",
+    "nationality": "Venezuela",
+    "socials": {
+      "kick": "Rubenchojuega",
+      "ig": "Rubenchojuega",
+      "youtube": "Rubenchojuega",
+      "tiktok": "Rubenchojuega",
+      "email": "rubenchobjuega@gmail.com"
+    }
+  },
+  {
+    "id": 61,
+    "username": "yodnann",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Just Chatting", "Alta interacción con el chat", "Muy animado", "Jugador casual", "Juegos cortos", "Dinámicas de salas de diferentes juegos"],
+    "games": ["Roblox", "Fortnite", "Call of Duty", "Bloodstrike"],
+    "bio": "",
+    "followers": "",
+    "residence": "Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "kick": "yodnann",
+      "ig": "yodnann",
+      "youtube": "Yodnan Noguera",
+      "tiktok": "yodnann",
+      "email": "yodnannoguera@gmail.com"
+    }
+  },
+  {
+    "id": 62,
+    "username": "kathy.pita18",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["IRL", "Just Chatting", "Eventos especiales", "Alta interacción con el chat", "Música", "Arte", "Anime", "Calmado", "Muy animado", "Jugador casual", "Challenges", "Batallas en TikTok", "retos."],
+    "games": ["Roblox", "Fortnite", "The Legend of Zelda"],
+    "bio": "",
+    "followers": "",
+    "residence": "Santiago, Chile",
+    "nationality": "Venezuela, Portugal",
+    "socials": {
+      "ig": "kathypitaVA",
+      "youtube": "kathypitaVA",
+      "tiktok": "kathy.pita18",
+      "email": "kathypita1807.2@gmail.com"
+    }
+  },
+  {
+    "id": 63,
+    "username": "SoyDrakukeo",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Just Chatting", "Alta interacción con el chat", "Muy animado", "Jugador competitivo/Tryhard", "Jugador casual", "Challenges", "Juegos largos", "Juegos cortos"],
+    "games": ["Roblox", "Minecraft", "Call of Duty", "Variedad"],
+    "bio": "",
+    "followers": "",
+    "residence": "Barquisimeto, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "ig": "SoyPeterSS",
+      "tiktok": "SoyDrakukeo",
+      "email": "Furch1221@gmail.com"
+    }
+  },
+  {
+    "id": 64,
+    "username": "barbaraaduque",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Just Chatting", "Alta interacción con el chat", "Juegos largos", "Juegos cortos"],
+    "games": ["Juegos indie", "Juegos de terror", "Variedad", "Survival Horror"],
+    "bio": "",
+    "followers": "",
+    "residence": "Argentina",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "barbaraaduque",
+      "ig": "barbaraaduque",
+      "youtube": "barbaraaduque",
+      "tiktok": "barbaraaduque"
+    }
+  },
+  {
+    "id": 65,
+    "username": "ItsMaigua",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Humor", "Just Chatting", "Jugador casual", "Juegos cortos", "Juegos largos", "Muy animado"],
+    "games": ["Juegos de terror", "Minecraft", "Variedad"],
+    "bio": "",
+    "followers": "",
+    "residence": "Estados Unidos",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "ItsMaigua",
+      "ig": "itsmaigua",
+      "x": "ItsMaiguaa",
+      "tiktok": "itsmaiguaaa"
+    }
+  },
+  {
+    "id": 66,
+    "username": "The_AntiYisus",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Alta interacción con el chat", "Just Chatting", "Jugador casual", "Juegos cortos", "Juegos largos", "Muy animado"],
+    "games": ["Juegos indie", "Juegos de terror", "Minecraft", "Pokémon", "Survival Horror", "Soulslike", "Variedad"],
+    "bio": "",
+    "followers": "",
+    "residence": "Miranda, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "The_AntiYisus",
+      "ig": "The_AntiYisus",
+      "youtube": "The_AntiYisus",
+      "tiktok": "The_AntiYisus"
+    }
+  },
+  {
+    "id": 67,
+    "username": "Melayrah",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Alta interacción con el chat", "IRL", "Just Chatting", "Jugador casual", "Juegos cortos", "Juegos largos", "Música", "Muy animado"],
+    "games": ["Counter-Strike", "Fortnite", "Juegos de carrera", "Minecraft", "Roblox", "Valorant"],
+    "bio": "",
+    "followers": "",
+    "residence": "Florida, Estados Unidos",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Melayrah",
+      "ig": "Melayrah_",
+      "x": "Melayrah",
+      "youtube": "Melayrah",
+      "tiktok": "Melayrah_",
+      "email": "Melayrah133@gmail.com"
+    }
+  },
+  {
+    "id": 68,
+    "username": "OrlandoVision",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Alta interacción con el chat", "Calmado", "Deportes", "Humor", "IRL", "Just Chatting", "Jugador casual", "Juegos cortos", "Juegos largos", "Roleplayer"],
+    "games": ["Fortnite", "Juegos de carrera", "Marvel Rivals", "Minecraft", "Roblox", "Variedad"],
+    "bio": "",
+    "followers": "",
+    "residence": "La Guaira, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "OrlandoVision",
+      "kick": "OrlandoVision",
+      "ig": "orlavision",
+      "x": "orlavision",
+      "youtube": "OrlandoVisionLive",
+      "tiktok": "OrlandoVision",
+      "email": "orlandovision10@gmail.com"
+    }
+  },
+  {
+    "id": 69,
+    "username": "Miiiiguek",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Humor", "Just Chatting", "Jugador casual", "Vtuber"],
+    "games": ["Fortnite", "Minecraft", "Roblox", "Variedad"],
+    "bio": "",
+    "followers": "",
+    "residence": "Caracas, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Miiiiguek",
+      "ig": "Miiiiguek",
+      "youtube": "Miiiguek",
+      "tiktok": "Miiiiguek",
+      "email": "contacto.miguelcat@gmail.com"
+    }
+  },
+  {
+    "id": 70,
+    "username": "vPepo",
+    "streamPlatform": "kick",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["IRL", "Just Chatting", "Eventos especiales", "Jugador competitivo/Tryhard", "Jugador casual"],
+    "games": ["Call of Duty", "League of Legends", "Valorant"],
+    "bio": "",
+    "followers": "",
+    "residence": "Maracaibo, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "kick": "vPepo",
+      "ig": "vpepo_",
+      "youtube": "vPepo",
+      "tiktok": "vpepo_",
+      "email": "vpepocontacto@gmail.com"
+    }
+  },
+  {
+    "id": 71,
+    "username": "Conversorap",
+    "streamPlatform": "kick",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Anime", "Alta interacción con el chat", "IRL", "Just Chatting", "Juegos cortos", "Juegos largos", "Muy animado"],
+    "games": ["Fortnite", "League of Legends", "Juegos de terror", "JRPG", "Soulslike"],
+    "bio": "",
+    "followers": "",
+    "residence": "Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "kick": "Conversorap",
+      "ig": "Conversorap",
+      "x": "ConversoCompany",
+      "youtube": "Conversorap",
+      "tiktok": "Conversorap",
+      "email": "conversobooking@gmail.com"
+    }
+  },
+  {
+    "id": 72,
+    "username": "Ale_Mcbo",
+    "streamPlatform": "kick",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Humor", "IRL", "Just Chatting", "Eventos especiales", "Jugador competitivo/Tryhard", "Juegos largos"],
+    "games": ["Call of Duty", "GTA V", "League of Legends"],
+    "bio": "",
+    "followers": "",
+    "residence": "Maracaibo, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "kick": "Ale_Mcbo",
+      "ig": "Ale_Mcbo",
+      "tiktok": "Ale_Mcbo",
+      "email": "aleescalona1999.2024@gmail.com"
+    }
+  },
+  {
+    "id": 73,
+    "username": "atekaisub",
+    "streamPlatform": "kick",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Alta interacción con el chat", "Just Chatting", "Roleplayer"],
+    "games": ["Call of Duty", "GTA V"],
+    "bio": "",
+    "followers": "",
+    "residence": "",
+    "nationality": "Venezuela",
+    "socials": {
+      "kick": "atekaisub",
+      "tiktok": "atekaisub",
+      "email": "leonelgnzcol@gmail.com"
+    }
+  },
+  {
+    "id": 74,
+    "username": "Yayazza",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Just Chatting", "Jugador casual", "Juegos cortos", "Juegos largos"],
+    "games": ["Call of Duty", "GTA V", "Garry's Mod", "Juegos indie", "Juegos de terror", "Just Dance", "Minecraft", "Roblox", "Variedad", "Valorant"],
+    "bio": "",
+    "followers": "",
+    "residence": "Zulia, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Yayazza",
+      "ig": "Yayazza0",
+      "x": "Yayazza0",
+      "youtube": "Yayazza",
+      "tiktok": "Yayazza",
+      "email": "yayazza0@gmail.com"
+    }
+  },
+  {
+    "id": 75,
+    "username": "FaarDaay",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Alta interacción con el chat", "Cocina", "Humor", "Just Chatting", "Jugador casual", "Juegos cortos", "Juegos largos", "Música", "Muy animado", "Roleplayer"],
+    "games": ["League of Legends", "Juegos indie", "Juegos de terror", "Survival Horror", "Soulslike", "Valorant", "Bloodstrike"],
+    "bio": "",
+    "followers": "",
+    "residence": "Argentina",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "FaarDaay",
+      "ig": "FaarDaay",
+      "x": "FaarDaay",
+      "youtube": "FaarDaay",
+      "tiktok": "FaarDaay",
+      "email": "Isfaardaay@gmail.com"
+    }
+  },
+  {
+    "id": 76,
+    "username": "Jesucristo69x",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Jugador competitivo/Tryhard", "Jugador casual"],
+    "games": ["MMORPG"],
+    "bio": "",
+    "followers": "",
+    "residence": "Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Jesucristo69x",
+      "ig": "Jesucristo69x",
+      "youtube": "Jesucristo69x",
+      "tiktok": "Jesucristo69x",
+      "email": "jesucristo69contact@gmail.com"
+    }
+  },
+  {
+    "id": 77,
+    "username": "TripNaga",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Alta interacción con el chat", "Humor", "Just Chatting", "Jugador casual", "Juegos cortos", "Juegos largos", "Música", "Muy animado", "Watchpartys"],
+    "games": ["Call of Duty", "Juegos indie", "Juegos de terror", "Roblox", "Survival Horror"],
+    "bio": "",
+    "followers": "",
+    "residence": "Guatire, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "kick": "TripNaga",
+      "ig": "tripnagasaki",
+      "youtube": "tripnaga",
+      "tiktok": "tripnaga",
+      "email": "ss.osmarviloria@gmail.com"
+    }
+  },
+  {
+    "id": 78,
+    "username": "Miss_Akane",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Arte", "Cosplay", "Just Chatting", "Jugador casual", "Manualidades", "Vtuber"],
+    "games": ["Fortnite", "GTA V", "Minecraft", "Variedad", "Monster Hunter", "Red Dead Redemption", "Heartopia"],
+    "bio": "",
+    "followers": "",
+    "residence": "Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Miss_Akane",
+      "ig": "missakane_",
+      "x": "missakane_",
+      "youtube": "MissAkaneVOD",
+      "tiktok": "MissAkane27",
+      "email": "MissAkaneVOD@gmail.com"
+    }
+  },
+  {
+    "id": 79,
+    "username": "Callputx",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Humor", "Just Chatting", "Jugador casual", "Juegos cortos", "Vtuber"],
+    "games": ["Fortnite", "Minecraft", "Roblox"],
+    "bio": "",
+    "followers": "",
+    "residence": "Cabimas, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Callputx",
+      "ig": "Callputx",
+      "youtube": "Callputx",
+      "tiktok": "Callputx",
+      "email": "yoxnyxd10xd@gmail.com"
+    }
+  },
+  {
+    "id": 80,
+    "username": "Gatronnn",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Just Chatting", "Jugador casual", "Juegos cortos", "Juegos largos", "Roleplayer"],
+    "games": ["League of Legends", "Juegos indie", "Juegos de terror", "Minecraft", "Survival Horror", "Soulslike", "Variedad", "Valorant"],
+    "bio": "",
+    "followers": "",
+    "residence": "Caracas, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Gatronnn",
+      "kick": "Gatronn",
+      "ig": "Gatronn_",
+      "x": "Gatronn_",
+      "youtube": "Gatronn",
+      "tiktok": "Gatronn",
+      "email": "bjcumana@hotmail.com"
+    }
+  },
+  {
+    "id": 81,
+    "username": "zeropeage",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Anime", "Alta interacción con el chat", "Humor", "Just Chatting", "Eventos especiales", "Jugador competitivo/Tryhard", "Jugador casual", "Juegos cortos", "Juegos largos", "Muy animado"],
+    "games": ["Fortnite", "Juegos indie", "Juegos de terror", "JRPG", "Marvel Rivals", "Minecraft", "MMORPG", "Pokémon", "Roblox", "Survival Horror", "Soulslike", "Variedad", "Resident Evil", "Visual Novel"],
+    "bio": "",
+    "followers": "",
+    "residence": "Punto Fijo, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "zeropeage",
+      "ig": "zeropeage",
+      "youtube": "zeropeage",
+      "tiktok": "zer0peage",
+      "email": "zeropeagecontacto@gmail.com"
+    }
+  },
+  {
+    "id": 82,
+    "username": "Moonlightart30",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Arte", "Anime", "Jugador casual"],
+    "games": ["League of Legends"],
+    "bio": "",
+    "followers": "",
+    "residence": "Mérida, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Moonlightart30",
+      "ig": "Moonlightart30",
+      "x": "Moonlightart30",
+      "tiktok": "Moonlightart30",
+      "email": "nayelhycv@gmail.com"
+    }
+  },
+  {
+    "id": 83,
+    "username": "LyeKaz_",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Arte", "Alta interacción con el chat", "Humor", "IRL", "Just Chatting", "Juegos cortos", "Juegos largos", "Música", "Roleplayer"],
+    "games": ["Counter-Strike", "Fortnite", "GTA V", "Juegos indie", "Juegos de terror", "Minecraft", "Roblox", "Survival Horror", "Variedad", "Valorant"],
+    "bio": "",
+    "followers": "",
+    "residence": "",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "LyeKaz_",
+      "ig": "lyekaz",
+      "x": "LyeKaz",
+      "youtube": "LyeKaz",
+      "tiktok": "lyekaz",
+      "email": "kazlye035@gmail.com"
+    }
+  },
+  {
+    "id": 84,
+    "username": "Andez_1",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Just Chatting", "Alta interacción con el chat", "Muy animado", "Jugador casual", "Roleplayer", "Juegos largos"],
+    "games": ["Counter-Strike", "Fortnite", "GTA V", "Juegos de terror", "Minecraft", "Roblox", "Variedad", "Valorant"],
+    "bio": "",
+    "followers": "",
+    "residence": "Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Andez_1",
+      "kick": "Andez_1",
+      "ig": "Andre21.rar",
+      "x": "Andre21ke",
+      "youtube": "Andeez21",
+      "tiktok": "Andeezz_"
+    }
+  },
+  {
+    "id": 85,
+    "username": "ZeroMeow23",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Just Chatting", "Jugador competitivo/Tryhard", "Muy animado"],
+    "games": ["League of Legends", "Variedad"],
+    "bio": "",
+    "followers": "",
+    "residence": "Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "ZeroMeow23",
+      "youtube": "Zeromeow23",
+      "tiktok": "zeromeow23"
+    }
+  },
+  {
+    "id": 86,
+    "username": "Sekaicrash",
+    "streamPlatform": "youtube",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Jugador casual", "Juegos cortos", "Juegos largos", "Muy animado"],
+    "games": ["Fortnite", "Juegos indie", "Juegos de terror", "Minecraft", "Survival Horror", "Variedad"],
+    "bio": "",
+    "followers": "",
+    "residence": "Caracas, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "ig": "Sekaicrash",
+      "x": "Sekaicrash",
+      "youtube": "Sekaicrash",
+      "tiktok": "Sekaicrash",
+      "email": "brandonkazer@gmail.com"
+    }
+  },
+  {
+    "id": 87,
+    "username": "Yokatw",
+    "streamPlatform": "youtube",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Humor", "Just Chatting", "Jugador casual", "Juegos cortos", "Juegos largos"],
+    "games": ["League of Legends", "Juegos indie", "Juegos de terror", "Minecraft", "Roblox", "Survival Horror", "Variedad"],
+    "bio": "",
+    "followers": "",
+    "residence": "Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Yokatw",
+      "youtube": "Yokayoutube",
+      "tiktok": "Yokacv",
+      "email": "zileanplei@gmail.com"
+    }
+  },
+  {
+    "id": 88,
+    "username": "Anira.art",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Arte", "Jugador casual", "Juegos cortos", "Manualidades"],
+    "games": ["Genshin Impact"],
+    "bio": "",
+    "followers": "",
+    "residence": "San Cristóbal, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "ig": "Anira.art",
+      "youtube": "Anira_art",
+      "tiktok": "Anira.art",
+      "email": "ana25pao@gmail.com"
+    }
+  },
+  {
+    "id": 89,
+    "username": "Metro_plx",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Arte", "Alta interacción con el chat", "Just Chatting", "Juegos cortos", "Juegos largos"],
+    "games": ["Juegos de terror", "Survival Horror", "Resident Evil", "Silent Hill"],
+    "bio": "",
+    "followers": "",
+    "residence": "Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Metro_plx",
+      "tiktok": "metroplexmaster"
+    }
+  },
+  {
+    "id": 90,
+    "username": "jeffdgame",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Alta interacción con el chat", "Humor", "Jugador casual"],
+    "games": ["Juegos de terror", "Roblox", "Blood Strike"],
+    "bio": "",
+    "followers": "",
+    "residence": "Caracas, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "jeffdgame",
+      "kick": "jeffdgames",
+      "ig": "jeffdgames",
+      "youtube": "jeffdgames",
+      "tiktok": "jeffdgames",
+      "email": "jefersonint25@gmail.com"
+    }
+  },
+  {
+    "id": 91,
+    "username": "MiuRexxx",
+    "streamPlatform": "tiktok",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Alta interacción con el chat", "Humor", "Just Chatting", "Juegos cortos", "Juegos largos", "Muy animado", "Roleplayer"],
+    "games": ["Counter-Strike", "Minecraft", "Roblox", "Hitman"],
+    "bio": "",
+    "followers": "",
+    "residence": "Guárico, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "MiuRexxx",
+      "kick": "MiuRexxx",
+      "ig": "Miu.Rexx",
+      "tiktok": "Miurexxx",
+      "email": "indygold2002@gmail.com"
+    }
+  },
+  {
+    "id": 92,
+    "username": "Koswaal",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatar-placeholder-1.png",
+    "tags": ["Humor", "Juegos cortos", "Juegos largos"],
+    "games": ["Fortnite", "Minecraft"],
+    "bio": "",
+    "followers": "",
+    "residence": "Los Teques, Venezuela",
+    "nationality": "Venezuela",
+    "socials": {
+      "twitch": "Koswaal",
+      "kick": "Koswaal",
+      "ig": "Koswaalclips",
+      "x": "Koswaaal",
+      "youtube": "Koswaal",
+      "tiktok": "Koswaal",
+      "email": "koswaal@gmail.com"
+    }
   }
+]
 ]
