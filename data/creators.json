@@ -2445,100 +2445,130 @@
       "email": "koswaal@gmail.com"
     }
   },
-  {
-    "id": 93,
-    "username": "svkottoo",
+{
+  "id": 93,
+  "username": "svkottoo",
+  "streamPlatform": "twitch",
+  "avatar_url": "assets/avatars/svkottoo.webp",
+  "tags": ["Humor", "Just Chatting", "Juegos cortos", "Juegos largos", "Música", "Muy animado", "Roleplayer"],
+  "games": ["Fortnite", "Juegos indie", "Juegos de terror", "Minecraft", "Roblox", "Variedad", "Valorant", "Bloodstrike"],
+  "bio": "",
+  "followers": "",
+  "residence": "Brasil",
+  "nationality": "Venezuela",
+  "socials": {
     "twitch": "svkottoo",
     "kick": "svkotto",
-    "tags": ["Humor", "Just Chatting", "Juegos cortos", "Juegos largos", "Música", "Muy animado", "Roleplayer"],
-    "games": ["Fortnite", "Juegos indie", "Juegos de terror", "Minecraft", "Roblox", "Variedad", "Valorant", "Bloodstrike"],
     "ig": "svkotto",
     "x": "svkottoo",
     "youtube": "SvkoIDK",
     "tiktok": "svkotto",
-    "email": "fake.scottmusic@gmail.com",
-    "residence": "Brasil",
-    "nationality": "Venezuela",
-    "streamplatform": "twitch"
-  },
-  {
-    "id": 94,
-    "username": "Angievolpe1",
+    "email": "fake.scottmusic@gmail.com"
+  }
+},
+{
+  "id": 94,
+  "username": "Angievolpe1",
+  "streamPlatform": "tiktok",
+  "avatar_url": "assets/avatars/Angievolpe1.webp",
+  "tags": ["Alta interacción con el chat", "Calmado", "Cocina", "Humor", "Just Chatting", "Jugador casual", "Música"],
+  "games": ["Fortnite"],
+  "bio": "",
+  "followers": "",
+  "residence": "Estados Unidos",
+  "nationality": "Venezuela",
+  "socials": {
     "twitch": "Angievolpe1",
     "kick": "Angievolpe",
-    "tags": ["Alta interacción con el chat", "Calmado", "Cocina", "Humor", "Just Chatting", "Jugador casual", "Música"],
-    "games": ["Fortnite"],
     "ig": "Angelavolpe95",
     "x": "",
     "youtube": "",
     "tiktok": "Angievolpe",
-    "email": "",
-    "residence": "Estados Unidos",
-    "nationality": "Venezuela",
-    "streamplatform": "tiktok"
-  },
-  {
-    "id": 95,
-    "username": "Nateewsan",
+    "email": ""
+  }
+},
+{
+  "id": 95,
+  "username": "Nateewsan",
+  "streamPlatform": "twitch",
+  "avatar_url": "assets/avatars/Nateewsan.webp",
+  "tags": ["Alta interacción con el chat", "Humor", "Just Chatting", "Jugador casual"],
+  "games": ["League of Legends"],
+  "bio": "",
+  "followers": "",
+  "residence": "Maracaibo, Venezuela",
+  "nationality": "Venezuela",
+  "socials": {
     "twitch": "Nateewsan",
     "kick": "Nateewsan",
-    "tags": ["Alta interacción con el chat", "Humor", "Just Chatting", "Jugador casual"],
-    "games": ["League of Legends"],
     "ig": "Nateewsan",
     "x": "Nateewsan",
     "youtube": "Nateewsan",
     "tiktok": "Nateewsan",
-    "email": "nateewsan@gmail.com",
-    "residence": "Maracaibo, Venezuela",
-    "nationality": "Venezuela",
-    "streamplatform": "twitch"
-  },
-  {
-    "id": 96,
-    "username": "NandaTayo",
+    "email": "nateewsan@gmail.com"
+  }
+},
+{
+  "id": 96,
+  "username": "NandaTayo",
+  "streamPlatform": "twitch",
+  "avatar_url": "assets/avatars/NandaTayo.webp",
+  "tags": ["Arte", "Anime", "Alta interacción con el chat", "Cocina", "Challenges", "Humor", "IRL", "Just Chatting", "Eventos especiales", "Jugador casual", "Juegos cortos", "Manualidades", "Muy animado", "Roleplayer", "Vtuber"],
+  "games": ["Cozy Games", "Fortnite", "Juegos indie", "Juegos de terror", "Juegos de carrera", "Minecraft", "Roblox", "TFT", "Valorant", "Kukoro!", "Among Us", "VRChat", "Hollow Knight", "Undertale"],
+  "bio": "",
+  "followers": "",
+  "residence": "Venezuela",
+  "nationality": "Venezuela",
+  "socials": {
     "twitch": "NandaTayo",
     "kick": "NandaTayo",
-    "tags": ["Arte", "Anime", "Alta interacción con el chat", "Cocina", "Challenges", "Humor", "IRL", "Just Chatting", "Eventos especiales", "Jugador casual", "Juegos cortos", "Manualidades", "Muy animado", "Roleplayer", "Vtuber"],
-    "games": ["Cozy Games", "Fortnite", "Juegos indie", "Juegos de terror", "Juegos de carrera", "Minecraft", "Roblox", "TFT", "Valorant", "Kukoro!", "Among Us", "VRChat", "Hollow Knight", "Undertale"],
     "ig": "nandatayo.vt",
     "x": "TayoNanda",
     "youtube": "NandaTayo",
     "tiktok": "NandaTayo",
-    "email": "nandatayojuegos@gmail.com",
-    "residence": "Venezuela",
-    "nationality": "Venezuela",
-    "streamplatform": "twitch"
-  },
-  {
-    "id": 97,
-    "username": "JaviAMF",
+    "email": "nandatayojuegos@gmail.com"
+  }
+},
+{
+  "id": 97,
+  "username": "JaviAMF",
+  "streamPlatform": "twitch",
+  "avatar_url": "assets/avatars/JaviAMF.webp",
+  "tags": ["Alta interacción con el chat", "Humor", "Just Chatting", "Jugador casual", "Música"],
+  "games": ["Juegos de terror", "Variedad", "Valorant"],
+  "bio": "",
+  "followers": "",
+  "residence": "Estados Unidos",
+  "nationality": "Venezuela",
+  "socials": {
     "twitch": "JaviAMF",
     "kick": "",
-    "tags": ["Alta interacción con el chat", "Humor", "Just Chatting", "Jugador casual", "Música"],
-    "games": ["Juegos de terror", "Variedad", "Valorant"],
     "ig": "Javiamf",
     "x": "JaviAMF",
     "youtube": "Javiamf.",
     "tiktok": "JaviAMF",
-    "email": "Javiermilicia@gmail.com",
-    "residence": "Estados Unidos",
-    "nationality": "Venezuela",
-    "streamplatform": "twitch"
-  },
-  {
-    "id": 98,
-    "username": "Tinaconejita",
+    "email": "Javiermilicia@gmail.com"
+  }
+},
+{
+  "id": 98,
+  "username": "Tinaconejita",
+  "streamPlatform": "twitch",
+  "avatar_url": "assets/avatars/Tinaconejita.webp",
+  "tags": ["Alta interacción con el chat", "Calmado", "Humor", "Jugador casual", "Juegos cortos", "Juegos largos"],
+  "games": ["League of Legends", "Juegos indie", "Juegos de terror"],
+  "bio": "",
+  "followers": "",
+  "residence": "Lisboa, Portugal",
+  "nationality": "Venezuela",
+  "socials": {
     "twitch": "Tinaconejita",
     "kick": "",
-    "tags": ["Alta interacción con el chat", "Calmado", "Humor", "Jugador casual", "Juegos cortos", "Juegos largos"],
-    "games": ["League of Legends", "Juegos indie", "Juegos de terror"],
     "ig": "Tinadluca",
     "x": "",
     "youtube": "",
     "tiktok": "Tinaconejita",
-    "email": "Valentinacastillowork@gmail.com",
-    "residence": "Lisboa, Portugal",
-    "nationality": "Venezuela",
-    "streamplatform": "twitch"
+    "email": "Valentinacastillowork@gmail.com"
   }
+}
 ]
