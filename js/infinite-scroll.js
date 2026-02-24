@@ -32,6 +32,9 @@
   let lastSortClickTs = 0;
   let isRendering = false;
 
+  // ✅ Live map (solo twitch por tu integración actual)
+  let liveByUser = {};
+
   function shuffle(arr) {
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) {
@@ -39,6 +42,27 @@
       [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
+  }
+
+  function normalizeTwitchHandle(v) {
+    return String(v || "").trim().replace(/^@/, "").toLowerCase();
+  }
+
+  function isCreatorLiveNow(c) {
+    const p = String(c?.streamPlatform || "").trim().toLowerCase();
+    if (p !== "twitch") return false;
+
+    const h = normalizeTwitchHandle(c?.socials?.twitch);
+    return !!h && liveByUser[h] === true;
+  }
+
+  function buildRandomOrderWithLivePriority(list) {
+    const live = [];
+    const rest = [];
+
+    list.forEach(c => (isCreatorLiveNow(c) ? live : rest).push(c));
+
+    return shuffle(live).concat(shuffle(rest));
   }
 
   function isProbablyUrl(value) {
@@ -255,7 +279,8 @@
     renderedCount = 0;
 
     if (sortMode === "random") {
-      randomOrder = shuffle(allCreators);
+      // ✅ Random con prioridad de live (Twitch)
+      randomOrder = buildRandomOrderWithLivePriority(allCreators);
     }
 
     recomputeFiltered();
@@ -313,6 +338,16 @@
     });
   }
 
+  // ✅ Cuando TwitchIntegration emite el estado live, re-ordenamos RNDM
+  window.addEventListener("twitch:live-update", function (e) {
+    liveByUser = (e && e.detail && e.detail.liveByUser) ? e.detail.liveByUser : {};
+
+    if (sortMode === "random") {
+      randomOrder = buildRandomOrderWithLivePriority(allCreators);
+      resetAndRender();
+    }
+  });
+
   function init(creators) {
     allCreators = (creators || []).slice();
     creatorById = new Map(allCreators.map(c => [Number(c.id), c]));
@@ -320,8 +355,8 @@
     if (!initialized) {
       initialized = true;
 
-      // Aleatorio al cargar
-      randomOrder = shuffle(allCreators);
+      // ✅ Aleatorio al cargar (con prioridad live si ya hay data)
+      randomOrder = buildRandomOrderWithLivePriority(allCreators);
 
       updateSortButtonUI();
       recomputeFiltered();
@@ -341,7 +376,7 @@
     }
 
     // Si ya estaba inicializado, solo re-render
-    randomOrder = shuffle(allCreators);
+    randomOrder = buildRandomOrderWithLivePriority(allCreators);
     updateSortButtonUI();
     resetAndRender();
   }

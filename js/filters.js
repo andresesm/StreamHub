@@ -516,6 +516,7 @@
     __initialized: true,
     init,
     matches: creatorMatchesFilters,
+    getLiveByUser: () => liveByUser, // <- NUEVO (opcional, por si otro módulo lo necesita)
     onFilterChange: function () {
       refreshCounts();
       if (window.VSDInfiniteScroll) window.VSDInfiniteScroll.resetAndRender();
