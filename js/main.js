@@ -139,31 +139,34 @@
       return !!(creator && creator.ui && creator.ui[flagName] === true);
     }
 
-    // ✅ NUEVO: plataforma principal desde helper compartido (definido en filters.js)
+    // NUEVO: determinar plataforma principal desde creators.json
     function getStreamPlatform(creator) {
-      const p = window.VSDPlatform?.getStreamPlatform?.(creator) || "";
-      // fallback para no romper perfiles viejos SOLO en el modal
-      return p || "twitch";
+      const raw =
+        (creator && (creator.streamPlatform || creator.StreamPlatform || creator.stream_platform)) || "";
+      const p = String(raw).trim().toLowerCase();
+      if (["twitch", "kick", "youtube", "tiktok", "none"].includes(p)) return p;
+      // fallback para no romper perfiles existentes
+      return "twitch";
     }
 
     function setStreamButtonState(platform, url) {
       // limpiar clases previas
       const allPlatformClasses = ["platform--twitch", "platform--kick", "platform--youtube", "platform--tiktok"];
-      twitchBtn.classList.remove(...allPlatformClasses);
+      twitchBtn.classList.remove(...allPlatformClasses); // classList API [web:28]
 
       // guardar plataforma actual (útil para click handler)
-      twitchBtn.dataset.platform = platform;
+      twitchBtn.dataset.platform = platform; // dataset [web:70]
 
       if (platform === "none" || !url) {
         // Oculta botón totalmente
-        if (streamButtonMarker) streamButtonMarker.hidden = true;
+        if (streamButtonMarker) streamButtonMarker.hidden = true; // hidden [web:47]
         twitchBtn.disabled = true;
         twitchBtn.dataset.twitchUrl = "";
         return;
       }
 
       // Muestra botón
-      if (streamButtonMarker) streamButtonMarker.hidden = false;
+      if (streamButtonMarker) streamButtonMarker.hidden = false; // hidden [web:47]
 
       const label =
         platform === "twitch" ? "Twitch" :
@@ -240,7 +243,7 @@
 
       // Followers SOLO si la plataforma es Twitch
       const showTwitchFollowers = (streamPlatform === "twitch");
-      if (twitchFollowersBlock) twitchFollowersBlock.hidden = !showTwitchFollowers;
+      if (twitchFollowersBlock) twitchFollowersBlock.hidden = !showTwitchFollowers; // hidden [web:47]
 
       if (followersEl) {
         followersEl.textContent = showTwitchFollowers
@@ -301,7 +304,7 @@
         e.preventDefault();
         if (twitchBtn.disabled) return;
 
-        const platform = (twitchBtn.dataset.platform || "").toLowerCase();
+        const platform = (twitchBtn.dataset.platform || "").toLowerCase(); // dataset [web:70]
         if (!currentCreator || !platform || platform === "none") return;
 
         const url = getCreatorLink(currentCreator, platform);

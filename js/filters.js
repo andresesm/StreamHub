@@ -1,24 +1,6 @@
 (function () {
   if (window.VSDFilters && window.VSDFilters.__initialized) return;
 
-  // ✅ Helper compartido (sin archivo extra): unifica streamPlatform para filters + modal
-  window.VSDPlatform = window.VSDPlatform || {};
-
-  window.VSDPlatform.normalize = function (raw) {
-    const p = String(raw || "").trim().toLowerCase();
-    if (["twitch", "kick", "youtube", "tiktok", "none"].includes(p)) return p;
-    return "";
-  };
-
-  window.VSDPlatform.getStreamPlatform = function (creator) {
-    const raw =
-      creator?.streamPlatform ??
-      creator?.StreamPlatform ??
-      creator?.stream_platform ??
-      "";
-    return window.VSDPlatform.normalize(raw);
-  };
-
   const TAG_CONTAINER = document.getElementById("dynamicTagPills");
   const TAG_COUNT_ALL = document.getElementById("tag-count-all"); // si ya no lo usas, puedes eliminarlo del HTML
   const SEARCH_INPUT = document.getElementById("searchInput");
@@ -61,15 +43,75 @@
   let liveByUser = {};
   let liveUpdateListenerAttached = false;
 
+  // ✅ Totales fijos por plataforma (se calculan 1 vez con el dataset completo)
+  let platformTotals = null;
+
   function normalizeTwitchHandle(v) {
     return String(v || "").trim().replace(/^@/, "").toLowerCase();
   }
 
   // ✅ SOLO streamPlatform (sin fallback a creator.platform)
   function getCreatorPlatform(creator) {
-    const p = window.VSDPlatform?.getStreamPlatform?.(creator) || "";
+    const p = String(creator?.streamPlatform ?? "").trim().toLowerCase();
     if (!p || p === "none") return "";
     return p;
+  }
+
+  function computePlatformTotals(creators) {
+    const totals = { twitch: 0, kick: 0, youtube: 0, tiktok: 0 };
+
+    creators.forEach(c => {
+      const p = getCreatorPlatform(c);
+      if (p && totals[p] != null) totals[p] += 1;
+    });
+
+    return totals;
+  }
+
+  function ensurePlatformBtnParts() {
+    if (!PLATFORM_BTN) return null;
+
+    let labelSpan = PLATFORM_BTN.querySelector(".platform-label");
+    if (!labelSpan) {
+      labelSpan = document.createElement("span");
+      labelSpan.className = "platform-label";
+    }
+
+    let countSpan = PLATFORM_BTN.querySelector(".platform-count");
+    if (!countSpan) {
+      countSpan = document.createElement("span");
+      countSpan.className = "platform-count";
+    }
+
+    let caret = PLATFORM_BTN.querySelector(".platform-caret");
+    if (!caret) {
+      caret = document.createElement("span");
+      caret.className = "platform-caret";
+      caret.textContent = "▾";
+    }
+
+    // Re-armar el contenido del botón en un orden fijo (label + count + caret)
+    PLATFORM_BTN.textContent = "";
+    PLATFORM_BTN.appendChild(labelSpan);
+    PLATFORM_BTN.appendChild(document.createTextNode(" "));
+    PLATFORM_BTN.appendChild(countSpan);
+    PLATFORM_BTN.appendChild(document.createTextNode(" "));
+    PLATFORM_BTN.appendChild(caret);
+
+    return { labelSpan, countSpan, caret };
+  }
+
+  function updatePlatformSelectBtnCount() {
+    if (!PLATFORM_BTN) return;
+
+    const parts = ensurePlatformBtnParts();
+    if (!parts) return;
+
+    const label = PLATFORMS.find(p => p.key === selectedPlatform)?.label || "Twitch";
+    const n = platformTotals ? (platformTotals[selectedPlatform] || 0) : 0;
+
+    parts.labelSpan.textContent = label;
+    parts.countSpan.textContent = `(${n})`;
   }
 
   function setPanelOpen(panel, toggleBtn, open, maxHeightVh) {
@@ -218,18 +260,13 @@
 
     selectedPlatform = normalized;
 
-    // actualiza label + clase para colores
+    // actualiza clase para colores + label + contador (sin romper caret)
     if (PLATFORM_BTN) {
-      const label = PLATFORMS.find(p => p.key === normalized)?.label || "Twitch";
-      PLATFORM_BTN.textContent = label + " ";
-      const caret = document.createElement("span");
-      caret.className = "platform-caret";
-      caret.textContent = "▾";
-      PLATFORM_BTN.appendChild(caret);
-
       PLATFORM_BTN.classList.remove("platform--twitch", "platform--kick", "platform--youtube", "platform--tiktok");
       PLATFORM_BTN.classList.add(`platform--${normalized}`);
       PLATFORM_BTN.classList.add("is-active");
+
+      updatePlatformSelectBtnCount();
     }
 
     // live toggle solo twitch
@@ -498,6 +535,9 @@
     initialized = true;
 
     allCreators = creators.slice();
+
+    // ✅ calcular totales por plataforma (dataset completo)
+    platformTotals = computePlatformTotals(allCreators);
 
     // Construimos pills en base al dataset completo (pero el filtrado final depende de plataforma)
     const uniqueTags = extractUniqueTags(allCreators);

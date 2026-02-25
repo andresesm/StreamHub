@@ -1426,3 +1426,6 @@ body.header-hidden .filters-section{
     animation: none;
   }
 }
+
+
+.platform-count { opacity: .8; font-size: .9em; }
