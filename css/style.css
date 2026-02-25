@@ -1194,14 +1194,19 @@ body.header-hidden .filters-section{
 }
 
 .footer-logo {
-  max-width: min(260px, 80vw);
+  width: min(260px, 80vw);
   height: 40px;
-  width: auto;
   display: block;
   background-color: transparent;
   opacity: 0.9;
 
-  /* Pulso rojo (glow) sin “pintar” el PNG */
+  /* PNG real (sin mask, sin “pintar” con CSS) */
+  background-image: url("/assets/masinfo.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  /* Pulso rojo como glow */
   filter: drop-shadow(0 0 0 rgba(255, 0, 0, 0));
   will-change: filter;
 }
