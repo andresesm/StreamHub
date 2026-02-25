@@ -1,6 +1,24 @@
 (function () {
   if (window.VSDFilters && window.VSDFilters.__initialized) return;
 
+  // ✅ Helper compartido (sin archivo extra): unifica streamPlatform para filters + modal
+  window.VSDPlatform = window.VSDPlatform || {};
+
+  window.VSDPlatform.normalize = function (raw) {
+    const p = String(raw || "").trim().toLowerCase();
+    if (["twitch", "kick", "youtube", "tiktok", "none"].includes(p)) return p;
+    return "";
+  };
+
+  window.VSDPlatform.getStreamPlatform = function (creator) {
+    const raw =
+      creator?.streamPlatform ??
+      creator?.StreamPlatform ??
+      creator?.stream_platform ??
+      "";
+    return window.VSDPlatform.normalize(raw);
+  };
+
   const TAG_CONTAINER = document.getElementById("dynamicTagPills");
   const TAG_COUNT_ALL = document.getElementById("tag-count-all"); // si ya no lo usas, puedes eliminarlo del HTML
   const SEARCH_INPUT = document.getElementById("searchInput");
@@ -49,7 +67,7 @@
 
   // ✅ SOLO streamPlatform (sin fallback a creator.platform)
   function getCreatorPlatform(creator) {
-    const p = String(creator?.streamPlatform ?? "").trim().toLowerCase();
+    const p = window.VSDPlatform?.getStreamPlatform?.(creator) || "";
     if (!p || p === "none") return "";
     return p;
   }
