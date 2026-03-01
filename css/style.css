@@ -1431,71 +1431,34 @@ body.header-hidden .filters-section{
 .platform-count { opacity: .8; font-size: .9em; }
 
 /* =========================
-   PERF OVERRIDES (v1)
+   LIVE DOT: ESTÁTICO (sin titileo)
    Pegar al final del CSS
    ========================= */
 
-/* 1) Evita animaciones corriendo “invisibles” (splash oculto) */
-.splash:not(.is-visible) .pulse-dot::after,
-.splash:not(.is-visible) .pulse-ring{
-  animation: none !important;
+/* Apaga cualquier animación/transición en el módulo del badge */
+.creator-live-badge-card .live-dot,
+.twitch-live-badge .live-dot,
+.creator-live-badge-card .live-dot::before,
+.creator-live-badge-card .live-dot::after,
+.twitch-live-badge .live-dot::before,
+.twitch-live-badge .live-dot::after{
+  animation: none !important;      /* desactiva keyframes */
+  transition: none !important;     /* por si había fades */
+  opacity: 1 !important;           /* evita “blink” por opacity */
+  filter: none !important;         /* evita glow caro si existía */
+  box-shadow: none !important;     /* evita sombras pesadas */
 }
 
-/* 2) Footer: el pulso con filter:drop-shadow animado suele ser caro.
-      Mantén “glow” estático y anima SOLO en hover (más barato en uso real). */
-.footer-logo{
-  animation: none !important;
-  will-change: auto; /* evita forzar layer por filter */
-  filter: drop-shadow(0 0 6px rgba(255, 0, 0, 0.35));
-}
-
-.footer-logo-link:hover .footer-logo{
-  filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.85));
-}
-
-/* 3) Live badge: quita pulsos pesados del módulo Twitch (si están activos)
-      y deja un blink suave (opacity-only). */
+/* Déjalo como punto blanco fijo */
 .creator-live-badge-card .live-dot,
 .twitch-live-badge .live-dot{
-  animation: liveDotBlink 1.6s steps(2, end) infinite !important;
+  background: #fff !important;
 }
 
-.twitch-live-badge{
-  animation: none !important; /* desactiva modalPulse */
+/* Si además existía “ring/pulse” como elemento separado, lo ocultamos */
+.creator-live-badge-card .pulse-ring,
+.twitch-live-badge .pulse-ring,
+.creator-live-badge-card .pulse-dot::after,
+.twitch-live-badge .pulse-dot::after{
+  display: none !important;
 }
-
-@keyframes liveDotBlink{
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
-}
-
-/* 4) Baja un poco sombras grandes (muchas cards = mucho paint).
-      Mantén el look, pero con blur/alpha más contenidos. */
-:root{
-  --card-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
-  --card-shadow-hover: 0 12px 24px rgba(15, 23, 42, 0.18);
-}
-
-[data-theme="night"]{
-  --card-shadow: 0 16px 34px rgba(0, 0, 0, 0.65);
-  --card-shadow-hover: 0 22px 56px rgba(56, 189, 248, 0.35);
-}
-
-.creator-avatar{
-  box-shadow: 0 8px 12px rgba(15, 23, 42, 0.28);
-}
-
-/* 5) Reduce transiciones que fuerzan repaints (box-shadow en hover) */
-.creator-card,
-.platform-icon-btn,
-.filters-toggle-btn,
-.games-toggle-btn{
-  transition:
-    transform var(--transition-medium),
-    opacity var(--transition-medium),
-    background var(--transition-medium),
-    border-color var(--transition-medium);
-}
-
-/* (Opcional) si quieres mantener “algo” de transición de sombra,
-   puedes dejar solo la card y quitar el resto. */
