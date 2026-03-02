@@ -10,7 +10,6 @@
       });
   }
 
-  // Orden fijo requerido (debe coincidir con infinite-scroll.js)
   const SOCIAL_ORDER = ["twitch", "kick", "x", "ig", "tiktok", "youtube", "email"];
   const SOCIAL_LABEL = {
     twitch: "Twitch",
@@ -52,7 +51,6 @@
 
     if (creator.socials && creator.socials[key]) return creator.socials[key];
 
-    // compat viejo (opcional)
     if (creator.links && creator.links[key]) return creator.links[key];
     if (key === "x" && creator.links && creator.links.twitter) return creator.links.twitter;
     if (key === "ig" && creator.links && creator.links.instagram) return creator.links.instagram;
@@ -119,7 +117,6 @@
     const twitchBtn = document.getElementById("modalTwitchButton");
     const platformsContainer = document.getElementById("modalPlatformsContainer");
 
-    // Elementos específicos a ocultar/mostrar
     const twitchFollowersBlock = backdrop.querySelector("[data-modal-twitch-followers]");
     const streamButtonMarker = backdrop.querySelector("[data-modal-twitch-button]") || twitchBtn;
 
@@ -139,34 +136,28 @@
       return !!(creator && creator.ui && creator.ui[flagName] === true);
     }
 
-    // NUEVO: determinar plataforma principal desde creators.json
     function getStreamPlatform(creator) {
       const raw =
         (creator && (creator.streamPlatform || creator.StreamPlatform || creator.stream_platform)) || "";
       const p = String(raw).trim().toLowerCase();
       if (["twitch", "kick", "youtube", "tiktok", "none"].includes(p)) return p;
-      // fallback para no romper perfiles existentes
       return "twitch";
     }
 
     function setStreamButtonState(platform, url) {
-      // limpiar clases previas
       const allPlatformClasses = ["platform--twitch", "platform--kick", "platform--youtube", "platform--tiktok"];
-      twitchBtn.classList.remove(...allPlatformClasses); // classList API [web:28]
+      twitchBtn.classList.remove(...allPlatformClasses);
 
-      // guardar plataforma actual (útil para click handler)
-      twitchBtn.dataset.platform = platform; // dataset [web:70]
+      twitchBtn.dataset.platform = platform;
 
       if (platform === "none" || !url) {
-        // Oculta botón totalmente
-        if (streamButtonMarker) streamButtonMarker.hidden = true; // hidden [web:47]
+        if (streamButtonMarker) streamButtonMarker.hidden = true;
         twitchBtn.disabled = true;
         twitchBtn.dataset.twitchUrl = "";
         return;
       }
 
-      // Muestra botón
-      if (streamButtonMarker) streamButtonMarker.hidden = false; // hidden [web:47]
+      if (streamButtonMarker) streamButtonMarker.hidden = false;
 
       const label =
         platform === "twitch" ? "Twitch" :
@@ -211,7 +202,6 @@
       avatar.alt = `Avatar de ${creator.username}`;
       usernameEl.textContent = `@${creator.username}`;
 
-      // BIO
       if (hasText(creator.bio)) {
         bioEl.textContent = creator.bio;
         setDisplay(bioEl, true);
@@ -236,14 +226,11 @@
         gamesContainer.appendChild(span);
       });
 
-      // Plataforma principal
-      // Si aún tienes ui.hide_twitch heredado, lo tratamos como "none" para no romper tu configuración anterior.
       const uiHideTwitch = getUiFlag(creator, "hide_twitch");
       const streamPlatform = uiHideTwitch ? "none" : getStreamPlatform(creator);
 
-      // Followers SOLO si la plataforma es Twitch
       const showTwitchFollowers = (streamPlatform === "twitch");
-      if (twitchFollowersBlock) twitchFollowersBlock.hidden = !showTwitchFollowers; // hidden [web:47]
+      if (twitchFollowersBlock) twitchFollowersBlock.hidden = !showTwitchFollowers;
 
       if (followersEl) {
         followersEl.textContent = showTwitchFollowers
@@ -254,7 +241,6 @@
       residenceEl.textContent = creator.residence || "Desconocido";
       nationalityEl.textContent = creator.nationality || "Sin datos";
 
-      // Redes (iconitos)
       platformsContainer.innerHTML = "";
       const order =
         (window.VSDPlatformIcons && Array.isArray(window.VSDPlatformIcons.ORDER))
@@ -266,7 +252,6 @@
         if (el) platformsContainer.appendChild(el);
       });
 
-      // Botón principal según plataforma
       const streamUrl = (streamPlatform === "none") ? "" : getCreatorLink(creator, streamPlatform);
       setStreamButtonState(streamPlatform, streamUrl);
 
@@ -298,13 +283,12 @@
       if (evt.key === "Escape") close();
     });
 
-    // Botón grande (ahora multi-plataforma)
     if (twitchBtn) {
       twitchBtn.addEventListener("click", function (e) {
         e.preventDefault();
         if (twitchBtn.disabled) return;
 
-        const platform = (twitchBtn.dataset.platform || "").toLowerCase(); // dataset [web:70]
+        const platform = (twitchBtn.dataset.platform || "").toLowerCase();
         if (!currentCreator || !platform || platform === "none") return;
 
         const url = getCreatorLink(currentCreator, platform);
@@ -320,13 +304,253 @@
     initModal();
 
     fetchCreators().then(creators => {
-      // TwitchIntegration puede seguir existiendo; solo “importa” para los que tengan streamPlatform=twitch
       if (window.TwitchIntegration && typeof window.TwitchIntegration.init === "function") {
         window.TwitchIntegration.init(creators);
       }
 
       if (window.VSDFilters) window.VSDFilters.init(creators);
       if (window.VSDInfiniteScroll) window.VSDInfiniteScroll.init(creators);
+    });
+
+    /* ==========================
+       Conexión navbar móvil
+       ========================== */
+    const navHome = document.querySelector("[data-nav-home]");
+    const navCredits = document.querySelector("[data-nav-credits]");
+    const navTheme = document.querySelector("[data-nav-theme]");
+    const navSearch = document.querySelector("[data-nav-search]");
+
+    const footerCreditsBtn = document.getElementById("footerCreditsBtn");
+    const floatingThemeToggle = document.getElementById("floatingThemeToggle");
+
+    /* ===== Sync UI tema en navbar (clona icon + badge) ===== */
+    function syncThemeIconToNav() {
+      const dst = document.querySelector("[data-nav-theme] .mobile-nav__theme-ui");
+      const floatingBtn = document.getElementById("floatingThemeToggle");
+      if (!dst || !floatingBtn) return;
+
+      const icon = floatingBtn.querySelector(".floating-theme-icon");
+      const badge = floatingBtn.querySelector(".floating-theme-badge");
+
+      dst.innerHTML = "";
+      if (icon) dst.appendChild(icon.cloneNode(true));
+      if (badge) dst.appendChild(badge.cloneNode(true));
+    }
+
+    syncThemeIconToNav();
+
+    const floating = document.getElementById("floatingThemeToggle");
+    if (floating) {
+      new MutationObserver(syncThemeIconToNav).observe(floating, {
+        subtree: true,
+        childList: true,
+        characterData: true
+      });
+    }
+
+    new MutationObserver(syncThemeIconToNav).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme", "class"]
+    });
+
+    // Home: scroll al inicio
+    if (navHome) {
+      navHome.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+
+    // Créditos: toggle (si está abierto lo cierra; si está cerrado lo abre)
+    if (navCredits) {
+      navCredits.addEventListener("click", function () {
+        const creditsModal = document.getElementById("creditsModal");
+        const creditsCloseBtn = document.getElementById("creditsCloseBtn");
+
+        const isOpen = creditsModal && creditsModal.classList.contains("is-visible");
+
+        if (isOpen) {
+          if (creditsCloseBtn) creditsCloseBtn.click();
+          return;
+        }
+
+        if (footerCreditsBtn) footerCreditsBtn.click();
+        else window.dispatchEvent(new CustomEvent("vsd:open-credits"));
+      });
+    }
+
+    // Tema: reutiliza el botón flotante
+    if (navTheme && floatingThemeToggle) {
+      navTheme.addEventListener("click", function () {
+        floatingThemeToggle.click();
+        setTimeout(syncThemeIconToNav, 0);
+      });
+    }
+
+    void navSearch;
+
+    /* ==========================
+       Panel búsqueda móvil
+       ========================== */
+    const mobileSearchPanel = document.getElementById("mobileSearchPanel");
+    const mobileSearchCloseBtn = document.getElementById("mobileSearchCloseBtn");
+
+    const navSearchBtn = document.querySelector("[data-nav-search]");
+    const mobileSearchDummyCloseBtn = document.querySelector("[data-mobile-search-close]");
+
+    const mobileNav = document.querySelector(".mobile-nav");
+
+    const searchInput = document.getElementById("searchInput");
+    const filtersPanel = document.getElementById("filtersPanel");
+    const platformSelectWrap = document.getElementById("platformSelectWrap");
+    const sortAlphaBtn = document.getElementById("sortAlphaBtn");
+    const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+    const liveToggleBtn = document.getElementById("liveToggleBtn");
+
+    const gamesToggleBtn = document.getElementById("gamesToggleBtn");
+    const gamesPanel = document.getElementById("gamesPanel");
+    const gamesFilterGroup = document.querySelector(".games-filter-group");
+
+    const panelSearchMount = mobileSearchPanel ? mobileSearchPanel.querySelector(".mobile-search-panel__search") : null;
+    const panelFiltersMount = mobileSearchPanel ? mobileSearchPanel.querySelector(".mobile-search-panel__filters") : null;
+    const panelPlatformsMount = mobileSearchPanel ? mobileSearchPanel.querySelector(".mobile-search-panel__platforms") : null;
+
+    const searchAnchor = document.createComment("searchInput-anchor");
+    const filtersAnchor = document.createComment("filtersPanel-anchor");
+    const platformAnchor = document.createComment("platformSelectWrap-anchor");
+    const sortAnchor = document.createComment("sortAlphaBtn-anchor");
+    const clearAnchor = document.createComment("clearFiltersBtn-anchor");
+    const liveAnchor = document.createComment("liveToggleBtn-anchor");
+
+    let panelIsOpen = false;
+
+    function ensureAnchors() {
+      if (searchInput && !searchAnchor.parentNode) searchInput.parentNode.insertBefore(searchAnchor, searchInput);
+      if (filtersPanel && !filtersAnchor.parentNode) filtersPanel.parentNode.insertBefore(filtersAnchor, filtersPanel);
+      if (platformSelectWrap && !platformAnchor.parentNode) platformSelectWrap.parentNode.insertBefore(platformAnchor, platformSelectWrap);
+      if (sortAlphaBtn && !sortAnchor.parentNode) sortAlphaBtn.parentNode.insertBefore(sortAnchor, sortAlphaBtn);
+      if (clearFiltersBtn && !clearAnchor.parentNode) clearFiltersBtn.parentNode.insertBefore(clearAnchor, clearFiltersBtn);
+      if (liveToggleBtn && !liveAnchor.parentNode) liveToggleBtn.parentNode.insertBefore(liveAnchor, liveToggleBtn);
+    }
+
+    function openMobileSearchPanel() {
+      if (!mobileSearchPanel || !panelSearchMount || !panelFiltersMount || !panelPlatformsMount) return;
+      ensureAnchors();
+
+      if (window.matchMedia && !window.matchMedia("(max-width: 899px)").matches) return;
+
+      if (mobileNav) mobileNav.style.display = "none";
+      if (mobileSearchDummyCloseBtn) mobileSearchDummyCloseBtn.style.display = "inline-flex";
+
+      if (searchInput) panelSearchMount.appendChild(searchInput);
+      if (filtersPanel) panelFiltersMount.appendChild(filtersPanel);
+
+      if (clearFiltersBtn) panelPlatformsMount.appendChild(clearFiltersBtn);
+      if (platformSelectWrap) panelPlatformsMount.appendChild(platformSelectWrap);
+      if (liveToggleBtn) panelPlatformsMount.appendChild(liveToggleBtn);
+      if (sortAlphaBtn) panelPlatformsMount.appendChild(sortAlphaBtn);
+
+      const liveInFilters = document.getElementById("liveToggleBtn");
+      if (liveInFilters) {
+        panelPlatformsMount.appendChild(liveInFilters);
+      }
+
+      const gamesGroup = filtersPanel ? filtersPanel.querySelector(".games-filter-group") : null;
+
+      if (gamesGroup) {
+        let gamesTitle = filtersPanel.querySelector("#mobileGamesTitle");
+
+        if (!gamesTitle) {
+          gamesTitle = document.createElement("div");
+          gamesTitle.id = "mobileGamesTitle";
+          gamesTitle.className = "mobile-search-panel__section-title mobile-search-panel__section-title--spaced";
+          gamesTitle.textContent = "Filtrar por juegos";
+        }
+
+        gamesGroup.parentNode.insertBefore(gamesTitle, gamesGroup);
+      }
+
+      if (filtersPanel) {
+        filtersPanel.classList.add("is-open");
+        filtersPanel.setAttribute("aria-hidden", "false");
+      }
+
+      if (gamesToggleBtn) gamesToggleBtn.style.display = "none";
+      if (gamesPanel) {
+        gamesPanel.classList.add("is-open");
+        gamesPanel.setAttribute("aria-hidden", "false");
+      }
+      if (gamesFilterGroup) gamesFilterGroup.style.display = "";
+
+      mobileSearchPanel.setAttribute("aria-hidden", "false");
+      document.body.classList.add("mobile-search-open");
+      panelIsOpen = true;
+
+      if (searchInput) setTimeout(() => searchInput.focus(), 0);
+    }
+
+    function closeMobileSearchPanel() {
+      if (!mobileSearchPanel) return;
+      ensureAnchors();
+
+      if (mobileNav) mobileNav.style.display = "";
+      if (mobileSearchDummyCloseBtn) mobileSearchDummyCloseBtn.style.display = "";
+
+      if (searchInput && searchAnchor.parentNode) searchAnchor.parentNode.insertBefore(searchInput, searchAnchor.nextSibling);
+      if (filtersPanel && filtersAnchor.parentNode) filtersAnchor.parentNode.insertBefore(filtersPanel, filtersAnchor.nextSibling);
+      if (platformSelectWrap && platformAnchor.parentNode) platformAnchor.parentNode.insertBefore(platformSelectWrap, platformAnchor.nextSibling);
+      if (sortAlphaBtn && sortAnchor.parentNode) sortAnchor.parentNode.insertBefore(sortAlphaBtn, sortAnchor.nextSibling);
+      if (clearFiltersBtn && clearAnchor.parentNode) clearAnchor.parentNode.insertBefore(clearFiltersBtn, clearAnchor.nextSibling);
+      if (liveToggleBtn && liveAnchor.parentNode) liveAnchor.parentNode.insertBefore(liveToggleBtn, liveAnchor.nextSibling);
+
+      if (filtersPanel) {
+        filtersPanel.classList.remove("is-open");
+        filtersPanel.setAttribute("aria-hidden", "true");
+      }
+
+      if (gamesToggleBtn) gamesToggleBtn.style.display = "";
+      if (gamesPanel) {
+        gamesPanel.classList.remove("is-open");
+        gamesPanel.setAttribute("aria-hidden", "true");
+      }
+
+// Evitar aria-hidden sobre un ancestro que contiene el foco
+const active = document.activeElement;
+if (active && mobileSearchPanel.contains(active)) {
+  // Devuelve el foco a un botón visible (el de abrir búsqueda) o al body
+  if (navSearchBtn) navSearchBtn.focus();
+  else document.body.focus();
+}
+
+      mobileSearchPanel.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("mobile-search-open");
+      panelIsOpen = false;
+    }
+
+    function toggleMobileSearchPanel() {
+      if (panelIsOpen) closeMobileSearchPanel();
+      else openMobileSearchPanel();
+    }
+
+    if (navSearchBtn) {
+      navSearchBtn.addEventListener("click", function () {
+        toggleMobileSearchPanel();
+      });
+    }
+
+    if (mobileSearchCloseBtn) {
+      mobileSearchCloseBtn.addEventListener("click", function () {
+        closeMobileSearchPanel();
+      });
+    }
+
+    if (mobileSearchDummyCloseBtn) {
+      mobileSearchDummyCloseBtn.addEventListener("click", function () {
+        closeMobileSearchPanel();
+      });
+    }
+
+    document.addEventListener("keydown", function (evt) {
+      if (evt.key === "Escape" && panelIsOpen) closeMobileSearchPanel();
     });
   });
 })();
