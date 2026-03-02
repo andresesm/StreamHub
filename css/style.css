@@ -1970,3 +1970,16 @@ body.header-hidden .filters-section{
     -webkit-overflow-scrolling: touch;
   }
 }
+
+@media (max-width: 899px) {
+  /* Empuja el contenido del listado hacia abajo para no quedar bajo el header */
+  .creators-section {
+    padding-top: 14px;
+  }
+
+  /* Si tu grid es el que realmente “pega” con el header */
+  #creatorsGrid {
+    scroll-margin-top: 90px; /* ajusta según la altura real del header */
+  }
+}
+ 
