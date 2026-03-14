@@ -1,10 +1,412 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="day">
 <head>
-    <meta charset="UTF-8">
-    <title>StreamHUB</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StreamHUB 🇻🇪</title>
+  <meta name="description" content="Directorio de streamers venezolanos, búscalos por plataforma y estilo de contenido.">
+  <link rel="stylesheet" href="css/style.css">
+
+  <link rel="manifest" href="/assets/favicon/site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+
+  <link rel="icon" href="/assets/favicon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
 </head>
 <body>
-    ya no hay pagina por culpa de @mrfranda, todos los peos con el
+  <div class="app-root">
+
+    <!-- Splash screen -->
+    <div id="splashScreen" class="splash is-visible" aria-hidden="false">
+      <div class="splash-inner">
+        <div class="splash-badge splash-badge--dot" aria-hidden="true">
+          <span class="pulse-dot">
+            <span class="pulse-ring ring2" aria-hidden="true"></span>
+            <span class="pulse-ring ring3" aria-hidden="true"></span>
+          </span>
+        </div>
+        <h1 class="site-title">
+          <span class="site-title__stream">Stream</span><span class="site-title__hub">HUB</span>
+        </h1>
+        <p class="splash-subtitle">Interactúa para entrar</p>
+      </div>
+    </div>
+
+    <div id="appContent" class="app-content is-hidden-by-splash"></div>
+
+    <header class="site-header">
+      <div class="max-width">
+        <div class="branding">
+          <!--<img src="assets/logo-placeholder.svg" alt="Logo" class="logo">-->
+          <div class="branding-text">
+            <h1 class="site-title">
+              <span class="site-title__stream">Stream</span><span class="site-title__hub">HUB</span>
+            </h1>
+            <p class="site-subtitle">
+              Directorio de <b>streamers de la comunidad venezolana</b>, búscalos por juego  o tipo de contenido;
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSf6VPueqBXhFyG93NkeVK92rUbz7lSNQ0bB8HeJMzwVPyoO8Q/viewform">Formulario.</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="filters-section">
+      <div class="max-width">
+        <div class="filters-bar" id="filtersBar">
+          <div class="filters-left">
+            <div class="search-and-filter-row">
+              <div class="search-wrapper">
+                <input
+                  type="search"
+                  id="searchInput"
+                  class="search-input"
+                  placeholder="Buscar por nombre..."
+                  aria-label="Buscar creador por nombre">
+              </div>
+
+              <button
+                type="button"
+                id="filtersToggleBtn"
+                class="filters-toggle-btn"
+                aria-expanded="false"
+                aria-controls="filtersPanel"
+                aria-label="Mostrar o ocultar filtros avanzados">
+                <span class="filters-toggle-icon">☰</span>
+              </button>
+
+              <button
+                type="button"
+                id="clearFiltersBtn"
+                class="filters-toggle-btn"
+                aria-label="Limpiar filtros"
+                title="Limpiar filtros">
+                🗑
+              </button>
+
+              <!-- Orden alfabético -->
+              <button
+                type="button"
+                id="sortAlphaBtn"
+                class="tag-pill"
+                aria-pressed="false"
+                aria-label="Ordenar alfabéticamente"
+                title="Ordenar A→Z / Z→A (tercer click vuelve a aleatorio)">
+                AtoZ
+              </button>
+
+              <div class="platform-select" id="platformSelectWrap">
+                <button
+                  type="button"
+                  id="platformSelectBtn"
+                  class="tag-pill platform-select-btn platform--twitch is-active"
+                  aria-expanded="false"
+                  aria-controls="platformMenu"
+                  aria-label="Seleccionar plataforma">
+                  Twitch <span class="platform-caret">▾</span>
+                </button>
+
+                <div id="platformMenu" class="platform-menu" role="menu" aria-hidden="true">
+                  <button type="button" class="platform-menu-item" role="menuitem" data-platform="twitch">Twitch</button>
+                  <button type="button" class="platform-menu-item" role="menuitem" data-platform="kick">Kick</button>
+                  <button type="button" class="platform-menu-item" role="menuitem" data-platform="youtube">Youtube</button>
+                  <button type="button" class="platform-menu-item" role="menuitem" data-platform="tiktok">Tiktok</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="filters-panel" id="filtersPanel" aria-hidden="true">
+              <div class="tags-group" aria-label="Filtrar por categoría">
+                <div id="dynamicTagPills" class="dynamic-tags"></div>
+              </div>
+
+              <div class="games-filter-group">
+                <button
+                  type="button"
+                  id="gamesToggleBtn"
+                  class="games-toggle-btn"
+                  aria-expanded="false"
+                  aria-controls="gamesPanel">
+                  Juegos
+                  <span class="games-toggle-icon">▾</span>
+                </button>
+                <div class="games-panel" id="gamesPanel" aria-hidden="true"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="site-main">
+      <div class="max-width">
+        <section class="creators-section" aria-label="Listado de streamers">
+          <div id="creatorsGrid" class="creators-grid"></div>
+          <div id="gridSentinel" class="grid-sentinel" aria-hidden="true"></div>
+          <div id="loadingIndicator" class="loading-indicator" aria-hidden="true">
+            <span class="loader-dot"></span>
+            <span class="loader-dot"></span>
+            <span class="loader-dot"></span>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div id="profileModal" class="modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-dialog" role="document">
+        <button class="modal-close-btn" type="button" id="modalCloseBtn" aria-label="Cerrar perfil">×</button>
+        <div class="modal-content">
+          <div class="modal-avatar-wrapper">
+            <img id="modalAvatar" src="assets/avatar-placeholder-1.png" alt="Avatar del creador" class="modal-avatar">
+          </div>
+
+          <div class="modal-body">
+            <h2 id="modalUsername" class="modal-username">@username</h2>
+            <p id="modalBio" class="modal-bio">Biografía del creador.</p>
+
+            <div class="modal-twitch">
+              <h3 class="modal-section-title">Perfil</h3>
+              <div class="modal-twitch-grid">
+                <div class="twitch-stat" data-modal-twitch-followers>
+                  <span class="stat-label">Seguidores Twitch</span>
+                  <span class="stat-value" id="modalFollowers">—</span>
+                </div>
+                <div class="twitch-stat">
+                  <span class="stat-label">Residencia en</span>
+                  <span class="stat-value" id="modalLiveStatus">Desconocido</span>
+                </div>
+                <div class="twitch-stat">
+                  <span class="stat-label">Nacionalidad</span>
+                  <span class="stat-value" id="modalStreamTitle">Sin datos</span>
+                </div>
+              </div>
+
+              <button
+                id="modalTwitchButton"
+                class="primary-btn"
+                type="button"
+                data-modal-twitch-button
+                data-twitch-url="#">
+                Abrir perfil de Twitch
+              </button>
+            </div>
+
+            <div class="modal-platforms">
+              <h3 class="modal-section-title">Redes</h3>
+              <div id="modalPlatformsContainer" class="modal-platforms-list"></div>
+            </div>
+
+            <div class="modal-tags">
+              <h3 class="modal-section-title">Tags</h3>
+              <div id="modalTagsContainer" class="modal-tags-list"></div>
+            </div>
+
+            <div class="modal-games">
+              <h3 class="modal-section-title">Juegos</h3>
+              <div id="modalGamesContainer" class="modal-tags-list"></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="appBlurOverlay" class="app-blur-overlay"></div>
+
+<!-- Panel de búsqueda móvil (pantalla completa) -->
+<section
+  id="mobileSearchPanel"
+  class="mobile-search-panel"
+  aria-hidden="true"
+  aria-label="Búsqueda y filtros"
+>
+  <div class="mobile-search-panel__inner">
+    <header class="mobile-search-panel__header">
+      <button
+        type="button"
+        class="mobile-search-panel__close"
+        id="mobileSearchCloseBtn"
+        aria-label="Cerrar búsqueda"
+      >
+        ✕
+      </button>
+      <h2 class="mobile-search-panel__title">Búsqueda</h2>
+    </header>
+
+    <div class="mobile-search-panel__body">
+      <!-- 1) Botones arriba: limpiar, plataforma, en vivo, orden (JS los mueve aquí) -->
+      <div class="mobile-search-panel__platforms"></div>
+
+      <!-- 2) Buscador -->
+      <div class="mobile-search-panel__search"></div>
+
+      <!-- 3) Filtros -->
+      <div class="mobile-search-panel__filters">
+        <div class="mobile-search-panel__section-title">Filtrar por tipo contenido</div>
+
+        <!-- Aquí el JS monta #filtersPanel (que incluye tags) -->
+
+        <!-- Aquí el JS monta también #filtersPanel, y nosotros por CSS/JS forzamos #gamesPanel abierto -->
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+    <!-- Footer -->
+    <footer class="footer-container">
+      <div class="footer-table footer-single">
+        <a
+          id="footerCreditsBtn"
+          class="footer-logo-link"
+          href="javascript:void(0)"
+          aria-label="Créditos"
+        >
+          <span class="footer-logo" aria-hidden="true"></span>
+        </a>
+      </div>
+    </footer>
+
+    <div class="attribution">
+      <a href="https://github.com/andresesm/StreamHub"><strong>Github</strong></a>
+      <br>
+      Proyecto libre y sin patrocinio.
+      <br>
+      Web por <a href="https://billy.kuumedia.com.es/"><strong>Billy Billete 空</strong></a>
+    </div>
+
+    <div class="floating-actions">
+      <a
+        class="floating-note-btn"
+        href="https://forms.gle/98rMpJSiJTxxgk9R6"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Abrir formulario"
+      >📝</a>
+
+      <button
+        id="floatingThemeToggle"
+        class="floating-theme-toggle"
+        type="button"
+        aria-label="Cambiar tema"
+      >
+        <span class="floating-theme-icon">☾</span>
+      </button>
+    </div>
+
+    <!-- Modal créditos -->
+    <div
+      id="creditsModal"
+      class="modal-backdrop"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="creditsTitle"
+      aria-describedby="creditsText"
+    >
+      <div class="modal-dialog" role="document">
+        <button class="modal-close-btn" type="button" id="creditsCloseBtn" aria-label="Cerrar">×</button>
+
+        <div class="modal-content">
+          <div class="modal-body">
+            <p id="creditsText" class="modal-bio">
+              <b>La única persona responsable del sitio web es <a href="https://billy.kuumedia.com.es/">Billy Billete</a>, nadie más forma parte del proyecto a nivel "administración". La entera responsabilidad y consecuencias del sitio web deben ser atribuidas exclusiva y enteramente a mi persona.</b><br><br>
+              El único contacto oficial es <a href="mailto:andres@kuumedia.com.es">andres@kuumedia.com.es</a><br>
+              La página <b>NO ESTÁ PATROCINADA, NI LO ESTARÁ.</b> Es 100% sin ánimos de lucro. <i>(aunque si alguien quiere pagar el dominio <a href="https://nic.ve/">.ve o .com.ve</a> estaría bien)</i><br>
+              La página <b>NO actúa ni NUNCA actuará</b> como intermediario con nadie.<br>
+              La página <b>nunca se contactará</b> para pedirte datos sensibles de ninguna clase.<br>
+              ⚠️ <b>Nunca pediremos nada a cambio de estar registrado.</b> El registro es gratuito y voluntario. ⚠️<br>
+            </p>
+            <h2 id="creditsTitle" class="modal-username">Información General</h2>
+            <p class="modal-bio">
+              Todos los creadores listados aquí han ingresado su información voluntariamente en el
+              <a href="https://docs.google.com/forms/d/e/1FAIpQLSf6VPueqBXhFyG93NkeVK92rUbz7lSNQ0bB8HeJMzwVPyoO8Q/viewform">único formulario.</a><br><br>
+              Esta plataforma <b>NO</b> es un cementerio de perfiles que no stremean, si no stremeas con cierta regularidad, por favor no llenes el formulario; se buscan creadores activos.<br><br>
+              Todos los registros son validados <b>manualmente</b>.<br><br>
+              Si se te notificó que no podías ingresar a la página y crees que puede haber un error en la evaluación de tu perfil
+              <a href="https://x.com/andresesann/status/2026456777437429770">(como puede pasar por errores inocentes)</a>
+              <b>POR FAVOR NO ASUMAS</b>, ¡Comunicate!
+            </p>
+
+            <h2 class="modal-username" style="margin-top:18px;">Preguntas Frecuentes (FAQ)</h2>
+            <p class="modal-bio">
+              <b>P:</b> ¿Cuál es el propósito de este directorio?<br>
+              <b>R:</b> Conectar a streamers y/o viewers, ya sea por tipo de contenido o por juegos. Que si un jueves por la tarde no sabes qué ver, entres aquí y puedas tener la posibilidad de descubrir a alguien.<br><br>
+
+              <b>P:</b> ¿Cómo verificas las estadísticas?<br>
+              <b>R:</b> Actualmente estoy usando <a href="https://twitchtracker.com/">TwitchTracker</a> y <a href="https://sullygnome.com/">SullyGnome</a>, si conoces alguna más o mejor, por favor avisame.<br><br>
+
+
+              <b>P:</b> ¿Por qué la separación entre plataformas?<br>
+              <b>R:</b> La página se creo solamente con Twitch en mente por la posibilidad de usar su API, con la """"masividad"""" que tuvo por parte de otras plataformas decidí integrarlas también, a pesar de sus limitaciones.<br><br>
+
+              <b>P:</b> El formulario ha cambiado desde que me registre y quiero actualizar mis datos, ¿Qué hago?<br>
+              <b>R:</b> Escribeme por dm de <a href="https://x.com/andresesann">Twitter</a> con lo que quieras actualizar<br><br>
+
+              <b>P:</b> Me gustaría publicitar algo en la página, donde me contacto?<br>
+              <b>R:</b> No te contactes<br><br>
+
+              <b>P:</b> "Esta página es lo de siempre, solo ponen a sus amiguitos y no dejan crecer a los pequeños"<br>
+              <b>R:</b> Nada más alejado de la realidad y el espíritu de la pagina, vuelve a leer esta sección, el formulario, o <a href="https://x.com/andresesann/status/2023887140841812388">el tweet</a> donde se presenta el proyecto.<br>
+              
+              <b>P:</b> ¿Puedes ayudarme con...?<br>
+              <b>R:</b> Probablemente no, igual puedes escribirme por <a href="https://x.com/andresesann">Twitter</a><br><br>
+
+              <b>P:</b> Tengo un proyecto y me gustaría contactar masivamente a los creadores, me puedes dar la base de datos?<br>
+              <b>R:</b> no<br><br>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- Navbar móvil inferior -->
+<nav class="mobile-nav" aria-label="Navegación principal móvil">
+<button class="mobile-nav__btn" type="button" data-nav-home aria-label="Inicio">
+  <span class="mobile-nav__icon mobile-nav__icon--home" aria-hidden="true"></span>
+</button>
+
+<button class="mobile-nav__btn" type="button" data-nav-credits aria-label="Créditos">
+  <span class="mobile-nav__icon mobile-nav__icon--info" aria-hidden="true"></span>
+</button>
+
+<a class="mobile-nav__btn mobile-nav__btn--primary"
+   href="https://forms.gle/98rMpJSiJTxxgk9R6"
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="Formulario de inscripción">
+  <span class="mobile-nav__icon mobile-nav__icon--plus" aria-hidden="true"></span>
+</a>
+
+
+<button class="mobile-nav__btn" type="button" data-nav-theme aria-label="Cambiar tema">
+  <span class="mobile-nav__theme-ui" aria-hidden="true"></span>
+</button>
+
+<button class="mobile-nav__btn" type="button" data-nav-search aria-label="Buscar y filtrar">
+  <span class="mobile-nav__icon mobile-nav__icon--search" aria-hidden="true"></span>
+</button>
+</nav>
+
+</div>
+
+
+  <button class="mobile-search-dummy-btn" type="button" data-mobile-search-close>
+  Buscar
+</button>
+
+  <script defer src="js/theme-switcher.js"></script>
+  <script defer src="js/filters.js"></script>
+  <script defer src="js/infinite-scroll.js"></script>
+  <script defer src="js/main.js"></script>
+  <script defer src="js/splash.js"></script>
+  <script defer src="js/layout-offsets.js"></script>
+  <script defer src="js/header-autohide.js"></script>
+  <script defer src="js/twitch-integration.js"></script>
+  <script defer src="js/credits-modal.js"></script>
 </body>
 </html>
