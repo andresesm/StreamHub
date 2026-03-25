@@ -52,7 +52,13 @@
       "Fortnite",
       "Juegos indie",
       "Juegos de terror",
-      "Sims"
+      "Sims",
+      "Euro Truck Simulator",
+      "Juegos de historia",
+      "Minecraft",
+      "Multiplayer",
+      "Tetris",
+      "Variedad"
     ],
     "socials": {
       "twitch": "BillyBillete",
@@ -1163,7 +1169,7 @@
     "games": [
       "Roblox",
       "Call of Duty",
-      "Bloodstrike"
+      "Blood Strike"
     ],
     "socials": {
       "twitch": "genene666",
@@ -1845,7 +1851,7 @@
     "streamPlatform": "tiktok",
     "avatar_url": "assets/avatars/yodnann.webp",
     "tags": ["Just Chatting", "Alta interacción con el chat", "Muy animado", "Jugador casual", "Juegos cortos", "Dinámicas de salas de diferentes juegos"],
-    "games": ["Roblox", "Fortnite", "Call of Duty", "Bloodstrike"],
+    "games": ["Roblox", "Fortnite", "Call of Duty", "Blood Strike"],
     "bio": "",
     "followers": "",
     "residence": "Venezuela",
@@ -2107,7 +2113,7 @@
     "streamPlatform": "twitch",
     "avatar_url": "assets/avatars/FaarDaay.webp",
     "tags": ["Alta interacción con el chat", "Cocina", "Humor", "Just Chatting", "Jugador casual", "Juegos cortos", "Juegos largos", "Música", "Muy animado", "Roleplayer"],
-    "games": ["League of Legends", "Juegos indie", "Juegos de terror", "Survival Horror", "Soulslike", "Valorant", "Bloodstrike"],
+    "games": ["League of Legends", "Juegos indie", "Juegos de terror", "Survival Horror", "Soulslike", "Valorant", "Blood Strike"],
     "bio": "",
     "followers": "",
     "residence": "Argentina",
@@ -2451,7 +2457,7 @@
   "streamPlatform": "twitch",
   "avatar_url": "assets/avatars/svkottoo.webp",
   "tags": ["Humor", "Just Chatting", "Juegos cortos", "Juegos largos", "Música", "Muy animado", "Roleplayer"],
-  "games": ["Fortnite", "Juegos indie", "Juegos de terror", "Minecraft", "Roblox", "Variedad", "Valorant", "Bloodstrike"],
+  "games": ["Fortnite", "Juegos indie", "Juegos de terror", "Minecraft", "Roblox", "Variedad", "Valorant", "Blood Strike"],
   "bio": "",
   "followers": "",
   "residence": "Brasil",
@@ -3460,7 +3466,7 @@
       "Soulslike",
       "Variedad",
       "VRChat",
-      "Bloodstrike"
+      "Blood Strike"
     ],
     "bio": "",
     "followers": "",
