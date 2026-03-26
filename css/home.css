@@ -621,6 +621,7 @@ html[data-theme="day"] .landing-btn-primary:active {
   width: 3em;
   height: 3em;
   flex: 0 0 1.1em;
+  margin-top: 50px;
   vertical-align: -0.12em;
   color: var(--text-main);
   background-color: currentColor;
