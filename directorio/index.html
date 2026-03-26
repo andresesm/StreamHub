@@ -7,15 +7,15 @@
   <meta name="description" content="Portal de streamers de la comunidad venezolana">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="icon" href="../favicon.ico">
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4HJSCPDFJ6"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-4HJSCPDFJ6');
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4HJSCPDFJ6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4HJSCPDFJ6');
+  </script>
 </head>
 <body>
   <div class="app-root">
@@ -94,6 +94,7 @@
                     aria-haspopup="listbox"
                     aria-expanded="false"
                   ></button>
+
                   <div class="platform-menu" id="platformMenu" role="listbox" aria-hidden="true">
                     <button type="button" class="platform-menu-item" data-platform="twitch">Twitch</button>
                     <button type="button" class="platform-menu-item" data-platform="kick">Kick</button>
@@ -107,6 +108,7 @@
                 <div class="filter-block__head">
                   <h3>Etiquetas</h3>
                 </div>
+
                 <button
                   type="button"
                   id="tagsToggleBtn"
@@ -118,6 +120,7 @@
                     <span class="filter-block__caret" aria-hidden="true">▾</span>
                   </span>
                 </button>
+
                 <div id="dynamicTagPills" class="pills-grid filter-block__body"></div>
               </section>
 
@@ -125,6 +128,7 @@
                 <div class="filter-block__head">
                   <h3>Juegos</h3>
                 </div>
+
                 <button
                   type="button"
                   id="gamesToggleBtn"
@@ -136,6 +140,7 @@
                     <span class="filter-block__caret" aria-hidden="true">▾</span>
                   </span>
                 </button>
+
                 <div class="games-panel filter-block__body" id="gamesPanel" aria-hidden="false"></div>
               </section>
             </div>
@@ -150,6 +155,7 @@
 
           <div id="creatorsGrid" class="creators-grid"></div>
           <div id="gridSentinel" class="grid-sentinel" aria-hidden="true"></div>
+
           <div id="loadingIndicator" class="loading-indicator" aria-hidden="true">
             <span class="loader-dot"></span>
             <span class="loader-dot"></span>
@@ -184,5 +190,35 @@
   <script defer src="../js/infinite-scroll.js"></script>
   <script defer src="../js/main.js"></script>
   <script defer src="../js/twitch-integration.js"></script>
+
+  <script>
+  window.addEventListener('load', function () {
+    const root = document.documentElement;
+
+    const applyTheme = (theme) => {
+      const next = theme === 'night' ? 'night' : 'day';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    };
+
+    const savedTheme = localStorage.getItem('theme');
+    applyTheme(savedTheme || root.getAttribute('data-theme') || 'day');
+
+    const oldToggle = document.getElementById('themeToggle');
+    if (!oldToggle) return;
+
+    const newToggle = oldToggle.cloneNode(true);
+    oldToggle.replaceWith(newToggle);
+
+    newToggle.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const current = root.getAttribute('data-theme') === 'night' ? 'night' : 'day';
+      const next = current === 'night' ? 'day' : 'night';
+      applyTheme(next);
+    });
+  });
+</script>
 </body>
 </html>

@@ -31,6 +31,9 @@
   --bg-surface-elevated: var(--surface);
   --button-press-bg: #eef3fb;
   --button-press-text: var(--text);
+  --filter-active-bg: #111827;
+  --filter-active-text: #ffffff;
+  --filter-active-border: #111827;
 }
 
 :root[data-theme="night"] {
@@ -55,6 +58,9 @@
   --platform-x: #ffffff;
   --button-press-bg: #24314a;
   --button-press-text: #edf2ff;
+  --filter-active-bg: #edf2ff;
+  --filter-active-text: #0f172a;
+  --filter-active-border: #edf2ff;
 }
 
 @font-face {
@@ -209,7 +215,6 @@ img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  /*box-shadow: 0 2px 5px rgba(15, 23, 42, 0.18);*/
   transition:
     color var(--transition-fast),
     background-color var(--transition-fast),
@@ -307,9 +312,9 @@ img {
 .toolbar-btn.is-active,
 .tag-pill.is-active,
 .game-pill.is-active {
-  background: var(--text);
-  color: #fff;
-  border-color: var(--text);
+  background: var(--filter-active-bg);
+  color: var(--filter-active-text);
+  border-color: var(--filter-active-border);
 }
 
 .toolbar-btn--live.is-active {
@@ -562,7 +567,7 @@ img {
 
 .games-panel {
   padding-top: 10px;
-  gap: 6px!important; 
+  gap: 6px !important;
 }
 
 .pills-grid {
@@ -674,7 +679,6 @@ img {
   color: var(--text);
   font-size: 1rem;
   font-weight: 700;
-/*  line-height: 1.15;*/
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
@@ -979,13 +983,11 @@ img {
   }
 }
 
-
 .games-pills-container {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
-
 
 /* Mobile filters */
 @media (max-width: 900px) {
@@ -1230,4 +1232,4 @@ img {
   .filter-block.is-collapsed .filter-block__body {
     opacity: 0;
   }
-}
+  }
