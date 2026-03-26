@@ -1,0 +1,62 @@
+name: Single profile generation
+
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: "Username a probar"
+        required: true
+        default: "BillyBillete"
+
+jobs:
+  test-generate-profile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Verificar archivos base
+        run: |
+          test -f "u/profile-template.html"
+          test -f "data/creators.json"
+
+      - name: Verificar que el username exista en creators.json
+        run: |
+          USERNAME="${{ github.event.inputs.username }}"
+          jq -e --arg u "$USERNAME" '
+            map(select(
+              (.username // "") == $u or
+              (.slug // "") == $u or
+              (.id // "") == $u
+            )) | length > 0
+          ' data/creators.json > /dev/null
+
+      - name: Generar perfil de prueba
+        run: |
+          USERNAME="${{ github.event.inputs.username }}"
+          mkdir -p "u/$USERNAME"
+          cp "u/profile-template.html" "u/$USERNAME/index.html"
+          sed -i "s|PH-STREAMER-USERNAME|$USERNAME|g" "u/$USERNAME/index.html"
+          sed -i "s|PH-STREAMER-DISPLAYNAME|$USERNAME|g" "u/$USERNAME/index.html"
+
+      - name: Debug salida
+        run: |
+          USERNAME="${{ github.event.inputs.username }}"
+          echo "=== Árbol de u/ ==="
+          ls -R u
+          echo "=== Primeras líneas del HTML generado ==="
+          head -n 20 "u/$USERNAME/index.html"
+
+      - name: Validar salida generada
+        run: |
+          USERNAME="${{ github.event.inputs.username }}"
+          test -f "u/$USERNAME/index.html"
+          grep -q "$USERNAME" "u/$USERNAME/index.html"
+
+      - name: Subir artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: generated-profile-${{ github.event.inputs.username }}
+          path: u/${{ github.event.inputs.username }}/
+          if-no-files-found: error

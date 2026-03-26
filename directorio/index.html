@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Directorio | StreamHub</title>
+  <meta name="description" content="Portal de streamers de la comunidad venezolana">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="../favicon.ico">
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4HJSCPDFJ6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4HJSCPDFJ6');
+</script>
+</head>
+<body>
+  <div class="app-root">
+    <header class="site-header">
+      <div class="shell">
+        <div class="headerbar">
+          <a href="/" class="back-btn" aria-label="Volver">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span>Volver</span>
+          </a>
+
+          <div class="logo" aria-label="StreamHub">
+            <span class="logo-stream">Stream</span><span class="logo-hub">Hub</span>
+          </div>
+
+          <button
+            id="themeToggle"
+            class="theme-toggle"
+            type="button"
+            aria-label="Cambiar tema"
+            title="Cambiar tema"
+          >
+            <span class="theme-toggle-sun" aria-hidden="true">☀</span>
+            <span class="theme-toggle-moon" aria-hidden="true">☾</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="site-main" id="top">
+      <section class="directory-shell shell" id="directoryLayout">
+        <aside class="filters-column" aria-label="Filtros del directorio">
+          <div class="filters-card" id="filtersCard">
+            <div class="filters-card__header">
+              <div>
+                <h2>Filtros</h2>
+              </div>
+              <button type="button" id="clearFiltersBtn" class="ghost-btn">Limpiar</button>
+            </div>
+
+            <button
+              type="button"
+              id="filtersToggleBtn"
+              class="filters-master-toggle"
+              aria-expanded="false"
+            >
+              <span class="filters-master-toggle__label">Filtros</span>
+              <span class="filters-master-toggle__meta">
+                <span class="filters-master-toggle__caret" aria-hidden="true">▾</span>
+              </span>
+            </button>
+
+            <div class="filters-panel" id="filtersPanel" aria-hidden="false">
+              <div class="field-group">
+                <label class="field-label" for="searchInput">Búsqueda</label>
+                <div class="search-wrapper">
+                  <input
+                    type="search"
+                    id="searchInput"
+                    class="search-input"
+                    placeholder="@Streamer"
+                    aria-label="Búsqueda"
+                  >
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="platformSelectBtn">Plataforma</label>
+                <div class="platform-select" id="platformSelectWrap">
+                  <button
+                    type="button"
+                    id="platformSelectBtn"
+                    class="select-btn platform--twitch"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                  ></button>
+                  <div class="platform-menu" id="platformMenu" role="listbox" aria-hidden="true">
+                    <button type="button" class="platform-menu-item" data-platform="twitch">Twitch</button>
+                    <button type="button" class="platform-menu-item" data-platform="kick">Kick</button>
+                    <button type="button" class="platform-menu-item" data-platform="youtube">YouTube</button>
+                    <button type="button" class="platform-menu-item" data-platform="tiktok">TikTok</button>
+                  </div>
+                </div>
+              </div>
+
+              <section class="filter-block" id="tagsFilterBlock">
+                <div class="filter-block__head">
+                  <h3>Etiquetas</h3>
+                </div>
+                <button
+                  type="button"
+                  id="tagsToggleBtn"
+                  class="filter-block__toggle"
+                  aria-expanded="false"
+                >
+                  <span class="filter-block__label">Etiquetas</span>
+                  <span class="filter-block__meta">
+                    <span class="filter-block__caret" aria-hidden="true">▾</span>
+                  </span>
+                </button>
+                <div id="dynamicTagPills" class="pills-grid filter-block__body"></div>
+              </section>
+
+              <section class="filter-block games-filter-group" id="gamesFilterBlock">
+                <div class="filter-block__head">
+                  <h3>Juegos</h3>
+                </div>
+                <button
+                  type="button"
+                  id="gamesToggleBtn"
+                  class="filter-block__toggle"
+                  aria-expanded="false"
+                >
+                  <span class="filter-block__label">Juegos</span>
+                  <span class="filter-block__meta">
+                    <span class="filter-block__caret" aria-hidden="true">▾</span>
+                  </span>
+                </button>
+                <div class="games-panel filter-block__body" id="gamesPanel" aria-hidden="false"></div>
+              </section>
+            </div>
+          </div>
+        </aside>
+
+        <section class="results-column" aria-label="Listado de perfiles">
+          <div class="results-toolbar">
+            <button type="button" id="liveToggleBtn" class="toolbar-btn toolbar-btn--live" aria-pressed="false">En vivo</button>
+            <button type="button" id="sortAlphaBtn" class="toolbar-btn" aria-pressed="false">Rndm</button>
+          </div>
+
+          <div id="creatorsGrid" class="creators-grid"></div>
+          <div id="gridSentinel" class="grid-sentinel" aria-hidden="true"></div>
+          <div id="loadingIndicator" class="loading-indicator" aria-hidden="true">
+            <span class="loader-dot"></span>
+            <span class="loader-dot"></span>
+            <span class="loader-dot"></span>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div
+      id="creditsModal"
+      class="modal-backdrop"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="creditsTitle"
+      aria-describedby="creditsText"
+    >
+      <div class="modal-dialog credits-panel" role="document">
+        <button class="modal-close-btn" type="button" id="creditsCloseBtn" aria-label="Cerrar">×</button>
+        <div class="credits-panel__body">
+          <h2 id="creditsTitle" class="credits-title">Créditos</h2>
+          <p id="creditsText" class="credits-copy">
+            Esta versión está enfocada en un directorio con sidebar de filtros y tarjetas clickeables.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script defer src="../js/filters.js"></script>
+  <script defer src="../js/infinite-scroll.js"></script>
+  <script defer src="../js/main.js"></script>
+  <script defer src="../js/twitch-integration.js"></script>
+</body>
+</html>

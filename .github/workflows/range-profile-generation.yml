@@ -1,0 +1,118 @@
+name: Generate profiles by ID range
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_id:
+        description: "ID inicial"
+        required: true
+        default: "1"
+      end_id:
+        description: "ID final"
+        required: true
+        default: "50"
+
+jobs:
+  generate-profiles-by-range:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Verificar archivos base
+        run: |
+          test -f "u/profile-template.html"
+          test -f "data/creators.json"
+
+      - name: Generar perfiles por rango y crear log
+        shell: bash
+        run: |
+          START_ID="${{ github.event.inputs.start_id }}"
+          END_ID="${{ github.event.inputs.end_id }}"
+          LOG_FILE="profile-generation-log.csv"
+
+          if ! [[ "$START_ID" =~ ^[0-9]+$ ]]; then
+            echo "start_id inválido: $START_ID"
+            exit 1
+          fi
+
+          if ! [[ "$END_ID" =~ ^[0-9]+$ ]]; then
+            echo "end_id inválido: $END_ID"
+            exit 1
+          fi
+
+          if [ "$START_ID" -gt "$END_ID" ]; then
+            echo "El start_id no puede ser mayor al end_id"
+            exit 1
+          fi
+
+          echo "username,status,warning" > "$LOG_FILE"
+
+          jq -c --argjson start "$START_ID" --argjson end "$END_ID" '
+            map(select(
+              (.id != null) and
+              ((.id | tonumber) >= $start) and
+              ((.id | tonumber) <= $end)
+            ))[]
+          ' data/creators.json | while read -r creator; do
+            ID=$(echo "$creator" | jq -r '.id // empty')
+            USERNAME=$(echo "$creator" | jq -r '.username // empty')
+            DISPLAYNAME=$(echo "$creator" | jq -r '.username // empty')
+
+            if [ -z "$ID" ]; then
+              echo "\"\",\"skipped\",\"missing id\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if [ -z "$USERNAME" ]; then
+              echo "\"\",\"skipped\",\"missing username for id $ID\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            TARGET_DIR="u/$USERNAME"
+            TARGET_FILE="$TARGET_DIR/index.html"
+
+            mkdir -p "$TARGET_DIR"
+
+            if ! cp "u/profile-template.html" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"could not copy template\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-USERNAME|$USERNAME|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-USERNAME\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-DISPLAYNAME|$DISPLAYNAME|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-DISPLAYNAME\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if grep -q "$USERNAME" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"generated\",\"ok\"" >> "$LOG_FILE"
+            else
+              echo "\"$USERNAME\",\"warning\",\"file created but username not found in output\"" >> "$LOG_FILE"
+            fi
+          done
+
+      - name: Mostrar log generado
+        run: |
+          echo "=== profile-generation-log.csv ==="
+          cat profile-generation-log.csv
+
+      - name: Mostrar carpetas generadas
+        run: |
+          echo "=== Árbol de u/ ==="
+          ls -R u || true
+
+      - name: Subir artifact de perfiles
+        uses: actions/upload-artifact@v6
+        with:
+          name: generated-profiles-range-${{ github.event.inputs.start_id }}-${{ github.event.inputs.end_id }}
+          path: |
+            u/
+            profile-generation-log.csv
+          if-no-files-found: error
+          overwrite: true

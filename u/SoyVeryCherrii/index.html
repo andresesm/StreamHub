@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PH-STREAMER-TITLE</title>
+  <meta name="description" content="PH-STREAMER-DESCRIPTION" />
+  <meta name="creator-username" content="SoyVeryCherrii" />
+  <meta name="streamhub-creator-key" content="PH-STREAMER-DATAKEY" />
+
+  <link rel="canonical" href="PH-STREAMER-CANONICAL" />
+
+  <meta property="og:type" content="profile" />
+  <meta property="og:title" content="PH-STREAMER-TITLE" />
+  <meta property="og:description" content="PH-STREAMER-DESCRIPTION" />
+  <meta property="og:url" content="PH-STREAMER-OG-URL" />
+  <meta property="og:image" content="PH-STREAMER-AVATAR" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PH-STREAMER-TITLE" />
+  <meta name="twitter:image" content="PH-STREAMER-AVATAR" />
+  <title>SoyVeryCherrii | StreamHUB</title>
+  <link rel="stylesheet" href="../../css/sub-style.css">
+  <link rel="icon" href="../../favicon.ico">
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4HJSCPDFJ6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4HJSCPDFJ6');
+</script>
+</head>
+<body>
+    <script>
+    window.STREAMHUB_PROFILE_TEMPLATE = true;
+    window.CREATOR_TARGET = "PH-STREAMER-DATAKEY";
+    window.CREATOR_USERNAME = "SoyVeryCherrii";
+  </script>
+  <div class="page">
+<header class="headerbar">
+  <a href="/directorio/" class="back-btn" aria-label="Volver">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <span>Volver</span>
+  </a>
+
+  <div class="logo" aria-label="StreamHub">
+    <span class="logo-stream">Stream</span><span class="logo-hub">Hub</span>
+  </div>
+
+  <button
+    id="themeToggle"
+    class="theme-toggle"
+    type="button"
+    aria-label="Cambiar tema"
+    title="Cambiar tema"
+  >
+    <span class="theme-toggle-sun" aria-hidden="true">☀</span>
+    <span class="theme-toggle-moon" aria-hidden="true">☾</span>
+  </button>
+</header>
+
+
+
+    <main class="content">
+      <section class="columns">
+<aside class="col-left">
+  <div class="profile-photo-wrapper">
+            <img
+              src="PH-STREAMER-AVATAR"
+              alt="Foto de perfil de SoyVeryCherrii"
+              class="profile-photo"
+              id="creator-avatar"
+            />
+          </div>
+
+          <div class="profile-username">
+            <h1 class="username">SoyVeryCherrii</h1>
+            <span
+              class="username-check"
+              aria-label="Perfil verificado"
+              title="Perfil verificado"
+            ></span>
+          </div>
+
+          <p
+            class="profile-description"
+            data-twitch-description="SoyVeryCherrii"
+            data-twitch-description-fallback="Descripción no disponible.">
+            PH-STREAMER-DESCRIPTION
+          </p>
+
+  <p class="profile-meta">
+            <span class="meta-label">Residencia en</span>
+            <span class="meta-value" id="creator-residence"></span>
+            <span class="meta-flag" id="creator-residence-flag"></span>
+          </p>
+
+  <p class="profile-meta">
+            <span class="meta-label">Nacionalidad</span>
+            <span class="meta-value" id="creator-nationality"></span>
+            <span class="meta-flag" id="creator-nationality-flag"></span>
+          </p>
+
+  <div
+            class="profile-socials"
+            id="creator-socials"
+            aria-label="Redes sociales del creador"
+          ></div>
+</aside>
+
+        <section class="col-right">
+          <h2 class="section-title">Tipo de contenido</h2>
+          <div class="tags-container" id="creator-tags"></div>
+
+          <h2 class="section-title">Mis juegos</h2>
+          <section class="creator-games-section">
+            <div
+              id="creator-games"
+              class="creator-games-grid"
+              data-creator="PH-STREAMER-DATAKEY"
+            ></div>
+
+            <div id="creator-games-extra" class="creator-games-extra" hidden>
+              <div id="creator-games-pills" class="creator-games-pills"></div>
+            </div>
+          </section>
+        </section>
+      </section>
+      </section>
+
+<section class="bottom-section">
+  <div class="bottom-top">
+    <div class="featured-mini-creators">
+      <div class="featured-mini-creators__grid" id="featured-mini-creators"></div>
+    </div>
+  </div>
+
+<footer class="site-footer">
+  <div class="page footer-inner">
+    <p>2026 · StreamHUB™</p>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="/">Inicio</a>
+      <a href="/FAQ/">FAQ</a>
+      <a href="/registro/">Registro</a>
+    </nav>
+  </div>
+</footer>
+
+</section>
+
+    </main>
+  </div>
+<script defer src="../../js/game-cover-local.js"></script>
+<script defer src="../../js/twitch-integration.js"></script>
+<script defer src="../../js/streamhub-profile.js"></script>
+<script>
+  (function () {
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme === 'day' || savedTheme === 'night') {
+      root.setAttribute('data-theme', savedTheme);
+    } else if (!root.getAttribute('data-theme')) {
+      root.setAttribute('data-theme', 'day');
+    }
+
+    if (!themeToggle) return;
+
+    themeToggle.addEventListener('click', function () {
+      const current = root.getAttribute('data-theme') === 'night' ? 'night' : 'day';
+      const next = current === 'night' ? 'day' : 'night';
+
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  })();
+</script>
+</body>
+</html>

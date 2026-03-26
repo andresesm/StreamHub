@@ -1,8 +1,16 @@
-<html>
+<!DOCTYPE html>
+<html lang="es" data-theme="night">
 <head>
-    <meta charset="utf-8">
-    <title>StreamHUB</title>
-    <link rel="stylesheet" type="text/css" href="./style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio | StreamHUB</title>
+  <meta
+    name="description"
+    content="StreamHUB es un portal de streamers de la comunidad venezolana."
+  />
+  <meta name="theme-color" content="#050921" />
+  <link rel="icon" href="favicon.ico" />
+  <link rel="stylesheet" href="css/home.css" />
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4HJSCPDFJ6"></script>
 <script>
@@ -14,13 +22,79 @@
 </script>
 </head>
 <body>
-    <div class="bilmm izle">
-        <div class="hareket">█ █ █ █ █ █ █ █ █ █ █ <span style="color:red"> █ █ </span>81%
-            <br>
-            <br>&gt; sudo force-delete --no-log --purge-website StreamHUB
-            <br>&gt; sudo rm -rf /var/www/databases/creators.dbb
-            <br> &gt; -la /www/StreamHUB | grep "404_NOT_FOUND" <span id="imlec">█</span>
-        </div>
+  <header class="headerbar shell">
+    <div class="logo" aria-label="StreamHub">
+      <span class="logo-stream">Stream</span><span class="logo-hub">Hub</span>
     </div>
+
+    <button
+      id="themeToggle"
+      class="theme-toggle"
+      type="button"
+      aria-label="Cambiar tema"
+      title="Cambiar tema"
+    >
+      <span class="theme-toggle-sun" aria-hidden="true">☀</span>
+      <span class="theme-toggle-moon" aria-hidden="true">☾</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="landing-hero">
+      <div class="landing-overlay"></div>
+
+      <div class="landing-content shell">
+        <div class="landing-copy">
+          <h1>Portal de streamers de la comunidad venezolana</h1>
+          <p class="landing-subtitle">
+            Trabajo hecho desde la comunidad para la comunidad.
+          </p>
+
+          <div class="landing-actions">
+            <a href="../directorio/" class="landing-btn landing-btn-primary">Directorio</a>
+            <a href="../FAQ/" class="landing-btn">FAQ</a>
+            <a href="../registro/" class="landing-btn">Registro</a>
+            <a href="../billy/" class="landing-btn">Billy</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <p>2026 · StreamHUB™</p>
+
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="../">Inicio</a>
+        <a href="../FAQ/">FAQ</a>
+        <a href="../registro/">Registro</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const savedTheme = localStorage.getItem("theme");
+      const themeToggle = document.getElementById("themeToggle");
+
+      if (savedTheme === "day" || savedTheme === "night") {
+        root.setAttribute("data-theme", savedTheme);
+      } else if (!root.getAttribute("data-theme")) {
+        root.setAttribute("data-theme", "day");
+      }
+
+      if (themeToggle) {
+        themeToggle.addEventListener("click", function () {
+          const current =
+            root.getAttribute("data-theme") === "night" ? "night" : "day";
+          const next = current === "night" ? "day" : "night";
+          root.setAttribute("data-theme", next);
+          localStorage.setItem("theme", next);
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

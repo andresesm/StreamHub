@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="night">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inicio | StreamHUB</title>
+  <meta
+    name="description"
+    content="StreamHub"
+  />
+  <meta name="theme-color" content="#050921" />
+  <link rel="icon" href="../favicon.ico" />
+  <link rel="stylesheet" href="../css/home.css" />
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4HJSCPDFJ6"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-4HJSCPDFJ6');
+</script>
+</head>
+<body>
+
+
+<main>
+  <section class="landing-hero">
+    <div class="landing-overlay" aria-hidden="true"></div>
+
+    <div class="shell">
+      <div class="landing-content">
+        <div class="landing-copy">
+        <span class="smiley-icon" aria-hidden="true"></span>
+        <p class="message-body">No dejen de hacer cosas por los demás, ignoren a quien pueda hablar o señalarlos, disfruten de lo que sea que hagan, háganlo con cariño, con amor, por pasión y no sin esperar nada a cambio. <br><br> Que la única recompensa que buscan sea la satisfacción de hacer y lograr las cosas que ustedes mismos se proponen. <br><br> Es mas fácil sentarse a hablar que realmente ponerse a hacer las cosas. <br>
+<br> "Recuerda que solo un cambio en ti. Puede irradiar a miles de personas" <br><br>
+
+- Billy:)</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <p>2026 · StreamHUB™</p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="/">Inicio</a>
+        <a href="/FAQ/">FAQ</a>
+        <a href="/regsitro/">Registro</a>
+      </nav>
+    </div>
+  </footer>
+
+<script>
+  (function () {
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem('theme');
+    const themeToggle = document.getElementById('themeToggle');
+
+    if (savedTheme === 'day' || savedTheme === 'night') {
+      root.setAttribute('data-theme', savedTheme);
+    } else if (!root.getAttribute('data-theme')) {
+      root.setAttribute('data-theme', 'day');
+    }
+
+    if (themeToggle) {
+      themeToggle.addEventListener('click', function () {
+        const current = root.getAttribute('data-theme') === 'night' ? 'night' : 'day';
+        const next = current === 'night' ? 'day' : 'night';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      });
+    }
+  })();
+</script>
+</body>
+</html>
