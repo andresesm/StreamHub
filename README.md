@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/WSSH.svg" alt="Logo de StreamHUB" width="180">
+  <img src="assets/WSSH.svg" alt="Logo de StreamHUB" width="250">
 </p>
 
 <h1 align="center">StreamHUB</h1>
