@@ -1,6 +1,12 @@
-# StreamHUB
+<p align="center">
+  <img src="assets/WSSH.svg" alt="Logo de StreamHUB" width="180">
+</p>
 
-Directorio web estático de creadores y streamers, con fichas compactas, páginas de perfil, filtros por etiquetas y juegos, selector de plataforma y soporte para tema claro/oscuro.
+<h1 align="center">StreamHUB</h1>
+
+<p align="center">
+  Directorio web estático de creadores y streamers, con fichas compactas, páginas de perfil, filtros por etiquetas y juegos, selector de plataforma y soporte para tema claro/oscuro.
+</p>
 
 > Proyecto hecho sobre una estructura muy concreta. Si cambias nombres de clases, IDs, rutas o el esquema del JSON, es bastante probable que el sitio entero deje de funcionar.
 
