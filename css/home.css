@@ -70,15 +70,15 @@ html[data-theme="night"] {
 }
 
 @font-face {
-  font-family: "SplatinkLocal";
-  src: url("../assets/fonts/Splatink.woff2") format("woff2");
+  font-family: "OnlychalkLocal";
+  src: url("../assets/fonts/Onlychalk.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 .message {
-  font-family: "SplatinkLocal", "MontserratLocal", var(--font-family-base), sans-serif;
+  font-family: "OnlychalkLocal", "MontserratLocal", var(--font-family-base), sans-serif;
   font-weight: 400;
   line-height: 1.1;
   letter-spacing: 0.01em;
@@ -89,11 +89,11 @@ font-size:8rem;
 }
 
 .message-body {
-  font-family: "SplatinkLocal", "MontserratLocal", var(--font-family-base), sans-serif;
+  font-family: "OnlychalkLocal", "MontserratLocal", var(--font-family-base), sans-serif;
   font-weight: 400;
-  line-height: 1.1;
+  line-height: 0.8;
   letter-spacing: 0.01em;
-  font-size: 3rem;
+  font-size: 3.5rem;
 }
 
 *,
