@@ -16,6 +16,17 @@
   let gridMutationObserver = null;
   let modalWrapped = false;
   let originalModalOpen = null;
+  let currentProfileCreator = null;
+  let desktopLiveMediaQuery = null;
+  let desktopLiveMediaListenerBound = false;
+
+  const liveBottomState = {
+    mounted: false,
+    handle: '',
+    theme: '',
+    isDesktop: false,
+    isLive: false
+  };
 
   function normalizeTwitchHandle(v) {
     return String(v || '').trim().replace(/^@/, '').toLowerCase();
@@ -56,6 +67,359 @@
 
   function canRenderDesktopLivePanel() {
     return window.matchMedia(`(min-width: ${DESKTOP_LIVE_BREAKPOINT}px)`).matches;
+  }
+
+  function getCurrentThemeMode() {
+    const rawTheme = String(document.documentElement.getAttribute('data-theme') || '').trim().toLowerCase();
+
+    if (rawTheme === 'night' || rawTheme === 'dark') return 'dark';
+    if (rawTheme === 'day' || rawTheme === 'light') return 'light';
+
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  }
+
+  function getTwitchEmbedParent() {
+    const host = String(window.location.hostname || '').trim();
+    return host || 'localhost';
+  }
+
+  function createTwitchIframe(src, title, className) {
+    const iframe = document.createElement('iframe');
+    iframe.src = src;
+    iframe.className = className;
+    iframe.title = title;
+    iframe.loading = 'lazy';
+    iframe.allowFullscreen = true;
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    iframe.setAttribute('allow', 'autoplay; fullscreen');
+    return iframe;
+  }
+
+  function getProfileTwitchHandle(creator) {
+    if (getStreamPlatform(creator) !== "twitch") return "";
+    return normalizeTwitchHandle(creator?.socials?.twitch);
+  }
+
+  function getLiveBottomElements() {
+    return {
+      panel: document.getElementById('creator-live-bottom'),
+      embedRoot: document.getElementById('creator-live-bottom-embed')
+    };
+  }
+
+  function resetLiveBottomState() {
+    liveBottomState.mounted = false;
+    liveBottomState.handle = '';
+    liveBottomState.theme = '';
+    liveBottomState.isDesktop = false;
+    liveBottomState.isLive = false;
+  }
+
+  function clearProfileLiveBottom() {
+    const { panel, embedRoot } = getLiveBottomElements();
+    if (!panel || !embedRoot) return;
+
+    panel.hidden = true;
+    panel.dataset.livePanel = 'offline';
+    embedRoot.replaceChildren();
+
+    resetLiveBottomState();
+  }
+
+  function buildStreamSrc(twitchHandle) {
+    const parent = encodeURIComponent(getTwitchEmbedParent());
+    return (
+      `https://player.twitch.tv/?channel=${encodeURIComponent(twitchHandle)}` +
+      `&parent=${parent}&autoplay=false&muted=true`
+    );
+  }
+
+  function buildChatSrc(twitchHandle, theme) {
+    const parent = encodeURIComponent(getTwitchEmbedParent());
+    return (
+      `https://www.twitch.tv/embed/${encodeURIComponent(twitchHandle)}/chat` +
+      `?parent=${parent}&darkpopout=${theme === 'dark' ? 'true' : 'false'}`
+    );
+  }
+
+  function mountProfileLiveBottom(twitchHandle, theme) {
+    const { panel, embedRoot } = getLiveBottomElements();
+    if (!panel || !embedRoot) return;
+
+    const streamSlot = document.createElement('div');
+    streamSlot.className = 'live-bottom-slot live-bottom-slot--stream';
+    streamSlot.appendChild(
+      createTwitchIframe(
+        buildStreamSrc(twitchHandle),
+        `Stream de Twitch de ${twitchHandle}`,
+        'live-bottom-frame live-bottom-frame--stream'
+      )
+    );
+
+    const chatSlot = document.createElement('div');
+    chatSlot.className = 'live-bottom-slot live-bottom-slot--chat';
+    chatSlot.appendChild(
+      createTwitchIframe(
+        buildChatSrc(twitchHandle, theme),
+        `Chat de Twitch de ${twitchHandle}`,
+        'live-bottom-frame live-bottom-frame--chat'
+      )
+    );
+
+    embedRoot.replaceChildren(streamSlot, chatSlot);
+
+    panel.hidden = false;
+    panel.dataset.livePanel = 'live';
+
+    liveBottomState.mounted = true;
+    liveBottomState.handle = twitchHandle;
+    liveBottomState.theme = theme;
+    liveBottomState.isDesktop = true;
+    liveBottomState.isLive = true;
+  }
+
+  function updateLiveBottomChatTheme(twitchHandle, theme) {
+    const { panel, embedRoot } = getLiveBottomElements();
+    if (!panel || !embedRoot) return false;
+
+    const chatSlot = embedRoot.querySelector('.live-bottom-slot--chat');
+    if (!chatSlot) return false;
+
+    chatSlot.replaceChildren(
+      createTwitchIframe(
+        buildChatSrc(twitchHandle, theme),
+        `Chat de Twitch de ${twitchHandle}`,
+        'live-bottom-frame live-bottom-frame--chat'
+      )
+    );
+
+    panel.hidden = false;
+    panel.dataset.livePanel = 'live';
+
+    liveBottomState.theme = theme;
+    return true;
+  }
+
+  function updateProfileLiveBottom(creator, twitchData) {
+    const { panel, embedRoot } = getLiveBottomElements();
+    if (!panel || !embedRoot) return;
+
+    const isDesktop = canRenderDesktopLivePanel();
+    const twitchHandle = getProfileTwitchHandle(creator);
+    const isLive = !!(twitchHandle && twitchData && twitchData.isLive);
+    const theme = getCurrentThemeMode();
+
+    if (!isDesktop || !isLive) {
+      clearProfileLiveBottom();
+      liveBottomState.isDesktop = isDesktop;
+      liveBottomState.isLive = isLive;
+      return;
+    }
+
+    const sameHandle = liveBottomState.mounted && liveBottomState.handle === twitchHandle;
+    const themeChanged = liveBottomState.mounted && liveBottomState.theme !== theme;
+
+    if (!liveBottomState.mounted || !sameHandle) {
+      mountProfileLiveBottom(twitchHandle, theme);
+      return;
+    }
+
+    panel.hidden = false;
+    panel.dataset.livePanel = 'live';
+
+    if (themeChanged) {
+      const updated = updateLiveBottomChatTheme(twitchHandle, theme);
+      if (!updated) {
+        mountProfileLiveBottom(twitchHandle, theme);
+        return;
+      }
+    }
+
+    liveBottomState.mounted = true;
+    liveBottomState.handle = twitchHandle;
+    liveBottomState.theme = theme;
+    liveBottomState.isDesktop = true;
+    liveBottomState.isLive = true;
+  }
+
+  function updateCardTwitchIcon(card, twitchData) {
+    const twitchIcon = card.querySelector('.platform-icon-btn[data-platform="twitch"]');
+    if (!twitchIcon) return;
+
+    const followers = twitchData ? (twitchData.followerCount || 0) : 0;
+    const isLive = twitchData ? !!twitchData.isLive : false;
+
+    twitchIcon.dataset.followers = String(followers);
+    twitchIcon.dataset.isLive = String(isLive);
+    twitchIcon.dataset.tooltip = `${Number(followers).toLocaleString()} seguidores`;
+  }
+
+  function updateCardLiveIndicator(card, twitchData) {
+    const avatarWrapper = card.querySelector('.creator-avatar-wrapper');
+    if (!avatarWrapper) return;
+
+    const old = avatarWrapper.querySelector('.creator-live-badge-card');
+    if (old) old.remove();
+
+    if (twitchData && twitchData.isLive) {
+      const badge = document.createElement('div');
+      badge.className = 'creator-live-badge-card';
+      badge.innerHTML = `<span class="live-dot"></span><span class="live-text">EN VIVO</span>`;
+      avatarWrapper.appendChild(badge);
+    }
+  }
+
+  function updateAllCreatorCards() {
+    const cards = document.querySelectorAll('.creator-card');
+
+    cards.forEach(card => {
+      const twitchHandle = normalizeTwitchHandle(card?.dataset?.twitch);
+      if (!twitchHandle) return;
+
+      const twitchData = TwitchClient.getUserData(twitchHandle);
+      updateCardTwitchIcon(card, twitchData);
+      updateCardLiveIndicator(card, twitchData);
+    });
+  }
+
+  function updateModalFollowersStat(followers) {
+    const followersEl = document.getElementById('modalFollowers');
+    if (!followersEl) return;
+
+    const n = parseInt(followers || 0, 10) || 0;
+    followersEl.textContent = n.toLocaleString();
+  }
+
+  function addLiveIndicatorToModal() {
+    const avatarWrapper = document.querySelector('.modal-avatar-wrapper');
+    if (!avatarWrapper) return;
+
+    const liveContainer = document.createElement('div');
+    liveContainer.id = 'twitch-live-indicator';
+    liveContainer.className = 'twitch-live-container';
+    liveContainer.innerHTML = `
+      <div class="twitch-live-badge">
+        <span class="live-dot"></span>
+        <span class="live-text">EN VIVO</span>
+      </div>
+    `;
+
+    avatarWrapper.parentNode.insertBefore(liveContainer, avatarWrapper.nextSibling);
+  }
+
+  function enhanceModalWithTwitchData(creator) {
+    if (getStreamPlatform(creator) !== "twitch") return;
+
+    const twitchHandle = normalizeTwitchHandle(creator?.socials?.twitch);
+    if (!twitchHandle) return;
+
+    const twitchData = TwitchClient.getUserData(twitchHandle);
+    if (!twitchData) return;
+
+    const oldLiveIndicator = document.getElementById('twitch-live-indicator');
+    if (oldLiveIndicator) oldLiveIndicator.remove();
+
+    const avatar = document.getElementById('modalAvatar');
+    if (avatar) avatar.style.boxShadow = '';
+
+    const followers = twitchData.followerCount || 0;
+    updateModalFollowersStat(followers);
+
+    if (twitchData.isLive) {
+      addLiveIndicatorToModal();
+    }
+  }
+
+  function updateProfileLiveIndicator(creator, twitchData) {
+    const wrapper = document.querySelector('.profile-photo-wrapper');
+    const colLeft = document.querySelector('.col-left');
+
+    if (!wrapper || !colLeft) {
+      updateProfileLiveBottom(creator, twitchData);
+      return;
+    }
+
+    const old = wrapper.querySelector('.profile-live-badge');
+    if (old) old.remove();
+
+    wrapper.classList.remove('profile-photo-wrapper--live');
+    colLeft.classList.remove('profile-live-active');
+
+    if (!creator || !twitchData || !twitchData.isLive) {
+      updateProfileLiveBottom(null, null);
+      return;
+    }
+
+    const badge = document.createElement('div');
+    badge.className = 'profile-live-badge';
+    badge.textContent = 'EN VIVO';
+
+    wrapper.classList.add('profile-photo-wrapper--live');
+    colLeft.classList.add('profile-live-active');
+    wrapper.appendChild(badge);
+
+    updateProfileLiveBottom(creator, twitchData);
+  }
+
+  function refreshProfileLiveIndicator() {
+    if (!currentProfileCreator) {
+      updateProfileLiveBottom(null, null);
+      return;
+    }
+
+    const twitchHandle = getProfileTwitchHandle(currentProfileCreator);
+    if (!twitchHandle) {
+      updateProfileLiveIndicator(null, null);
+      return;
+    }
+
+    const twitchData = TwitchClient.getUserData(twitchHandle);
+    updateProfileLiveIndicator(currentProfileCreator, twitchData);
+  }
+
+  function observeGridChanges() {
+    const grid = document.getElementById('creatorsGrid');
+    if (!grid) return;
+
+    if (gridMutationObserver) {
+      gridMutationObserver.disconnect();
+      gridMutationObserver = null;
+    }
+
+    gridMutationObserver = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+          setTimeout(updateAllCreatorCards, 50);
+          break;
+        }
+      }
+    });
+
+    gridMutationObserver.observe(grid, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  function ensureDesktopLiveBreakpointListener() {
+    if (desktopLiveMediaListenerBound) return;
+
+    desktopLiveMediaQuery = window.matchMedia(`(min-width: ${DESKTOP_LIVE_BREAKPOINT}px)`);
+
+    const onBreakpointChange = () => {
+      refreshProfileLiveIndicator();
+    };
+
+    if (typeof desktopLiveMediaQuery.addEventListener === 'function') {
+      desktopLiveMediaQuery.addEventListener('change', onBreakpointChange);
+    } else if (typeof desktopLiveMediaQuery.addListener === 'function') {
+      desktopLiveMediaQuery.addListener(onBreakpointChange);
+    }
+
+    desktopLiveMediaListenerBound = true;
   }
 
   const TwitchClient = {
@@ -163,246 +527,6 @@
     }
   };
 
-  function updateAllCreatorCards() {
-    const cards = document.querySelectorAll('.creator-card');
-
-    cards.forEach(card => {
-      const twitchHandle = normalizeTwitchHandle(card?.dataset?.twitch);
-      if (!twitchHandle) return;
-
-      const twitchData = TwitchClient.getUserData(twitchHandle);
-      updateCardTwitchIcon(card, twitchData);
-      updateCardLiveIndicator(card, twitchData);
-    });
-  }
-
-  function updateCardTwitchIcon(card, twitchData) {
-    const twitchIcon = card.querySelector('.platform-icon-btn[data-platform="twitch"]');
-    if (!twitchIcon) return;
-
-    const followers = twitchData ? (twitchData.followerCount || 0) : 0;
-    const isLive = twitchData ? !!twitchData.isLive : false;
-
-    twitchIcon.dataset.followers = String(followers);
-    twitchIcon.dataset.isLive = String(isLive);
-    twitchIcon.dataset.tooltip = `${Number(followers).toLocaleString()} seguidores`;
-  }
-
-  function updateCardLiveIndicator(card, twitchData) {
-    const avatarWrapper = card.querySelector('.creator-avatar-wrapper');
-    if (!avatarWrapper) return;
-
-    const old = avatarWrapper.querySelector('.creator-live-badge-card');
-    if (old) old.remove();
-
-    if (twitchData && twitchData.isLive) {
-      const badge = document.createElement('div');
-      badge.className = 'creator-live-badge-card';
-      badge.innerHTML = `<span class="live-dot"></span><span class="live-text">EN VIVO</span>`;
-      avatarWrapper.appendChild(badge);
-    }
-  }
-
-  let currentProfileCreator = null;
-
-  function getProfileTwitchHandle(creator) {
-    if (getStreamPlatform(creator) !== "twitch") return "";
-    return normalizeTwitchHandle(creator?.socials?.twitch);
-  }
-
-  function getCurrentThemeMode() {
-    const rawTheme = String(document.documentElement.getAttribute('data-theme') || '').trim().toLowerCase();
-
-    if (rawTheme === 'night' || rawTheme === 'dark') return 'dark';
-    if (rawTheme === 'day' || rawTheme === 'light') return 'light';
-
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
-  }
-
-  function getTwitchEmbedParent() {
-    const host = String(window.location.hostname || '').trim();
-    return host || 'localhost';
-  }
-
-  function createTwitchIframe(src, title, className) {
-    const iframe = document.createElement('iframe');
-    iframe.src = src;
-    iframe.className = className;
-    iframe.title = title;
-    iframe.loading = 'lazy';
-    iframe.allowFullscreen = true;
-    iframe.setAttribute('scrolling', 'no');
-    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-    iframe.setAttribute('allow', 'autoplay; fullscreen');
-    return iframe;
-  }
-
-  function updateProfileLiveBottom(creator, twitchData) {
-    const panel = document.getElementById('creator-live-bottom');
-    const embedRoot = document.getElementById('creator-live-bottom-embed');
-
-    if (!panel || !embedRoot) return;
-
-    panel.hidden = true;
-    panel.dataset.livePanel = 'offline';
-    embedRoot.innerHTML = '';
-
-    if (!canRenderDesktopLivePanel()) return;
-
-    const twitchHandle = getProfileTwitchHandle(creator);
-    if (!twitchHandle || !twitchData || !twitchData.isLive) return;
-
-    const parent = encodeURIComponent(getTwitchEmbedParent());
-    const theme = getCurrentThemeMode();
-
-    const streamSrc =
-      `https://player.twitch.tv/?channel=${encodeURIComponent(twitchHandle)}` +
-      `&parent=${parent}&autoplay=false&muted=true`;
-
-    const chatSrc =
-      `https://www.twitch.tv/embed/${encodeURIComponent(twitchHandle)}/chat` +
-      `?parent=${parent}&darkpopout=${theme === 'dark' ? 'true' : 'false'}`;
-
-    const streamSlot = document.createElement('div');
-    streamSlot.className = 'live-bottom-slot live-bottom-slot--stream';
-    streamSlot.appendChild(
-      createTwitchIframe(
-        streamSrc,
-        `Stream de Twitch de ${twitchHandle}`,
-        'live-bottom-frame live-bottom-frame--stream'
-      )
-    );
-
-    const chatSlot = document.createElement('div');
-    chatSlot.className = 'live-bottom-slot live-bottom-slot--chat';
-    chatSlot.appendChild(
-      createTwitchIframe(
-        chatSrc,
-        `Chat de Twitch de ${twitchHandle}`,
-        'live-bottom-frame live-bottom-frame--chat'
-      )
-    );
-
-    embedRoot.appendChild(streamSlot);
-    embedRoot.appendChild(chatSlot);
-
-    panel.hidden = false;
-    panel.dataset.livePanel = 'live';
-  }
-
-  function updateProfileLiveIndicator(creator, twitchData) {
-    const wrapper = document.querySelector('.profile-photo-wrapper');
-    const colLeft = document.querySelector('.col-left');
-
-    if (!wrapper || !colLeft) return;
-
-    const old = wrapper.querySelector('.profile-live-badge');
-    if (old) old.remove();
-
-    wrapper.classList.remove('profile-photo-wrapper--live');
-    colLeft.classList.remove('profile-live-active');
-    updateProfileLiveBottom(null, null);
-
-    if (!creator || !twitchData || !twitchData.isLive) return;
-
-    const badge = document.createElement('div');
-    badge.className = 'profile-live-badge';
-    badge.textContent = 'EN VIVO';
-
-    wrapper.classList.add('profile-photo-wrapper--live');
-    colLeft.classList.add('profile-live-active');
-    wrapper.appendChild(badge);
-
-    updateProfileLiveBottom(creator, twitchData);
-  }
-
-  function refreshProfileLiveIndicator() {
-    if (!currentProfileCreator) return;
-
-    const twitchHandle = getProfileTwitchHandle(currentProfileCreator);
-    if (!twitchHandle) {
-      updateProfileLiveIndicator(null, null);
-      return;
-    }
-
-    const twitchData = TwitchClient.getUserData(twitchHandle);
-    updateProfileLiveIndicator(currentProfileCreator, twitchData);
-  }
-
-  function updateModalFollowersStat(followers) {
-    const followersEl = document.getElementById('modalFollowers');
-    if (!followersEl) return;
-
-    const n = parseInt(followers || 0, 10) || 0;
-    followersEl.textContent = n.toLocaleString();
-  }
-
-  function enhanceModalWithTwitchData(creator) {
-    if (getStreamPlatform(creator) !== "twitch") return;
-
-    const twitchHandle = normalizeTwitchHandle(creator?.socials?.twitch);
-    if (!twitchHandle) return;
-
-    const twitchData = TwitchClient.getUserData(twitchHandle);
-    if (!twitchData) return;
-
-    const oldLiveIndicator = document.getElementById('twitch-live-indicator');
-    if (oldLiveIndicator) oldLiveIndicator.remove();
-
-    const avatar = document.getElementById('modalAvatar');
-    if (avatar) avatar.style.boxShadow = '';
-
-    const followers = twitchData.followerCount || 0;
-    updateModalFollowersStat(followers);
-
-    if (twitchData.isLive) {
-      addLiveIndicatorToModal();
-    }
-  }
-
-  function addLiveIndicatorToModal() {
-    const avatarWrapper = document.querySelector('.modal-avatar-wrapper');
-    if (!avatarWrapper) return;
-
-    const liveContainer = document.createElement('div');
-    liveContainer.id = 'twitch-live-indicator';
-    liveContainer.className = 'twitch-live-container';
-    liveContainer.innerHTML = `
-      <div class="twitch-live-badge">
-        <span class="live-dot"></span>
-        <span class="live-text">EN VIVO</span>
-      </div>
-    `;
-
-    avatarWrapper.parentNode.insertBefore(liveContainer, avatarWrapper.nextSibling);
-  }
-
-  function observeGridChanges() {
-    const grid = document.getElementById('creatorsGrid');
-    if (!grid) return;
-
-    if (gridMutationObserver) {
-      gridMutationObserver.disconnect();
-      gridMutationObserver = null;
-    }
-
-    gridMutationObserver = new MutationObserver(mutations => {
-      for (const mutation of mutations) {
-        if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-          setTimeout(updateAllCreatorCards, 50);
-          break;
-        }
-      }
-    });
-
-    gridMutationObserver.observe(grid, {
-      childList: true,
-      subtree: true
-    });
-  }
-
   async function initTwitchIntegration(creators) {
     if (!creators || creators.length === 0) return;
 
@@ -410,7 +534,12 @@
     currentProfileCreator = Array.isArray(creators) && creators.length === 1 ? creators[0] : currentProfileCreator;
     allTwitchUsernames = extractTwitchUsernames(creators);
 
-    if (allTwitchUsernames.length === 0) return;
+    ensureDesktopLiveBreakpointListener();
+
+    if (allTwitchUsernames.length === 0) {
+      refreshProfileLiveIndicator();
+      return;
+    }
 
     if (abortController) abortController.abort();
     if (updateTimer) clearInterval(updateTimer);
@@ -655,14 +784,6 @@
     setTimeout(() => {
       refreshProfileLiveIndicator();
     }, 0);
-  });
-
-  window.addEventListener('resize', () => {
-    refreshProfileLiveIndicator();
-  });
-
-  window.addEventListener('orientationchange', () => {
-    refreshProfileLiveIndicator();
   });
 
   window.TwitchIntegration = {
