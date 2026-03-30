@@ -4,17 +4,15 @@
   const TWITCH_API_URL = 'https://apis-kuumedia-twitch-streamhub.lighdx.live/twitch';
   const CACHE_DURATION = 30000;
   const UPDATE_INTERVAL = 60000;
+  const DESKTOP_LIVE_BREAKPOINT = 1024;
 
   let initialized = false;
-
   let twitchDataCache = new Map();
   let pendingRequests = new Map();
   let abortController = null;
   let updateTimer = null;
-
   let allTwitchUsernames = [];
   let allCreators = [];
-
   let gridMutationObserver = null;
   let modalWrapped = false;
   let originalModalOpen = null;
@@ -56,6 +54,10 @@
     return out;
   }
 
+  function canRenderDesktopLivePanel() {
+    return window.matchMedia(`(min-width: ${DESKTOP_LIVE_BREAKPOINT}px)`).matches;
+  }
+
   const TwitchClient = {
     async getUsersData(usernames) {
       if (!Array.isArray(usernames) || usernames.length === 0) {
@@ -72,14 +74,12 @@
         throw new Error('No hay usernames válidos');
       }
 
-      // Aborta una "ronda" anterior completa (si existía)
       if (abortController) abortController.abort();
       abortController = new AbortController();
 
       const chunks = chunkArray(uniqueUsernames, 100);
       let allOk = true;
 
-      // En serie para evitar rate limits del proxy / Twitch
       for (const chunk of chunks) {
         const cacheKey = chunk.join(',');
         const cached = twitchDataCache.get(cacheKey);
@@ -96,8 +96,8 @@
         }
 
         const timeoutId = setTimeout(() => abortController.abort(), 8000);
-
         const requestPromise = this._makeRequest(chunk, cacheKey, timeoutId);
+
         pendingRequests.set(cacheKey, requestPromise);
 
         try {
@@ -130,22 +130,18 @@
         }
 
         const data = await response.json();
-
-        twitchDataCache.set(cacheKey, {
-          data,
-          timestamp: Date.now()
-        });
-
+        twitchDataCache.set(cacheKey, { data, timestamp: Date.now() });
         this._updateUserDataMap(data);
         return data;
-
       } catch (error) {
         clearTimeout(timeoutId);
+
         if (error.name === 'AbortError') {
           console.warn('⏱️ [Twitch] Timeout getting data');
         } else {
           console.error('❌ [Twitch] Error:', error.message);
         }
+
         return null;
       }
     },
@@ -202,14 +198,10 @@
     if (twitchData && twitchData.isLive) {
       const badge = document.createElement('div');
       badge.className = 'creator-live-badge-card';
-      badge.innerHTML = `
-        <span class="live-dot"></span>
-        <span class="live-text">EN VIVO</span>
-      `;
+      badge.innerHTML = `<span class="live-dot"></span><span class="live-text">EN VIVO</span>`;
       avatarWrapper.appendChild(badge);
     }
   }
-
 
   let currentProfileCreator = null;
 
@@ -218,9 +210,92 @@
     return normalizeTwitchHandle(creator?.socials?.twitch);
   }
 
+  function getCurrentThemeMode() {
+    const rawTheme = String(document.documentElement.getAttribute('data-theme') || '').trim().toLowerCase();
+
+    if (rawTheme === 'night' || rawTheme === 'dark') return 'dark';
+    if (rawTheme === 'day' || rawTheme === 'light') return 'light';
+
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+  }
+
+  function getTwitchEmbedParent() {
+    const host = String(window.location.hostname || '').trim();
+    return host || 'localhost';
+  }
+
+  function createTwitchIframe(src, title, className) {
+    const iframe = document.createElement('iframe');
+    iframe.src = src;
+    iframe.className = className;
+    iframe.title = title;
+    iframe.loading = 'lazy';
+    iframe.allowFullscreen = true;
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    iframe.setAttribute('allow', 'autoplay; fullscreen');
+    return iframe;
+  }
+
+  function updateProfileLiveBottom(creator, twitchData) {
+    const panel = document.getElementById('creator-live-bottom');
+    const embedRoot = document.getElementById('creator-live-bottom-embed');
+
+    if (!panel || !embedRoot) return;
+
+    panel.hidden = true;
+    panel.dataset.livePanel = 'offline';
+    embedRoot.innerHTML = '';
+
+    if (!canRenderDesktopLivePanel()) return;
+
+    const twitchHandle = getProfileTwitchHandle(creator);
+    if (!twitchHandle || !twitchData || !twitchData.isLive) return;
+
+    const parent = encodeURIComponent(getTwitchEmbedParent());
+    const theme = getCurrentThemeMode();
+
+    const streamSrc =
+      `https://player.twitch.tv/?channel=${encodeURIComponent(twitchHandle)}` +
+      `&parent=${parent}&autoplay=false&muted=true`;
+
+    const chatSrc =
+      `https://www.twitch.tv/embed/${encodeURIComponent(twitchHandle)}/chat` +
+      `?parent=${parent}&darkpopout=${theme === 'dark' ? 'true' : 'false'}`;
+
+    const streamSlot = document.createElement('div');
+    streamSlot.className = 'live-bottom-slot live-bottom-slot--stream';
+    streamSlot.appendChild(
+      createTwitchIframe(
+        streamSrc,
+        `Stream de Twitch de ${twitchHandle}`,
+        'live-bottom-frame live-bottom-frame--stream'
+      )
+    );
+
+    const chatSlot = document.createElement('div');
+    chatSlot.className = 'live-bottom-slot live-bottom-slot--chat';
+    chatSlot.appendChild(
+      createTwitchIframe(
+        chatSrc,
+        `Chat de Twitch de ${twitchHandle}`,
+        'live-bottom-frame live-bottom-frame--chat'
+      )
+    );
+
+    embedRoot.appendChild(streamSlot);
+    embedRoot.appendChild(chatSlot);
+
+    panel.hidden = false;
+    panel.dataset.livePanel = 'live';
+  }
+
   function updateProfileLiveIndicator(creator, twitchData) {
     const wrapper = document.querySelector('.profile-photo-wrapper');
     const colLeft = document.querySelector('.col-left');
+
     if (!wrapper || !colLeft) return;
 
     const old = wrapper.querySelector('.profile-live-badge');
@@ -228,6 +303,7 @@
 
     wrapper.classList.remove('profile-photo-wrapper--live');
     colLeft.classList.remove('profile-live-active');
+    updateProfileLiveBottom(null, null);
 
     if (!creator || !twitchData || !twitchData.isLive) return;
 
@@ -238,15 +314,19 @@
     wrapper.classList.add('profile-photo-wrapper--live');
     colLeft.classList.add('profile-live-active');
     wrapper.appendChild(badge);
+
+    updateProfileLiveBottom(creator, twitchData);
   }
 
   function refreshProfileLiveIndicator() {
     if (!currentProfileCreator) return;
+
     const twitchHandle = getProfileTwitchHandle(currentProfileCreator);
     if (!twitchHandle) {
       updateProfileLiveIndicator(null, null);
       return;
     }
+
     const twitchData = TwitchClient.getUserData(twitchHandle);
     updateProfileLiveIndicator(currentProfileCreator, twitchData);
   }
@@ -308,7 +388,7 @@
       gridMutationObserver = null;
     }
 
-    gridMutationObserver = new MutationObserver((mutations) => {
+    gridMutationObserver = new MutationObserver(mutations => {
       for (const mutation of mutations) {
         if (mutation.addedNodes && mutation.addedNodes.length > 0) {
           setTimeout(updateAllCreatorCards, 50);
@@ -317,7 +397,10 @@
       }
     });
 
-    gridMutationObserver.observe(grid, { childList: true, subtree: true });
+    gridMutationObserver.observe(grid, {
+      childList: true,
+      subtree: true
+    });
   }
 
   async function initTwitchIntegration(creators) {
@@ -326,23 +409,32 @@
     allCreators = creators;
     currentProfileCreator = Array.isArray(creators) && creators.length === 1 ? creators[0] : currentProfileCreator;
     allTwitchUsernames = extractTwitchUsernames(creators);
+
     if (allTwitchUsernames.length === 0) return;
 
     if (abortController) abortController.abort();
     if (updateTimer) clearInterval(updateTimer);
 
     const data = await TwitchClient.getUsersData(allTwitchUsernames);
+
     if (!data) {
       setTimeout(async () => {
         await TwitchClient.getUsersData(allTwitchUsernames);
         updateAllCreatorCards();
+        refreshProfileLiveIndicator();
       }, UPDATE_INTERVAL);
     } else {
       updateAllCreatorCards();
       refreshProfileLiveIndicator();
     }
 
-    if (!modalWrapped && window.VSDModal && typeof window.VSDModal.open === "function") {
+    updateTimer = setInterval(async () => {
+      await TwitchClient.getUsersData(allTwitchUsernames);
+      updateAllCreatorCards();
+      refreshProfileLiveIndicator();
+    }, UPDATE_INTERVAL);
+
+    if (!modalWrapped && window.VSDModal && typeof window.VSDModal.open === 'function') {
       modalWrapped = true;
       originalModalOpen = window.VSDModal.open;
 
@@ -357,10 +449,10 @@
   }
 
   function addTwitchStyles() {
-    if (document.getElementById("twitchIntegrationStyles")) return;
+    if (document.getElementById('twitchIntegrationStyles')) return;
 
     const style = document.createElement('style');
-    style.id = "twitchIntegrationStyles";
+    style.id = 'twitchIntegrationStyles';
     style.textContent = `
       .twitch-live-container {
         text-align: center;
@@ -378,9 +470,9 @@
         border-radius: 10px;
         font-size: 0.82rem;
         font-weight: 600;
-        box-shadow: 0 4px 15px rgba(255,0,0,0.55);
+        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.55);
         animation: modalPulse 2s infinite;
-        border: 1px solid rgba(255,255,255,0.25);
+        border: 1px solid rgba(255, 255, 255, 0.25);
         text-transform: uppercase;
         letter-spacing: 0.4px;
         margin: 0 auto;
@@ -416,7 +508,7 @@
         border-radius: 0 0 18px 18px;
         background: linear-gradient(135deg, #ef4444, #dc2626);
         color: #ffffff;
-        font-family: "MontserratLocal", sans-serif;
+        font-family: MontserratLocal, sans-serif;
         font-size: 1.5rem;
         font-weight: 650;
         letter-spacing: 0.02em;
@@ -469,7 +561,7 @@
         font-size: 0.60rem;
         font-weight: 600;
         box-shadow: 0 3px 8px rgba(255, 0, 0, 0.22);
-        border: 1px solid rgba(255,255,255,0.18);
+        border: 1px solid rgba(255, 255, 255, 0.18);
         z-index: 6;
         text-transform: uppercase;
         pointer-events: none;
@@ -482,7 +574,7 @@
         height: 5px;
         background: white;
         border-radius: 50%;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
         animation: dotPulse 1s infinite;
       }
 
@@ -492,11 +584,11 @@
         font-weight: 700;
       }
 
-      .platform-icon-btn[data-platform="twitch"]{
+      .platform-icon-btn[data-platform="twitch"] {
         position: relative;
       }
 
-      .platform-icon-btn[data-platform="twitch"][data-tooltip]:hover::after{
+      .platform-icon-btn[data-platform="twitch"][data-tooltip]:hover::after {
         content: attr(data-tooltip);
         position: absolute;
         bottom: 100%;
@@ -510,16 +602,16 @@
         white-space: nowrap;
         z-index: 1000;
         margin-bottom: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        border: 1px solid rgba(255,255,255,0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         pointer-events: none;
         font-weight: 500;
       }
 
-      .platform-icon-btn[data-platform="twitch"][data-tooltip]:hover::before{
-        content: '';
+      .platform-icon-btn[data-platform="twitch"][data-tooltip]:hover::before {
+        content: "";
         position: absolute;
-        bottom: calc(100% + 2px);
+        bottom: calc(100% - 2px);
         left: 50%;
         transform: translateX(-50%);
         border-width: 5px;
@@ -528,9 +620,9 @@
       }
 
       @keyframes modalPulse {
-        0% { box-shadow: 0 4px 15px rgba(255,0,0,0.55); }
-        50% { box-shadow: 0 4px 22px rgba(255,0,0,0.95); }
-        100% { box-shadow: 0 4px 15px rgba(255,0,0,0.55); }
+        0% { box-shadow: 0 4px 15px rgba(255, 0, 0, 0.55); }
+        50% { box-shadow: 0 4px 22px rgba(255, 0, 0, 0.95); }
+        100% { box-shadow: 0 4px 15px rgba(255, 0, 0, 0.55); }
       }
 
       @keyframes dotPulse {
@@ -539,16 +631,15 @@
         100% { opacity: 1; transform: scale(1); }
       }
 
-      [data-theme="night"] .twitch-live-badge {
-        border: 1px solid rgba(255,255,255,0.45);
+      html[data-theme="night"] .twitch-live-badge {
+        border: 1px solid rgba(255, 255, 255, 0.45);
       }
     `;
 
     document.head.appendChild(style);
   }
 
-
-  window.addEventListener('streamhub:profile-loaded', (event) => {
+  window.addEventListener('streamhubprofile-loaded', event => {
     currentProfileCreator = event?.detail?.creator || null;
     refreshProfileLiveIndicator();
   });
@@ -557,11 +648,29 @@
     refreshProfileLiveIndicator();
   });
 
+  window.addEventListener('click', event => {
+    const toggle = event.target.closest('#themeToggle');
+    if (!toggle) return;
+
+    setTimeout(() => {
+      refreshProfileLiveIndicator();
+    }, 0);
+  });
+
+  window.addEventListener('resize', () => {
+    refreshProfileLiveIndicator();
+  });
+
+  window.addEventListener('orientationchange', () => {
+    refreshProfileLiveIndicator();
+  });
+
   window.TwitchIntegration = {
     init: initTwitchIntegration,
     refresh: async () => {
       await TwitchClient.getUsersData(allTwitchUsernames);
       updateAllCreatorCards();
+      refreshProfileLiveIndicator();
     },
     getClient: () => TwitchClient,
     updateCards: updateAllCreatorCards
@@ -572,5 +681,4 @@
   } else {
     addTwitchStyles();
   }
-
 })();
