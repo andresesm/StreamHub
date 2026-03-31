@@ -1,4 +1,4 @@
-name: linkshub-w-delete-rangev3
+name: linkshub-w-delete-rangev4
 
 on:
   workflow_dispatch:
@@ -175,74 +175,74 @@ jobs:
             export PH_LINK_TWITCH PH_LINK_KICK PH_LINK_IG PH_LINK_X PH_LINK_YOUTUBE PH_LINK_TIKTOK PH_LINK_EMAIL
             export PH_TEXT_TWITCH PH_TEXT_KICK PH_TEXT_IG PH_TEXT_X PH_TEXT_YOUTUBE PH_TEXT_TIKTOK PH_TEXT_EMAIL
 
-            cat > /tmp/process_profile.py <<'PY'
-import os
-import re
-from pathlib import Path
+            cat >/tmp/process_profile.py <<'PY'
+            import os
+            import re
+            from pathlib import Path
 
-path = Path(os.environ["TARGET_FILE"])
-html = path.read_text(encoding="utf-8")
+            path = Path(os.environ["TARGET_FILE"])
+            html = path.read_text(encoding="utf-8")
 
-replacements = {
-    "PH-STREAMER-USERNAME": os.environ["USERNAME"],
-    "PH-STREAMER-DISPLAYNAME": os.environ["DISPLAYNAME"],
-    "PH-STREAMER-NAME": os.environ["DISPLAYNAME"],
-    "PH-STREAMER-DATAKEY": os.environ["DATAKEY"],
-    "PH-STREAMER-TITLE": os.environ["TITLE"],
-    "PH-STREAMER-DESCRIPTION": os.environ["DESCRIPTION"],
-    "PH-STREAMER-CANONICAL": os.environ["CANONICAL"],
-    "PH-STREAMER-OG-URL": os.environ["OG_URL"],
-    "PH-STREAMER-AVATAR": os.environ["AVATAR"],
-    "PH-STREAMER-BIO-SHORT": os.environ["BIO_SHORT"],
-    "PH-STREAMER-CATEGORY": os.environ["CATEGORY"],
-    "PH-LINK-TWITCH": os.environ["PH_LINK_TWITCH"],
-    "PH-LINK-KICK": os.environ["PH_LINK_KICK"],
-    "PH-LINK-INSTAGRAM": os.environ["PH_LINK_IG"],
-    "PH-LINK-IG": os.environ["PH_LINK_IG"],
-    "PH-LINK-X": os.environ["PH_LINK_X"],
-    "PH-LINK-YOUTUBE": os.environ["PH_LINK_YOUTUBE"],
-    "PH-LINK-TIKTOK": os.environ["PH_LINK_TIKTOK"],
-    "PH-LINK-EMAIL": os.environ["PH_LINK_EMAIL"],
-    "PH-STREAMER-EMAIL": os.environ["PH_TEXT_EMAIL"],
-    "PH-STREAMER-TWITCH": os.environ["PH_TEXT_TWITCH"],
-    "PH-STREAMER-KICK": os.environ["PH_TEXT_KICK"],
-    "PH-STREAMER-IG": os.environ["PH_TEXT_IG"],
-    "PH-STREAMER-X": os.environ["PH_TEXT_X"],
-    "PH-STREAMER-YOUTUBE": os.environ["PH_TEXT_YOUTUBE"],
-    "PH-STREAMER-TIKTOK": os.environ["PH_TEXT_TIKTOK"],
-}
+            replacements = {
+                "PH-STREAMER-USERNAME": os.environ["USERNAME"],
+                "PH-STREAMER-DISPLAYNAME": os.environ["DISPLAYNAME"],
+                "PH-STREAMER-NAME": os.environ["DISPLAYNAME"],
+                "PH-STREAMER-DATAKEY": os.environ["DATAKEY"],
+                "PH-STREAMER-TITLE": os.environ["TITLE"],
+                "PH-STREAMER-DESCRIPTION": os.environ["DESCRIPTION"],
+                "PH-STREAMER-CANONICAL": os.environ["CANONICAL"],
+                "PH-STREAMER-OG-URL": os.environ["OG_URL"],
+                "PH-STREAMER-AVATAR": os.environ["AVATAR"],
+                "PH-STREAMER-BIO-SHORT": os.environ["BIO_SHORT"],
+                "PH-STREAMER-CATEGORY": os.environ["CATEGORY"],
+                "PH-LINK-TWITCH": os.environ["PH_LINK_TWITCH"],
+                "PH-LINK-KICK": os.environ["PH_LINK_KICK"],
+                "PH-LINK-INSTAGRAM": os.environ["PH_LINK_IG"],
+                "PH-LINK-IG": os.environ["PH_LINK_IG"],
+                "PH-LINK-X": os.environ["PH_LINK_X"],
+                "PH-LINK-YOUTUBE": os.environ["PH_LINK_YOUTUBE"],
+                "PH-LINK-TIKTOK": os.environ["PH_LINK_TIKTOK"],
+                "PH-LINK-EMAIL": os.environ["PH_LINK_EMAIL"],
+                "PH-STREAMER-EMAIL": os.environ["PH_TEXT_EMAIL"],
+                "PH-STREAMER-TWITCH": os.environ["PH_TEXT_TWITCH"],
+                "PH-STREAMER-KICK": os.environ["PH_TEXT_KICK"],
+                "PH-STREAMER-IG": os.environ["PH_TEXT_IG"],
+                "PH-STREAMER-X": os.environ["PH_TEXT_X"],
+                "PH-STREAMER-YOUTUBE": os.environ["PH_TEXT_YOUTUBE"],
+                "PH-STREAMER-TIKTOK": os.environ["PH_TEXT_TIKTOK"],
+            }
 
-for k, v in replacements.items():
-    html = html.replace(k, v)
+            for k, v in replacements.items():
+                html = html.replace(k, v)
 
-def is_missing(value: str) -> bool:
-    value = (value or "").strip()
-    return value in ("", "null", "PH-LINKPENDING")
+            def is_missing(value: str) -> bool:
+                value = (value or "").strip()
+                return value in ("", "null", "PH-LINKPENDING")
 
-def remove_block(text: str, block_name: str) -> str:
-    pattern = rf'<!--\s*{re.escape(block_name)}_START\s*-->.*?<!--\s*{re.escape(block_name)}_END\s*-->'
-    return re.sub(pattern, "", text, flags=re.DOTALL)
+            def remove_block(text: str, block_name: str) -> str:
+                pattern = rf"<!--\s*{re.escape(block_name)}_START\s*-->.*?<!--\s*{re.escape(block_name)}_END\s*-->"
+                return re.sub(pattern, "", text, flags=re.DOTALL)
 
-def remove_if_missing(text: str, block_name: str, env_vars) -> str:
-    values = [os.environ.get(var, "") for var in env_vars]
-    if any(is_missing(v) for v in values):
-        return remove_block(text, block_name)
-    return text
+            def remove_if_missing(text: str, block_name: str, env_vars) -> str:
+                values = [os.environ.get(v, "") for v in env_vars]
+                if any(is_missing(v) for v in values):
+                    return remove_block(text, block_name)
+                return text
 
-html = remove_if_missing(html, "BTN_TWITCH", ["PH_LINK_TWITCH", "PH_TEXT_TWITCH"])
-html = remove_if_missing(html, "BTN_KICK", ["PH_LINK_KICK", "PH_TEXT_KICK"])
-html = remove_if_missing(html, "BTN_YOUTUBE", ["PH_LINK_YOUTUBE", "PH_TEXT_YOUTUBE"])
-html = remove_if_missing(html, "BTN_TIKTOK", ["PH_LINK_TIKTOK", "PH_TEXT_TIKTOK"])
-html = remove_if_missing(html, "BTN_IG", ["PH_LINK_IG", "PH_TEXT_IG"])
-html = remove_if_missing(html, "BTN_X", ["PH_LINK_X", "PH_TEXT_X"])
-html = remove_if_missing(html, "BTN_EMAIL", ["PH_LINK_EMAIL", "PH_TEXT_EMAIL"])
+            html = remove_if_missing(html, "BTN_TWITCH", ["PH_LINK_TWITCH", "PH_TEXT_TWITCH"])
+            html = remove_if_missing(html, "BTN_KICK", ["PH_LINK_KICK", "PH_TEXT_KICK"])
+            html = remove_if_missing(html, "BTN_YOUTUBE", ["PH_LINK_YOUTUBE", "PH_TEXT_YOUTUBE"])
+            html = remove_if_missing(html, "BTN_TIKTOK", ["PH_LINK_TIKTOK", "PH_TEXT_TIKTOK"])
+            html = remove_if_missing(html, "BTN_IG", ["PH_LINK_IG", "PH_TEXT_IG"])
+            html = remove_if_missing(html, "BTN_X", ["PH_LINK_X", "PH_TEXT_X"])
+            html = remove_if_missing(html, "BTN_EMAIL", ["PH_LINK_EMAIL", "PH_TEXT_EMAIL"])
 
-html = remove_block(html, "BTN_REDACTED")
+            html = remove_block(html, "BTN_REDACTED")
 
-html = re.sub(r'\n[ \t]*\n[ \t]*\n+', '\n\n', html)
+            html = re.sub(r"\n[ \t]*\n[ \t]*\n+", "\n\n", html)
 
-path.write_text(html, encoding="utf-8")
-PY
+            path.write_text(html, encoding="utf-8")
+            PY
 
             python3 /tmp/process_profile.py
 
