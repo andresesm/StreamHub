@@ -1,5 +1,4 @@
-name: linkshub-profiles-range4
-
+name: linkshub-profiles-range5
 on:
   workflow_dispatch:
     inputs:
@@ -68,12 +67,12 @@ jobs:
             DESCRIPTION=$(echo "$creator" | jq -r '.description // .bioShort // .shortBio // .bio // ""')
 
             if [ -z "$ID" ]; then
-              echo ""","skipped","missing id"" >> "$LOG_FILE"
+              echo "\"\",\"skipped\",\"missing id\"" >> "$LOG_FILE"
               continue
             fi
 
             if [ -z "$USERNAME" ]; then
-              echo ""","skipped","missing username for id $ID"" >> "$LOG_FILE"
+              echo "\"\",\"skipped\",\"missing username for id $ID\"" >> "$LOG_FILE"
               continue
             fi
 
@@ -83,7 +82,7 @@ jobs:
             mkdir -p "$TARGET_DIR"
 
             if ! cp "u/profile-template.html" "$TARGET_FILE"; then
-              echo ""$USERNAME","error","could not copy template"" >> "$LOG_FILE"
+              echo "\"$USERNAME\",\"error\",\"could not copy template\"" >> "$LOG_FILE"
               continue
             fi
 
@@ -175,51 +174,12 @@ jobs:
             export PH_LINK_TWITCH PH_LINK_KICK PH_LINK_IG PH_LINK_X PH_LINK_YOUTUBE PH_LINK_TIKTOK PH_LINK_EMAIL
             export PH_TEXT_TWITCH PH_TEXT_KICK PH_TEXT_IG PH_TEXT_X PH_TEXT_YOUTUBE PH_TEXT_TIKTOK PH_TEXT_EMAIL
 
-            python3 <<'PY'
-import os
-from pathlib import Path
-
-path = Path(os.environ["TARGET_FILE"])
-html = path.read_text(encoding="utf-8")
-
-replacements = {
-    "PH-STREAMER-USERNAME": os.environ["USERNAME"],
-    "PH-STREAMER-DISPLAYNAME": os.environ["DISPLAYNAME"],
-    "PH-STREAMER-NAME": os.environ["DISPLAYNAME"],
-    "PH-STREAMER-DATAKEY": os.environ["DATAKEY"],
-    "PH-STREAMER-TITLE": os.environ["TITLE"],
-    "PH-STREAMER-DESCRIPTION": os.environ["DESCRIPTION"],
-    "PH-STREAMER-CANONICAL": os.environ["CANONICAL"],
-    "PH-STREAMER-OG-URL": os.environ["OG_URL"],
-    "PH-STREAMER-AVATAR": os.environ["AVATAR"],
-    "PH-STREAMER-BIO-SHORT": os.environ["BIO_SHORT"],
-    "PH-STREAMER-CATEGORY": os.environ["CATEGORY"],
-    "PH-LINK-TWITCH": os.environ["PH_LINK_TWITCH"],
-    "PH-LINK-KICK": os.environ["PH_LINK_KICK"],
-    "PH-LINK-INSTAGRAM": os.environ["PH_LINK_IG"],
-    "PH-LINK-IG": os.environ["PH_LINK_IG"],
-    "PH-LINK-X": os.environ["PH_LINK_X"],
-    "PH-LINK-YOUTUBE": os.environ["PH_LINK_YOUTUBE"],
-    "PH-LINK-TIKTOK": os.environ["PH_LINK_TIKTOK"],
-    "PH-STREAMER-EMAIL": os.environ["PH_TEXT_EMAIL"],
-    "PH-STREAMER-TWITCH": os.environ["PH_TEXT_TWITCH"],
-    "PH-STREAMER-KICK": os.environ["PH_TEXT_KICK"],
-    "PH-STREAMER-IG": os.environ["PH_TEXT_IG"],
-    "PH-STREAMER-X": os.environ["PH_TEXT_X"],
-    "PH-STREAMER-YOUTUBE": os.environ["PH_TEXT_YOUTUBE"],
-    "PH-STREAMER-TIKTOK": os.environ["PH_TEXT_TIKTOK"],
-}
-
-for old, new in replacements.items():
-    html = html.replace(old, new)
-
-path.write_text(html, encoding="utf-8")
-PY
+            python3 -c 'import os; from pathlib import Path; path = Path(os.environ["TARGET_FILE"]); html = path.read_text(encoding="utf-8"); replacements = {"PH-STREAMER-USERNAME": os.environ["USERNAME"], "PH-STREAMER-DISPLAYNAME": os.environ["DISPLAYNAME"], "PH-STREAMER-NAME": os.environ["DISPLAYNAME"], "PH-STREAMER-DATAKEY": os.environ["DATAKEY"], "PH-STREAMER-TITLE": os.environ["TITLE"], "PH-STREAMER-DESCRIPTION": os.environ["DESCRIPTION"], "PH-STREAMER-CANONICAL": os.environ["CANONICAL"], "PH-STREAMER-OG-URL": os.environ["OG_URL"], "PH-STREAMER-AVATAR": os.environ["AVATAR"], "PH-STREAMER-BIO-SHORT": os.environ["BIO_SHORT"], "PH-STREAMER-CATEGORY": os.environ["CATEGORY"], "PH-LINK-TWITCH": os.environ["PH_LINK_TWITCH"], "PH-LINK-KICK": os.environ["PH_LINK_KICK"], "PH-LINK-INSTAGRAM": os.environ["PH_LINK_IG"], "PH-LINK-IG": os.environ["PH_LINK_IG"], "PH-LINK-X": os.environ["PH_LINK_X"], "PH-LINK-YOUTUBE": os.environ["PH_LINK_YOUTUBE"], "PH-LINK-TIKTOK": os.environ["PH_LINK_TIKTOK"], "PH-STREAMER-EMAIL": os.environ["PH_TEXT_EMAIL"], "PH-STREAMER-TWITCH": os.environ["PH_TEXT_TWITCH"], "PH-STREAMER-KICK": os.environ["PH_TEXT_KICK"], "PH-STREAMER-IG": os.environ["PH_TEXT_IG"], "PH-STREAMER-X": os.environ["PH_TEXT_X"], "PH-STREAMER-YOUTUBE": os.environ["PH_TEXT_YOUTUBE"], "PH-STREAMER-TIKTOK": os.environ["PH_TEXT_TIKTOK"]}; [html := html.replace(k, v) for k, v in replacements.items()]; path.write_text(html, encoding="utf-8")'
 
             if grep -q "$USERNAME" "$TARGET_FILE"; then
-              echo ""$USERNAME","generated","ok"" >> "$LOG_FILE"
+              echo "\"$USERNAME\",\"generated\",\"ok\"" >> "$LOG_FILE"
             else
-              echo ""$USERNAME","warning","file created but username not found in output"" >> "$LOG_FILE"
+              echo "\"$USERNAME\",\"warning\",\"file created but username not found in output\"" >> "$LOG_FILE"
             fi
           done
 
