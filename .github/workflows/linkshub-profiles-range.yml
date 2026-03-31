@@ -1,4 +1,4 @@
-name: NEW
+name: linkshub-profiles-range
 
 on:
   workflow_dispatch:
@@ -156,21 +156,22 @@ jobs:
             sed -i "s|PH-STREAMER-YOUTUBE|$PH_TEXT_YOUTUBE|g" "$TARGET_FILE"
             sed -i "s|PH-STREAMER-TIKTOK|$PH_TEXT_TIKTOK|g" "$TARGET_FILE"
 
-            python3 - <<PY
+            python3 - "$TARGET_FILE" <<'PY'
             from pathlib import Path
             import re
+            import sys
 
-            path = Path("$TARGET_FILE")
+            path = Path(sys.argv[1])
             html = path.read_text(encoding="utf-8")
 
             html = re.sub(
-                r'<a\\b[^>]*href="(?:mailto:)?PH-LINKPENDING"[^>]*>.*?</a>',
+                r'<a\b[^>]*href="(?:mailto:)?PH-LINKPENDING"[^>]*>.*?</a>',
                 '',
                 html,
                 flags=re.DOTALL
             )
 
-            html = re.sub(r'\\n\\s*\\n\\s*\\n+', '\\n\\n', html)
+            html = re.sub(r'\n\s*\n\s*\n+', '\n\n', html)
             path.write_text(html, encoding="utf-8")
             PY
 
@@ -192,7 +193,7 @@ jobs:
           ls -R generated-range-output/u || true
 
       - name: Subir artifact de perfiles
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: generated-profiles-range-${{ github.event.inputs.start_id }}-${{ github.event.inputs.end_id }}
           path: |
