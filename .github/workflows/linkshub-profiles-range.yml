@@ -1,4 +1,4 @@
-name: linkshub-profiles-range2
+name: linkshub-profiles-range3
 
 on:
   workflow_dispatch:
@@ -62,15 +62,18 @@ jobs:
           ' data/creators.json | while read -r creator; do
             ID=$(echo "$creator" | jq -r '.id // empty')
             USERNAME=$(echo "$creator" | jq -r '.username // empty')
-            DISPLAYNAME=$(echo "$creator" | jq -r '.username // empty')
+            DISPLAYNAME=$(echo "$creator" | jq -r '.displayname // .displayName // .username // empty')
+            DATAKEY=$(echo "$creator" | jq -r '.dataKey // .datakey // .slug // .username // .id // empty')
+            TITLE=$(echo "$creator" | jq -r '.title // .displayname // .displayName // .username // empty')
+            DESCRIPTION=$(echo "$creator" | jq -r '.description // .bioShort // .shortBio // .bio // ""')
 
             if [ -z "$ID" ]; then
-              echo "\"\",\"skipped\",\"missing id\"" >> "$LOG_FILE"
+              echo ""","skipped","missing id"" >> "$LOG_FILE"
               continue
             fi
 
             if [ -z "$USERNAME" ]; then
-              echo "\"\",\"skipped\",\"missing username for id $ID\"" >> "$LOG_FILE"
+              echo ""","skipped","missing username for id $ID"" >> "$LOG_FILE"
               continue
             fi
 
@@ -80,88 +83,171 @@ jobs:
             mkdir -p "$TARGET_DIR"
 
             if ! cp "u/profile-template.html" "$TARGET_FILE"; then
-              echo "\"$USERNAME\",\"error\",\"could not copy template\"" >> "$LOG_FILE"
+              echo ""$USERNAME","error","could not copy template"" >> "$LOG_FILE"
               continue
             fi
 
-            AVATAR=$(echo "$creator" | jq -r '.avatar // .profilePhoto // .photo // ""')
+            AVATAR=$(echo "$creator" | jq -r '.avatar_url // .avatar // .profilePhoto // .photo // ""')
             BIO_SHORT=$(echo "$creator" | jq -r '.bioShort // .shortBio // .bio // ""')
             CATEGORY=$(echo "$creator" | jq -r '.category // .contentCategory // ""')
 
-            TWITCH=$(echo "$creator" | jq -r '.twitch // ""')
-            KICK=$(echo "$creator" | jq -r '.kick // ""')
-            IG=$(echo "$creator" | jq -r '.ig // ""')
-            X=$(echo "$creator" | jq -r '.x // ""')
-            YOUTUBE=$(echo "$creator" | jq -r '.youtube // ""')
-            TIKTOK=$(echo "$creator" | jq -r '.tiktok // ""')
-            EMAIL=$(echo "$creator" | jq -r '.email // ""')
-
-            link_or_pending() {
-              local value="$1"
-              if [ -n "$value" ] && [ "$value" != "null" ]; then
-                printf "%s" "$value"
-              else
-                printf "PH-LINKPENDING"
-              fi
-            }
-
-            text_or_pending() {
-              local value="$1"
-              if [ -n "$value" ] && [ "$value" != "null" ]; then
-                printf "%s" "$value"
-              else
-                printf "PH-LINKPENDING"
-              fi
-            }
-
-            PH_LINK_TWITCH=$(link_or_pending "$TWITCH")
-            PH_LINK_KICK=$(link_or_pending "$KICK")
-            PH_LINK_IG=$(link_or_pending "$IG")
-            PH_LINK_X=$(link_or_pending "$X")
-            PH_LINK_YOUTUBE=$(link_or_pending "$YOUTUBE")
-            PH_LINK_TIKTOK=$(link_or_pending "$TIKTOK")
-            PH_LINK_EMAIL=$(text_or_pending "$EMAIL")
-
-            PH_TEXT_TWITCH=$(text_or_pending "$TWITCH")
-            PH_TEXT_KICK=$(text_or_pending "$KICK")
-            PH_TEXT_IG=$(text_or_pending "$IG")
-            PH_TEXT_X=$(text_or_pending "$X")
-            PH_TEXT_YOUTUBE=$(text_or_pending "$YOUTUBE")
-            PH_TEXT_TIKTOK=$(text_or_pending "$TIKTOK")
+            TWITCH=$(echo "$creator" | jq -r '.socials.twitch // .twitch // ""')
+            KICK=$(echo "$creator" | jq -r '.socials.kick // .kick // ""')
+            IG=$(echo "$creator" | jq -r '.socials.ig // .ig // .instagram // ""')
+            X=$(echo "$creator" | jq -r '.socials.x // .x // ""')
+            YOUTUBE=$(echo "$creator" | jq -r '.socials.youtube // .youtube // ""')
+            TIKTOK=$(echo "$creator" | jq -r '.socials.tiktok // .tiktok // ""')
+            EMAIL=$(echo "$creator" | jq -r '.socials.email // .email // ""')
 
             [ -z "$AVATAR" ] && AVATAR="PH-STREAMER-AVATAR"
             [ -z "$BIO_SHORT" ] && BIO_SHORT=""
             [ -z "$CATEGORY" ] && CATEGORY="Creator"
+            [ -z "$DISPLAYNAME" ] && DISPLAYNAME="$USERNAME"
+            [ -z "$TITLE" ] && TITLE="$DISPLAYNAME"
+            [ -z "$DATAKEY" ] && DATAKEY="$USERNAME"
 
-            sed -i "s|PH-STREAMER-USERNAME|$USERNAME|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-DISPLAYNAME|$DISPLAYNAME|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-NAME|$DISPLAYNAME|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-AVATAR|$AVATAR|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-BIO-SHORT|$BIO_SHORT|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-CATEGORY|$CATEGORY|g" "$TARGET_FILE"
+            CANONICAL="../../u/$USERNAME/"
+            OG_URL="../../u/$USERNAME/"
 
-            sed -i "s|PH-LINK-TWITCH|$PH_LINK_TWITCH|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-KICK|$PH_LINK_KICK|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-INSTAGRAM|$PH_LINK_IG|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-IG|$PH_LINK_IG|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-X|$PH_LINK_X|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-YOUTUBE|$PH_LINK_YOUTUBE|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-TIKTOK|$PH_LINK_TIKTOK|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-EMAIL|$PH_LINK_EMAIL|g" "$TARGET_FILE"
+            if [ -n "$TWITCH" ] && [ "$TWITCH" != "null" ]; then
+              PH_LINK_TWITCH="https://www.twitch.tv/${TWITCH#@}"
+              PH_TEXT_TWITCH="@${TWITCH#@}"
+            else
+              PH_LINK_TWITCH="PH-LINKPENDING"
+              PH_TEXT_TWITCH="PH-LINKPENDING"
+            fi
 
-            sed -i "s|PH-STREAMER-TWITCH|$PH_TEXT_TWITCH|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-KICK|$PH_TEXT_KICK|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-IG|$PH_TEXT_IG|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-X|$PH_TEXT_X|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-YOUTUBE|$PH_TEXT_YOUTUBE|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-TIKTOK|$PH_TEXT_TIKTOK|g" "$TARGET_FILE"
+            if [ -n "$KICK" ] && [ "$KICK" != "null" ]; then
+              PH_LINK_KICK="https://kick.com/${KICK#@}"
+              PH_TEXT_KICK="@${KICK#@}"
+            else
+              PH_LINK_KICK="PH-LINKPENDING"
+              PH_TEXT_KICK="PH-LINKPENDING"
+            fi
 
-            python3 -c 'from pathlib import Path; import re, sys; path = Path(sys.argv[1]); html = path.read_text(encoding="utf-8"); html = re.sub(r"<a\\b[^>]*href=\"(?:mailto:)?PH-LINKPENDING\"[^>]*>.*?</a>", "", html, flags=re.DOTALL); html = re.sub(r"\\n\\s*\\n\\s*\\n+", "\\n\\n", html); path.write_text(html, encoding="utf-8")' "$TARGET_FILE"
+            if [ -n "$IG" ] && [ "$IG" != "null" ]; then
+              PH_LINK_IG="https://www.instagram.com/${IG#@}"
+              PH_TEXT_IG="@${IG#@}"
+            else
+              PH_LINK_IG="PH-LINKPENDING"
+              PH_TEXT_IG="PH-LINKPENDING"
+            fi
+
+            if [ -n "$X" ] && [ "$X" != "null" ]; then
+              PH_LINK_X="https://x.com/${X#@}"
+              PH_TEXT_X="@${X#@}"
+            else
+              PH_LINK_X="PH-LINKPENDING"
+              PH_TEXT_X="PH-LINKPENDING"
+            fi
+
+            if [ -n "$YOUTUBE" ] && [ "$YOUTUBE" != "null" ]; then
+              if [[ "$YOUTUBE" =~ ^https?:// ]] || [[ "$YOUTUBE" =~ ^// ]]; then
+                PH_LINK_YOUTUBE="$YOUTUBE"
+                PH_TEXT_YOUTUBE="$YOUTUBE"
+              else
+                PH_LINK_YOUTUBE="https://www.youtube.com/@${YOUTUBE#@}"
+                PH_TEXT_YOUTUBE="@${YOUTUBE#@}"
+              fi
+            else
+              PH_LINK_YOUTUBE="PH-LINKPENDING"
+              PH_TEXT_YOUTUBE="PH-LINKPENDING"
+            fi
+
+            if [ -n "$TIKTOK" ] && [ "$TIKTOK" != "null" ]; then
+              PH_LINK_TIKTOK="https://www.tiktok.com/@${TIKTOK#@}"
+              PH_TEXT_TIKTOK="@${TIKTOK#@}"
+            else
+              PH_LINK_TIKTOK="PH-LINKPENDING"
+              PH_TEXT_TIKTOK="PH-LINKPENDING"
+            fi
+
+            if [ -n "$EMAIL" ] && [ "$EMAIL" != "null" ]; then
+              PH_LINK_EMAIL="mailto:$EMAIL"
+              PH_TEXT_EMAIL="$EMAIL"
+            else
+              PH_LINK_EMAIL="PH-LINKPENDING"
+              PH_TEXT_EMAIL="PH-LINKPENDING"
+            fi
+
+            export TARGET_FILE USERNAME DISPLAYNAME DATAKEY TITLE DESCRIPTION AVATAR BIO_SHORT CATEGORY
+            export CANONICAL OG_URL
+            export PH_LINK_TWITCH PH_LINK_KICK PH_LINK_IG PH_LINK_X PH_LINK_YOUTUBE PH_LINK_TIKTOK PH_LINK_EMAIL
+            export PH_TEXT_TWITCH PH_TEXT_KICK PH_TEXT_IG PH_TEXT_X PH_TEXT_YOUTUBE PH_TEXT_TIKTOK PH_TEXT_EMAIL
+
+            python3 <<'PY'
+import os
+import re
+from pathlib import Path
+
+path = Path(os.environ["TARGET_FILE"])
+html = path.read_text(encoding="utf-8")
+
+replacements = {
+    "PH-STREAMER-USERNAME": os.environ["USERNAME"],
+    "PH-STREAMER-DISPLAYNAME": os.environ["DISPLAYNAME"],
+    "PH-STREAMER-NAME": os.environ["DISPLAYNAME"],
+    "PH-STREAMER-DATAKEY": os.environ["DATAKEY"],
+    "PH-STREAMER-TITLE": os.environ["TITLE"],
+    "PH-STREAMER-DESCRIPTION": os.environ["DESCRIPTION"],
+    "PH-STREAMER-CANONICAL": os.environ["CANONICAL"],
+    "PH-STREAMER-OG-URL": os.environ["OG_URL"],
+    "PH-STREAMER-AVATAR": os.environ["AVATAR"],
+    "PH-STREAMER-BIO-SHORT": os.environ["BIO_SHORT"],
+    "PH-STREAMER-CATEGORY": os.environ["CATEGORY"],
+    "PH-LINK-TWITCH": os.environ["PH_LINK_TWITCH"],
+    "PH-LINK-KICK": os.environ["PH_LINK_KICK"],
+    "PH-LINK-INSTAGRAM": os.environ["PH_LINK_IG"],
+    "PH-LINK-IG": os.environ["PH_LINK_IG"],
+    "PH-LINK-X": os.environ["PH_LINK_X"],
+    "PH-LINK-YOUTUBE": os.environ["PH_LINK_YOUTUBE"],
+    "PH-LINK-TIKTOK": os.environ["PH_LINK_TIKTOK"],
+    "PH-STREAMER-EMAIL": os.environ["PH_TEXT_EMAIL"],
+    "PH-STREAMER-TWITCH": os.environ["PH_TEXT_TWITCH"],
+    "PH-STREAMER-KICK": os.environ["PH_TEXT_KICK"],
+    "PH-STREAMER-IG": os.environ["PH_TEXT_IG"],
+    "PH-STREAMER-X": os.environ["PH_TEXT_X"],
+    "PH-STREAMER-YOUTUBE": os.environ["PH_TEXT_YOUTUBE"],
+    "PH-STREAMER-TIKTOK": os.environ["PH_TEXT_TIKTOK"],
+}
+
+for old, new in replacements.items():
+    html = html.replace(old, new)
+
+# Si el avatar quedó como placeholder, fuerza la misma fuente del perfil completo
+if os.environ["AVATAR"] and os.environ["AVATAR"] != "PH-STREAMER-AVATAR":
+    html = html.replace('src="PH-STREAMER-AVATAR"', f'src="{os.environ["AVATAR"]}"')
+
+# Elimina botones completos del Linkshub cuyo href quedó pendiente
+html = re.sub(
+    r'<a\b[^>]*class="[^"]*link-btn[^"]*"[^>]*href="(?:mailto:)?PH-LINKPENDING"[^>]*>.*?</a>',
+    '',
+    html,
+    flags=re.DOTALL
+)
+
+# Elimina cualquier enlace restante con placeholder pendiente
+html = re.sub(
+    r'<a\b[^>]*href="(?:mailto:)?PH-LINKPENDING"[^>]*>.*?</a>',
+    '',
+    html,
+    flags=re.DOTALL
+)
+
+# Limpia placeholders residuales en copy de botones no eliminados
+html = html.replace("@PH-LINKPENDING", "")
+html = html.replace("PH-LINKPENDING", "")
+
+# Normaliza espacios en blanco
+html = re.sub(r'\n\s*\n\s*\n+', '\n\n', html)
+
+path.write_text(html, encoding="utf-8")
+PY
 
             if grep -q "$USERNAME" "$TARGET_FILE"; then
-              echo "\"$USERNAME\",\"generated\",\"ok\"" >> "$LOG_FILE"
+              echo ""$USERNAME","generated","ok"" >> "$LOG_FILE"
             else
-              echo "\"$USERNAME\",\"warning\",\"file created but username not found in output\"" >> "$LOG_FILE"
+              echo ""$USERNAME","warning","file created but username not found in output"" >> "$LOG_FILE"
             fi
           done
 
