@@ -1,4 +1,4 @@
-name: Range linkshub profiles by ID range
+name: Generate profiles by ID range
 
 on:
   workflow_dispatch:
@@ -47,112 +47,6 @@ jobs:
             exit 1
           fi
 
-          trim() {
-            local s="$1"
-            s="${s//$'\r'/}"
-            s="${s//$'\n'/ }"
-            s="$(printf '%s' "$s" | sed 's/[[:space:]]\+/ /g; s/^ *//; s/ *$//')"
-            printf '%s' "$s"
-          }
-
-          escape_sed() {
-            printf '%s' "$1" | sed -e 's/[\/&]/\\&/g'
-          }
-
-          make_url_from_handle() {
-            local raw base
-            raw="$(trim "$1")"
-            base="$2"
-
-            if [ -z "$raw" ] || [ "$raw" = "null" ]; then
-              printf 'PH-LINKPENDING'
-              return
-            fi
-
-            if [[ "$raw" =~ ^https?:// ]]; then
-              printf '%s' "$raw"
-              return
-            fi
-
-            raw="${raw#@}"
-            printf '%s%s' "$base" "$raw"
-          }
-
-          make_tiktok_url() {
-            local raw
-            raw="$(trim "$1")"
-
-            if [ -z "$raw" ] || [ "$raw" = "null" ]; then
-              printf 'PH-LINKPENDING'
-              return
-            fi
-
-            if [[ "$raw" =~ ^https?:// ]]; then
-              printf '%s' "$raw"
-              return
-            fi
-
-            raw="${raw#@}"
-            printf 'https://www.tiktok.com/@%s' "$raw"
-          }
-
-          make_youtube_url() {
-            local raw
-            raw="$(trim "$1")"
-
-            if [ -z "$raw" ] || [ "$raw" = "null" ]; then
-              printf 'PH-LINKPENDING'
-              return
-            fi
-
-            if [[ "$raw" =~ ^https?:// ]]; then
-              printf '%s' "$raw"
-              return
-            fi
-
-            raw="${raw#@}"
-
-            if [[ "$raw" =~ ^UC[[:alnum:]_-]+$ ]]; then
-              printf 'https://www.youtube.com/channel/%s' "$raw"
-            else
-              printf 'https://www.youtube.com/@%s' "$raw"
-            fi
-          }
-
-          make_display_handle() {
-            local raw
-            raw="$(trim "$1")"
-
-            if [ -z "$raw" ] || [ "$raw" = "null" ]; then
-              printf 'PH-LINKPENDING'
-              return
-            fi
-
-            if [[ "$raw" =~ ^https?:// ]]; then
-              raw="${raw%/}"
-              raw="${raw##*/}"
-            fi
-
-            raw="${raw#@}"
-
-            if [ -z "$raw" ]; then
-              printf 'PH-LINKPENDING'
-            else
-              printf '@%s' "$raw"
-            fi
-          }
-
-          make_email_value() {
-            local raw
-            raw="$(trim "$1")"
-
-            if [ -z "$raw" ] || [ "$raw" = "null" ]; then
-              printf 'PH-LINKPENDING'
-            else
-              printf '%s' "$raw"
-            fi
-          }
-
           echo "username,status,warning" > "$LOG_FILE"
 
           jq -c --argjson start "$START_ID" --argjson end "$END_ID" '
@@ -196,81 +90,87 @@ jobs:
               continue
             fi
 
-            DESCRIPTION_RAW=$(echo "$creator" | jq -r '.description // .bio // .about // .summary // ""')
-            DESCRIPTION="$(trim "$DESCRIPTION_RAW")"
-            if [ -z "$DESCRIPTION" ]; then
-              DESCRIPTION="Perfil oficial de $DISPLAYNAME en StreamHUB."
+            AVATAR=$(echo "$creator" | jq -r '.avatar // .profilePhoto // .profile_photo // ""')
+            BIO_SHORT=$(echo "$creator" | jq -r '.bioShort // .bio_short // .bio // ""')
+            CATEGORY=$(echo "$creator" | jq -r '.category // .gameCategory // .contentType // ""')
+
+            TWITCH=$(echo "$creator" | jq -r '.twitch // empty')
+            KICK=$(echo "$creator" | jq -r '.kick // empty')
+            IG=$(echo "$creator" | jq -r '.ig // empty')
+            XLINK=$(echo "$creator" | jq -r '.x // empty')
+            YOUTUBE=$(echo "$creator" | jq -r '.youtube // empty')
+            TIKTOK=$(echo "$creator" | jq -r '.tiktok // empty')
+            EMAIL=$(echo "$creator" | jq -r '.email // empty')
+
+            esc() {
+              printf '%s' "$1" | sed 's/[&/\]/\\&/g'
+            }
+
+            [ -z "$AVATAR" ] && AVATAR="PH-LINKPENDING"
+            [ -z "$BIO_SHORT" ] && BIO_SHORT=""
+            [ -z "$CATEGORY" ] && CATEGORY="Creator"
+            [ -z "$TWITCH" ] && TWITCH="PH-LINKPENDING"
+            [ -z "$KICK" ] && KICK="PH-LINKPENDING"
+            [ -z "$IG" ] && IG="PH-LINKPENDING"
+            [ -z "$XLINK" ] && XLINK="PH-LINKPENDING"
+            [ -z "$YOUTUBE" ] && YOUTUBE="PH-LINKPENDING"
+            [ -z "$TIKTOK" ] && TIKTOK="PH-LINKPENDING"
+            [ -z "$EMAIL" ] && EMAIL="PH-LINKPENDING"
+
+            if [ "$TWITCH" != "PH-LINKPENDING" ]; then
+              TWITCH_URL="https://twitch.tv/$TWITCH"
+            else
+              TWITCH_URL="PH-LINKPENDING"
             fi
 
-            BIO_SHORT="$DESCRIPTION"
-            if [ "${#BIO_SHORT}" -gt 150 ]; then
-              BIO_SHORT="${BIO_SHORT:0:147}..."
+            if [ "$KICK" != "PH-LINKPENDING" ]; then
+              KICK_URL="https://kick.com/$KICK"
+            else
+              KICK_URL="PH-LINKPENDING"
             fi
 
-            CATEGORY_RAW=$(echo "$creator" | jq -r '.category // .contentType // .type // "Creator"')
-            CATEGORY="$(trim "$CATEGORY_RAW")"
-            if [ -z "$CATEGORY" ]; then
-              CATEGORY="Creator"
+            if [ "$IG" != "PH-LINKPENDING" ]; then
+              IG_URL="https://instagram.com/$IG"
+            else
+              IG_URL="PH-LINKPENDING"
             fi
 
-            AVATAR_RAW=$(echo "$creator" | jq -r '.avatar // .profilePicture // .profile_picture // .image // .photo // ""')
-            AVATAR="$(trim "$AVATAR_RAW")"
-            if [ -z "$AVATAR" ]; then
-              AVATAR="../../favicon.ico"
+            if [ "$XLINK" != "PH-LINKPENDING" ]; then
+              X_URL="https://x.com/$XLINK"
+            else
+              X_URL="PH-LINKPENDING"
             fi
 
-            TITLE="$DISPLAYNAME | StreamHUB"
-            PROFILE_PATH="/u/$USERNAME/"
-            DATAKEY="$ID"
+            if [ "$YOUTUBE" != "PH-LINKPENDING" ]; then
+              YOUTUBE_URL="https://youtube.com/$YOUTUBE"
+            else
+              YOUTUBE_URL="PH-LINKPENDING"
+            fi
 
-            TWITCH_RAW=$(echo "$creator" | jq -r '.twitch // .socials.twitch // ""')
-            KICK_RAW=$(echo "$creator" | jq -r '.kick // .socials.kick // ""')
-            IG_RAW=$(echo "$creator" | jq -r '.ig // .instagram // .socials.ig // .socials.instagram // ""')
-            X_RAW=$(echo "$creator" | jq -r '.x // .twitter // .socials.x // .socials.twitter // ""')
-            YOUTUBE_RAW=$(echo "$creator" | jq -r '.youtube // .socials.youtube // ""')
-            TIKTOK_RAW=$(echo "$creator" | jq -r '.tiktok // .socials.tiktok // ""')
-            EMAIL_RAW=$(echo "$creator" | jq -r '.email // .socials.email // ""')
+            if [ "$TIKTOK" != "PH-LINKPENDING" ]; then
+              TIKTOK_URL="https://tiktok.com/@$TIKTOK"
+            else
+              TIKTOK_URL="PH-LINKPENDING"
+            fi
 
-            LINK_TWITCH="$(make_url_from_handle "$TWITCH_RAW" "https://www.twitch.tv/")"
-            LINK_KICK="$(make_url_from_handle "$KICK_RAW" "https://kick.com/")"
-            LINK_INSTAGRAM="$(make_url_from_handle "$IG_RAW" "https://www.instagram.com/")"
-            LINK_X="$(make_url_from_handle "$X_RAW" "https://x.com/")"
-            LINK_YOUTUBE="$(make_youtube_url "$YOUTUBE_RAW")"
-            LINK_TIKTOK="$(make_tiktok_url "$TIKTOK_RAW")"
-            EMAIL_VALUE="$(make_email_value "$EMAIL_RAW")"
+            sed -i "s|PH-STREAMER-AVATAR|$(esc "$AVATAR")|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-BIO-SHORT|$(esc "$BIO_SHORT")|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-CATEGORY|$(esc "$CATEGORY")|g" "$TARGET_FILE"
 
-            DISPLAY_TWITCH="$(make_display_handle "$TWITCH_RAW")"
-            DISPLAY_KICK="$(make_display_handle "$KICK_RAW")"
-            DISPLAY_IG="$(make_display_handle "$IG_RAW")"
-            DISPLAY_X="$(make_display_handle "$X_RAW")"
-            DISPLAY_YOUTUBE="$(make_display_handle "$YOUTUBE_RAW")"
-            DISPLAY_TIKTOK="$(make_display_handle "$TIKTOK_RAW")"
+            sed -i "s|PH-STREAMER-TWITCH|$(esc "$TWITCH")|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-KICK|$(esc "$KICK")|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-IG|$(esc "$IG")|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-X|$(esc "$XLINK")|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-YOUTUBE|$(esc "$YOUTUBE")|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-TIKTOK|$(esc "$TIKTOK")|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-EMAIL|$(esc "$EMAIL")|g" "$TARGET_FILE"
 
-            sed -i "s|PH-STREAMER-TITLE|$(escape_sed "$TITLE")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-DESCRIPTION|$(escape_sed "$DESCRIPTION")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-BIO-SHORT|$(escape_sed "$BIO_SHORT")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-CATEGORY|$(escape_sed "$CATEGORY")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-AVATAR|$(escape_sed "$AVATAR")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-CANONICAL|$(escape_sed "$PROFILE_PATH")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-OG-URL|$(escape_sed "$PROFILE_PATH")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-DATAKEY|$(escape_sed "$DATAKEY")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-NAME|$(escape_sed "$DISPLAYNAME")|g" "$TARGET_FILE"
-
-            sed -i "s|PH-LINK-TWITCH|$(escape_sed "$LINK_TWITCH")|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-KICK|$(escape_sed "$LINK_KICK")|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-INSTAGRAM|$(escape_sed "$LINK_INSTAGRAM")|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-X|$(escape_sed "$LINK_X")|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-YOUTUBE|$(escape_sed "$LINK_YOUTUBE")|g" "$TARGET_FILE"
-            sed -i "s|PH-LINK-TIKTOK|$(escape_sed "$LINK_TIKTOK")|g" "$TARGET_FILE"
-
-            sed -i "s|PH-STREAMER-TWITCH|$(escape_sed "$DISPLAY_TWITCH")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-KICK|$(escape_sed "$DISPLAY_KICK")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-IG|$(escape_sed "$DISPLAY_IG")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-X|$(escape_sed "$DISPLAY_X")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-YOUTUBE|$(escape_sed "$DISPLAY_YOUTUBE")|g" "$TARGET_FILE"
-            sed -i "s|PH-STREAMER-TIKTOK|$(escape_sed "$DISPLAY_TIKTOK")|g" "$TARGET_FILE"
-
-            sed -i "s|PH-STREAMER-EMAIL|$(escape_sed "$EMAIL_VALUE")|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-TWITCH|$(esc "$TWITCH_URL")|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-KICK|$(esc "$KICK_URL")|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-INSTAGRAM|$(esc "$IG_URL")|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-X|$(esc "$X_URL")|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-YOUTUBE|$(esc "$YOUTUBE_URL")|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-TIKTOK|$(esc "$TIKTOK_URL")|g" "$TARGET_FILE"
 
             python3 - "$TARGET_FILE" <<'PY'
 import re
@@ -281,17 +181,10 @@ path = Path(sys.argv[1])
 html = path.read_text(encoding="utf-8")
 
 html = re.sub(
-    r'\s*<a\b[^>]*href="PH-LINKPENDING"[^>]*>.*?</a>',
+    r'<a\b[^>]*href="(?:mailto:)?PH-LINKPENDING"[^>]*>.*?</a>',
     '',
     html,
-    flags=re.S
-)
-
-html = re.sub(
-    r'\s*<a\b[^>]*href="mailto:PH-LINKPENDING"[^>]*>.*?</a>',
-    '',
-    html,
-    flags=re.S
+    flags=re.DOTALL
 )
 
 path.write_text(html, encoding="utf-8")
