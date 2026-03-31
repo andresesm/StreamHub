@@ -1,4 +1,4 @@
-name: Generate profiles by ID range
+name: TEST
 
 on:
   workflow_dispatch:
