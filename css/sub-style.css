@@ -113,15 +113,16 @@ body {
   padding: 0;
 }
 
-.content {
+/*.content {
   margin-top: 26px;
-}
+}*/
 
 .columns {
   display: flex;
   gap: 28px;
   min-height: 500px;
   align-items: flex-start;
+  margin-top: 26px;
 }
 
 .col-left,
@@ -906,9 +907,9 @@ html[data-theme="night"] .social-pill__icon {
 }
 
 @media (max-width: 767px) {
-  .content {
+  /*.content {
     margin-top: 18px;
-  }
+  }*/
 
   .columns {
     gap: 16px;
@@ -1236,9 +1237,9 @@ html[data-theme="night"] .social-pill__icon {
     border-radius: 12px;
   }
 
-  .content {
+/*  .content {
     margin-top: 18px;
-  }
+  }*/
 
   .columns {
     gap: 14px;
@@ -1610,3 +1611,4 @@ html[data-theme="night"] .social-pill__icon {
     display: none !important;
   }
 }
+

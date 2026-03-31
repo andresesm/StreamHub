@@ -1,0 +1,784 @@
+:root {
+  --bg-page: #141619;
+  --bg-card: rgba(22, 24, 29, 0.78);
+  --bg-card-strong: rgba(28, 31, 37, 0.9);
+  --bg-btn: rgba(255, 255, 255, 0.07);
+  --bg-btn-hover: rgba(255, 255, 255, 0.11);
+  --border-soft: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --text-main: #f5f7fb;
+  --text-soft: rgba(245, 247, 251, 0.78);
+  --text-faint: rgba(245, 247, 251, 0.56);
+  --shadow-card: 0 18px 60px rgba(0, 0, 0, 0.34);
+  --shadow-btn: 0 10px 26px rgba(0, 0, 0, 0.18);
+
+  --font-heading: "PPNeueMontreal", "Inter", sans-serif;
+  --font-body: "InterVariable", "Inter", sans-serif;
+
+  --radius-card: 28px;
+  --radius-btn: 18px;
+  --radius-pill: 999px;
+}
+
+@font-face {
+  font-family: "PPNeueMontreal";
+  src: url("../assets/fonts/OpenSansRegular.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "InterVariable";
+  src: url("../assets/fonts/OpenSansItalic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body.linkshub-body {
+  margin: 0;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.03), transparent 38%),
+    linear-gradient(180deg, #121417 0%, #141619 100%);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  margin-bottom:40px;
+}
+
+    .page-shell {
+      min-height: 100dvh !important;
+      display: grid !important;
+      place-items: center !important;
+      padding: 24px 16px !important;
+    }
+
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-gradient {
+  --g1: #196F80;
+  --g2: #CD4BBC;
+  --ga: 120deg;
+
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: min(96vw, 1080px);
+  height: min(70vh, 760px);
+  transform: translateX(-50%);
+  background: linear-gradient(var(--ga), var(--g1) 0%, var(--g2) 100%);
+  opacity: 0.78;
+  filter: blur(240px);
+}
+
+.bg-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.045;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.7) 0 0.8px, transparent 1px),
+    radial-gradient(circle at 80% 40%, rgba(255,255,255,0.5) 0 0.8px, transparent 1px),
+    radial-gradient(circle at 50% 80%, rgba(255,255,255,0.35) 0 0.8px, transparent 1px);
+  background-size: 26px 26px, 34px 34px, 42px 42px;
+}
+
+    .linkshub-main {
+      min-height: auto !important;
+      width: 100% !important;
+      display: grid !important;
+      place-items: center !important;
+      padding: 0 !important;
+    }
+
+.profile-card {
+  width: min(100%, 720px) !important;
+  margin-inline: auto !important;  
+  padding: 30px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-soft);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.035)),
+    var(--bg-card);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-card);
+  margin-top: 30px;
+}
+
+.profile-top {
+  display: grid;
+  gap: 22px;
+  justify-items: center;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.avatar-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(140deg, rgba(255,255,255,0.42), rgba(255,255,255,0.12));
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+}
+
+.avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: rgba(255,255,255,0.08);
+}
+
+.identity-block {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.creator-name {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+.creator-handle {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 1rem;
+  font-weight: 520;
+}
+
+.creator-bio {
+  margin: 2px 0 0;
+  max-width: 42ch;
+  color: var(--text-soft);
+  line-height: 1.5;
+  font-size: 0.98rem;
+}
+
+.status-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.status-pill,
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-soft);
+  background: rgba(255,255,255,0.06);
+  color: var(--text-main);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.status-pill {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.28), rgba(220, 38, 38, 0.16));
+  border-color: rgba(239, 68, 68, 0.38);
+}
+
+.links-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.link-btn {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  min-height: 78px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: var(--text-main);
+  background: var(--bg-btn);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-btn);
+  box-shadow: var(--shadow-btn);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
+
+.link-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  filter: brightness(1.04);
+}
+
+.link-btn:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.48);
+  outline-offset: 2px;
+}
+
+.link-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 26px 26px;
+}
+
+.link-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.link-copy strong {
+  font-size: 1rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.link-copy small {
+  display: block;
+  color: var(--text-faint);
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.profile-action-btn {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-weight: 650;
+  font-size: 0.95rem;
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease;
+}
+
+.profile-action-btn:hover {
+  transform: translateY(-1px);
+}
+
+.profile-action-btn--primary {
+  position: relative;
+  isolation: isolate;
+  color: #ffffff;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
+  overflow: hidden;
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(255,255,255,0.08) inset;
+}
+
+.profile-action-btn--primary {
+  position: relative;
+  isolation: isolate;
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.16);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+  overflow: hidden;
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(255,255,255,0.08) inset;
+}
+
+.profile-action-btn--primary::before {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  border-radius: 40%;
+  background:
+    conic-gradient(
+      from 0deg,
+      rgba(145, 70, 255, 0.95),
+      rgba(0, 140, 255, 0.95),
+      rgba(255, 0, 85, 0.92),
+      rgba(145, 70, 255, 0.95)
+    );
+  animation: cta-fill-spin 4.8s linear infinite;
+  filter: blur(18px);
+  opacity: 0.95;
+  pointer-events: none;
+  z-index: -2;
+}
+
+.profile-action-btn--primary::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(22,24,29,0.18), rgba(255,255,255,0.05)),
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.10), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.06), transparent 36%);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.profile-action-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.28),
+    0 0 24px rgba(145, 70, 255, 0.18),
+    0 0 34px rgba(255, 0, 85, 0.10);
+  filter: brightness(1.03);
+}
+
+@keyframes cta-fill-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.profile-action-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 14px 34px rgba(0, 0, 0, 0.28),
+    0 0 24px rgba(145, 70, 255, 0.16),
+    0 0 32px rgba(255, 0, 85, 0.08);
+  filter: brightness(1.03);
+}
+
+.profile-action-btn--ghost {
+  color: var(--text-main);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+@keyframes cta-ring-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* Colores permanentes por plataforma */
+.link-btn--twitch {
+  background: color-mix(in srgb, #9146ff 10%, var(--bg-card-strong));
+}
+
+.link-btn--kick {
+  background: color-mix(in srgb, #00e701 10%, var(--bg-card-strong));
+}
+
+.link-btn--youtube {
+  background: color-mix(in srgb, #ff0000 10%, var(--bg-card-strong));
+}
+
+.link-btn--tiktok {
+  background: color-mix(in srgb, #111111 6%, var(--bg-card-strong));
+}
+
+.link-btn--instagram {
+  background: color-mix(in srgb, #e1306c 10%, var(--bg-card-strong));
+}
+
+.link-btn--x {
+  background: color-mix(in srgb, #111111 8%, var(--bg-card-strong));
+}
+
+.link-btn--discord {
+  background: color-mix(in srgb, #5865f2 10%, var(--bg-card-strong));
+}
+
+.link-btn--github {
+  background: color-mix(in srgb, #171515 8%, var(--bg-card-strong));
+}
+
+.link-btn--linkedin {
+  background: color-mix(in srgb, #0a66c2 10%, var(--bg-card-strong));
+}
+
+.link-btn--kick-alt {
+  background: color-mix(in srgb, #53fc18 10%, var(--bg-card-strong));
+}
+
+.link-btn--kofi {
+  background: color-mix(in srgb, #ff5f5f 10%, var(--bg-card-strong));
+}
+
+.link-btn--patreon {
+  background: color-mix(in srgb, #ff424d 10%, var(--bg-card-strong));
+}
+
+.link-btn--paypal {
+  background: color-mix(in srgb, #003087 10%, var(--bg-card-strong));
+}
+
+.link-btn--onlyfans {
+  background: color-mix(in srgb, #00aff0 10%, var(--bg-card-strong));
+}
+
+.link-btn--reddit {
+  background: color-mix(in srgb, #ff4500 10%, var(--bg-card-strong));
+}
+
+.link-btn--steam {
+  background: color-mix(in srgb, #1b2838 14%, var(--bg-card-strong));
+}
+
+.link-btn--shop {
+  background: color-mix(in srgb, #f59e0b 10%, var(--bg-card-strong));
+}
+
+.link-btn--email {
+  background: color-mix(in srgb, #64748b 10%, var(--bg-card-strong));
+}
+
+.link-btn--email-alt {
+  background: color-mix(in srgb, #94a3b8 10%, var(--bg-card-strong));
+}
+
+.link-btn--homepage {
+  background: color-mix(in srgb, #14b8a6 10%, var(--bg-card-strong));
+}
+
+.link-btn--website {
+  background: color-mix(in srgb, #0f766e 10%, var(--bg-card-strong));
+}
+
+.link-btn--code {
+  background: color-mix(in srgb, #8b5cf6 10%, var(--bg-card-strong));
+}
+
+.link-btn--computer {
+  background: color-mix(in srgb, #475569 10%, var(--bg-card-strong));
+}
+
+.link-btn--shopping-bag {
+  background: color-mix(in srgb, #d97706 10%, var(--bg-card-strong));
+}
+
+.link-btn--shopping-tag {
+  background: color-mix(in srgb, #f59e0b 10%, var(--bg-card-strong));
+}
+
+.link-btn--sms {
+  background: color-mix(in srgb, #22c55e 10%, var(--bg-card-strong));
+}
+
+.link-btn--rss {
+  background: color-mix(in srgb, #f97316 10%, var(--bg-card-strong));
+}
+
+.link-btn--youtube-alt {
+  background: color-mix(in srgb, #ff0000 10%, var(--bg-card-strong));
+}
+
+/* Colores de ícono por plataforma */
+.link-btn--twitch .link-icon {
+  background-color: color-mix(in srgb, #9146ff 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--kick .link-icon {
+  background-color: color-mix(in srgb, #00e701 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--youtube .link-icon,
+.link-btn--youtube-alt .link-icon {
+  background-color: color-mix(in srgb, #ff0000 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--tiktok .link-icon {
+  background-color: color-mix(in srgb, #111111 12%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--instagram .link-icon {
+  background-color: color-mix(in srgb, #e1306c 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--x .link-icon {
+  background-color: color-mix(in srgb, #111111 12%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--discord .link-icon {
+  background-color: color-mix(in srgb, #5865f2 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--github .link-icon {
+  background-color: color-mix(in srgb, #171515 12%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--linkedin .link-icon {
+  background-color: color-mix(in srgb, #0a66c2 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--kick-alt .link-icon {
+  background-color: color-mix(in srgb, #53fc18 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--kofi .link-icon {
+  background-color: color-mix(in srgb, #ff5f5f 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--patreon .link-icon {
+  background-color: color-mix(in srgb, #ff424d 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--paypal .link-icon {
+  background-color: color-mix(in srgb, #003087 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--onlyfans .link-icon {
+  background-color: color-mix(in srgb, #00aff0 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--reddit .link-icon {
+  background-color: color-mix(in srgb, #ff4500 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--steam .link-icon {
+  background-color: color-mix(in srgb, #1b2838 16%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--shop .link-icon,
+.link-btn--shopping-bag .link-icon,
+.link-btn--shopping-tag .link-icon {
+  background-color: color-mix(in srgb, #f59e0b 14%, rgba(255, 255, 255, 0.06));
+}
+
+.link-btn--email .link-icon,
+.link-btn--email-alt .link-icon,
+.link-btn--homepage .link-icon,
+.link-btn--website .link-icon,
+.link-btn--computer .link-icon,
+.link-btn--code .link-icon,
+.link-btn--sms .link-icon,
+.link-btn--rss .link-icon {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Iconos */
+.brand-discord { background-image: url("../assets/linkshub/discord.svg"); }
+.brand-email { background-image: url("../assets/linkshub/email.svg"); }
+.brand-email-alt { background-image: url("../assets/linkshub/email-alt.svg"); }
+.brand-generic-code { background-image: url("../assets/linkshub/generic-code.svg"); }
+.brand-generic-computer { background-image: url("../assets/linkshub/generic-computer.svg"); }
+.brand-generic-email { background-image: url("../assets/linkshub/generic-email.svg"); }
+.brand-generic-email-alt { background-image: url("../assets/linkshub/generic-email-alt.svg"); }
+.brand-generic-homepage { background-image: url("../assets/linkshub/generic-homepage.svg"); }
+.brand-generic-rss { background-image: url("../assets/linkshub/genenc-rss.svg"); }
+.brand-generic-shopping-bag { background-image: url("../assets/linkshub/generic-shopping-bag.svg"); }
+.brand-generic-shopping-tag { background-image: url("../assets/linkshub/generic-shopping-tag.svg"); }
+.brand-generic-sms { background-image: url("../assets/linkshub/genenc-sms.svg"); }
+.brand-generic-website { background-image: url("../assets/linkshub/generic-website.svg"); }
+.brand-github { background-image: url("../assets/linkshub/github.svg"); }
+.brand-instagram { background-image: url("../assets/linkshub/instagram.svg"); }
+.brand-kick { background-image: url("../assets/linkshub/kick.svg"); }
+.brand-kick-alt { background-image: url("../assets/linkshub/kick-alt.svg"); }
+.brand-kofi { background-image: url("../assets/linkshub/ko-fi.svg"); }
+.brand-linkedin { background-image: url("../assets/linkshub/linkedin.svg"); }
+.brand-onlyfans { background-image: url("../assets/linkshub/onlyfans.svg"); }
+.brand-patreon { background-image: url("../assets/linkshub/patreon.svg"); }
+.brand-paypal { background-image: url("../assets/linkshub/paypal.svg"); }
+.brand-reddit { background-image: url("../assets/linkshub/reddit.svg"); }
+.brand-shop { background-image: url("../assets/linkshub/shop.svg"); }
+.brand-steam { background-image: url("../assets/linkshub/steam.svg"); }
+.brand-tiktok { background-image: url("../assets/linkshub/tiktok.svg"); }
+.brand-twitch { background-image: url("../assets/linkshub/twitch.svg"); }
+.brand-x { background-image: url("../assets/linkshub/x.svg"); }
+.brand-youtube { background-image: url("../assets/linkshub/youtube.svg"); }
+.brand-youtube-alt { background-image: url("../assets/linkshub/youtube-alt.svg"); }
+
+@media (max-width: 640px) {
+  .linkshub-main {
+    padding: 28px 14px;
+  }
+
+  .profile-card {
+    padding: 22px 16px 18px;
+    border-radius: 24px;
+  }
+
+  .avatar-wrap {
+    width: 104px;
+    height: 104px;
+  }
+
+  .link-btn {
+    grid-template-columns: 48px minmax(0, 1fr);
+    min-height: 72px;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .link-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background-size: 22px 22px;
+  }
+
+  .profile-actions {
+    flex-direction: column;
+  }
+
+  .profile-action-btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-btn,
+  .profile-action-btn {
+    transition: none;
+  }
+
+  .link-btn:hover,
+  .profile-action-btn:hover {
+    transform: none;
+    filter: none;
+  }
+
+  .profile-action-btn--primary::before {
+    animation: none;
+  }
+}
+
+/*
+* LittleLink Reset
+* A minimal CSS reset for LittleLink
+*/
+
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Remove list styles on ul, ol elements */
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Set core root defaults */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Remove all animations and transitions for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Modern focus styles */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid #2457F5;
+  outline-offset: 2px;
+}
+
+/* Remove touch callout on iOS */
+a {
+  -webkit-touch-callout: none;
+}
+
+.SHlogosvg {
+  display: block;
+  height: 60px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  margin-top: 15px;
+  display: block;
+  margin-inline: auto;
+}

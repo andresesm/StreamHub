@@ -1,0 +1,280 @@
+name: range-linkshub-generation
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_id:
+        description: "ID inicial"
+        required: true
+        default: "1"
+      end_id:
+        description: "ID final"
+        required: true
+        default: "50"
+
+jobs:
+  generate-profiles-by-range:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Verificar archivos base
+        run: |
+          test -f "u/profile-template.html"
+          test -f "data/creators.json"
+
+      - name: Generar perfiles por rango y crear log
+        shell: bash
+        run: |
+          START_ID="${{ github.event.inputs.start_id }}"
+          END_ID="${{ github.event.inputs.end_id }}"
+          LOG_FILE="profile-generation-log.csv"
+
+          if ! [[ "$START_ID" =~ ^[0-9]+$ ]]; then
+            echo "start_id inválido: $START_ID"
+            exit 1
+          fi
+
+          if ! [[ "$END_ID" =~ ^[0-9]+$ ]]; then
+            echo "end_id inválido: $END_ID"
+            exit 1
+          fi
+
+          if [ "$START_ID" -gt "$END_ID" ]; then
+            echo "El start_id no puede ser mayor al end_id"
+            exit 1
+          fi
+
+          echo "username,status,warning" > "$LOG_FILE"
+
+          jq -c --argjson start "$START_ID" --argjson end "$END_ID" '
+            map(select(
+              (.id != null) and
+              ((.id | tonumber) >= $start) and
+              ((.id | tonumber) <= $end)
+            ))[]
+          ' data/creators.json | while read -r creator; do
+            ID=$(echo "$creator" | jq -r '.id // empty')
+            USERNAME=$(echo "$creator" | jq -r '.username // empty')
+            DISPLAYNAME=$(echo "$creator" | jq -r '.username // empty')
+
+            if [ -z "$ID" ]; then
+              echo "\"\",\"skipped\",\"missing id\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if [ -z "$USERNAME" ]; then
+              echo "\"\",\"skipped\",\"missing username for id $ID\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            TARGET_DIR="u/$USERNAME"
+            TARGET_FILE="$TARGET_DIR/index.html"
+
+            mkdir -p "$TARGET_DIR"
+
+            if ! cp "u/profile-template.html" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"could not copy template\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-USERNAME|$USERNAME|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-USERNAME\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-DISPLAYNAME|$DISPLAYNAME|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-DISPLAYNAME\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            AVATAR=$(echo "$creator" | jq -r '.photo // "PH-LINKPENDING"')
+            BIO_SHORT=$(echo "$creator" | jq -r '.bio // .description // "PH-LINKPENDING"')
+            CATEGORY=$(echo "$creator" | jq -r '.category // .contentType // "PH-LINKPENDING"')
+
+            TWITCH=$(echo "$creator" | jq -r '.socials.twitch // "PH-LINKPENDING"')
+            KICK=$(echo "$creator" | jq -r '.socials.kick // "PH-LINKPENDING"')
+            IG=$(echo "$creator" | jq -r '.socials.ig // .socials.instagram // "PH-LINKPENDING"')
+            X=$(echo "$creator" | jq -r '.socials.x // "PH-LINKPENDING"')
+            YOUTUBE=$(echo "$creator" | jq -r '.socials.youtube // "PH-LINKPENDING"')
+            TIKTOK=$(echo "$creator" | jq -r '.socials.tiktok // "PH-LINKPENDING"')
+            EMAIL=$(echo "$creator" | jq -r '.socials.email // "PH-LINKPENDING"')
+
+            norm() {
+              local value="$1"
+              if [ -z "$value" ] || [ "$value" = "null" ]; then
+                printf 'PH-LINKPENDING'
+              else
+                printf '%s' "$value"
+              fi
+            }
+
+            AVATAR=$(norm "$AVATAR")
+            BIO_SHORT=$(norm "$BIO_SHORT")
+            CATEGORY=$(norm "$CATEGORY")
+
+            TWITCH=$(norm "$TWITCH")
+            KICK=$(norm "$KICK")
+            IG=$(norm "$IG")
+            X=$(norm "$X")
+            YOUTUBE=$(norm "$YOUTUBE")
+            TIKTOK=$(norm "$TIKTOK")
+            EMAIL=$(norm "$EMAIL")
+
+            build_url() {
+              local base="$1"
+              local value="$2"
+
+              if [ -z "$value" ] || [ "$value" = "PH-LINKPENDING" ]; then
+                printf 'PH-LINKPENDING'
+                return
+              fi
+
+              value="${value#@}"
+              printf '%s%s' "$base" "$value"
+            }
+
+            LINK_TWITCH=$(build_url "https://twitch.tv/" "$TWITCH")
+            LINK_KICK=$(build_url "https://kick.com/" "$KICK")
+            LINK_INSTAGRAM=$(build_url "https://instagram.com/" "$IG")
+            LINK_X=$(build_url "https://x.com/" "$X")
+            LINK_YOUTUBE=$(build_url "https://youtube.com/@" "$YOUTUBE")
+            LINK_TIKTOK=$(build_url "https://tiktok.com/@" "$TIKTOK")
+
+            sed_safe() {
+              printf '%s' "$1" | sed -e 's/[\/&]/\\&/g'
+            }
+
+            if ! sed -i "s|PH-STREAMER-AVATAR|$(sed_safe "$AVATAR")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-AVATAR\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-BIO-SHORT|$(sed_safe "$BIO_SHORT")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-BIO-SHORT\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-CATEGORY|$(sed_safe "$CATEGORY")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-CATEGORY\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-TWITCH|$(sed_safe "$TWITCH")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-TWITCH\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-KICK|$(sed_safe "$KICK")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-KICK\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-YOUTUBE|$(sed_safe "$YOUTUBE")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-YOUTUBE\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-TIKTOK|$(sed_safe "$TIKTOK")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-TIKTOK\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-IG|$(sed_safe "$IG")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-IG\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-X|$(sed_safe "$X")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-X\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-STREAMER-EMAIL|$(sed_safe "$EMAIL")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-STREAMER-EMAIL\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-LINK-TWITCH|$(sed_safe "$LINK_TWITCH")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-LINK-TWITCH\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-LINK-KICK|$(sed_safe "$LINK_KICK")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-LINK-KICK\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-LINK-INSTAGRAM|$(sed_safe "$LINK_INSTAGRAM")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-LINK-INSTAGRAM\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-LINK-X|$(sed_safe "$LINK_X")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-LINK-X\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-LINK-YOUTUBE|$(sed_safe "$LINK_YOUTUBE")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-LINK-YOUTUBE\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if ! sed -i "s|PH-LINK-TIKTOK|$(sed_safe "$LINK_TIKTOK")|g" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"failed replacing PH-LINK-TIKTOK\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            python3 - "$TARGET_FILE" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+path = Path(sys.argv[1])
+html = path.read_text(encoding="utf-8")
+
+html = re.sub(
+    r'<a\b[^>]*href="(?:mailto:)?PH-LINKPENDING"[^>]*>.*?</a>\s*',
+    '',
+    html,
+    flags=re.DOTALL
+)
+
+html = re.sub(
+    r'<small>\s*PH-LINKPENDING\s*</small>',
+    '',
+    html,
+    flags=re.DOTALL
+)
+
+path.write_text(html, encoding="utf-8")
+PY
+
+            if grep -q "$USERNAME" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"generated\",\"ok\"" >> "$LOG_FILE"
+            else
+              echo "\"$USERNAME\",\"warning\",\"file created but username not found in output\"" >> "$LOG_FILE"
+            fi
+          done
+
+      - name: Mostrar log generado
+        run: |
+          echo "=== profile-generation-log.csv ==="
+          cat profile-generation-log.csv
+
+      - name: Mostrar carpetas generadas
+        run: |
+          echo "=== Árbol de u/ ==="
+          ls -R u || true
+
+      - name: Subir artifact de perfiles
+        uses: actions/upload-artifact@v6
+        with:
+          name: generated-profiles-range-${{ github.event.inputs.start_id }}-${{ github.event.inputs.end_id }}
+          path: |
+            u/
+            profile-generation-log.csv
+          if-no-files-found: error
+          overwrite: true
