@@ -1,4 +1,4 @@
-name: linkshub-profiles-range3
+name: linkshub-profiles-range4
 
 on:
   workflow_dispatch:
@@ -177,7 +177,6 @@ jobs:
 
             python3 <<'PY'
 import os
-import re
 from pathlib import Path
 
 path = Path(os.environ["TARGET_FILE"])
@@ -213,33 +212,6 @@ replacements = {
 
 for old, new in replacements.items():
     html = html.replace(old, new)
-
-# Si el avatar quedó como placeholder, fuerza la misma fuente del perfil completo
-if os.environ["AVATAR"] and os.environ["AVATAR"] != "PH-STREAMER-AVATAR":
-    html = html.replace('src="PH-STREAMER-AVATAR"', f'src="{os.environ["AVATAR"]}"')
-
-# Elimina botones completos del Linkshub cuyo href quedó pendiente
-html = re.sub(
-    r'<a\b[^>]*class="[^"]*link-btn[^"]*"[^>]*href="(?:mailto:)?PH-LINKPENDING"[^>]*>.*?</a>',
-    '',
-    html,
-    flags=re.DOTALL
-)
-
-# Elimina cualquier enlace restante con placeholder pendiente
-html = re.sub(
-    r'<a\b[^>]*href="(?:mailto:)?PH-LINKPENDING"[^>]*>.*?</a>',
-    '',
-    html,
-    flags=re.DOTALL
-)
-
-# Limpia placeholders residuales en copy de botones no eliminados
-html = html.replace("@PH-LINKPENDING", "")
-html = html.replace("PH-LINKPENDING", "")
-
-# Normaliza espacios en blanco
-html = re.sub(r'\n\s*\n\s*\n+', '\n\n', html)
 
 path.write_text(html, encoding="utf-8")
 PY
