@@ -1,0 +1,202 @@
+name: NEW
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_id:
+        description: "ID inicial"
+        required: true
+        default: "1"
+      end_id:
+        description: "ID final"
+        required: true
+        default: "50"
+
+jobs:
+  generate-profiles-by-range:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Verificar archivos base
+        run: |
+          test -f "u/profile-template.html"
+          test -f "data/creators.json"
+
+      - name: Generar perfiles por rango y crear log
+        shell: bash
+        run: |
+          START_ID="${{ github.event.inputs.start_id }}"
+          END_ID="${{ github.event.inputs.end_id }}"
+          LOG_FILE="profile-generation-log.csv"
+          EXPORT_ROOT="generated-range-output"
+
+          if ! [[ "$START_ID" =~ ^[0-9]+$ ]]; then
+            echo "start_id inválido: $START_ID"
+            exit 1
+          fi
+
+          if ! [[ "$END_ID" =~ ^[0-9]+$ ]]; then
+            echo "end_id inválido: $END_ID"
+            exit 1
+          fi
+
+          if [ "$START_ID" -gt "$END_ID" ]; then
+            echo "El start_id no puede ser mayor al end_id"
+            exit 1
+          fi
+
+          rm -rf "$EXPORT_ROOT"
+          mkdir -p "$EXPORT_ROOT/u"
+
+          echo "username,status,warning" > "$LOG_FILE"
+
+          jq -c --argjson start "$START_ID" --argjson end "$END_ID" '
+            map(select(
+              (.id != null) and
+              ((.id | tonumber) >= $start) and
+              ((.id | tonumber) <= $end)
+            ))[]
+          ' data/creators.json | while read -r creator; do
+            ID=$(echo "$creator" | jq -r '.id // empty')
+            USERNAME=$(echo "$creator" | jq -r '.username // empty')
+            DISPLAYNAME=$(echo "$creator" | jq -r '.username // empty')
+
+            if [ -z "$ID" ]; then
+              echo "\"\",\"skipped\",\"missing id\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            if [ -z "$USERNAME" ]; then
+              echo "\"\",\"skipped\",\"missing username for id $ID\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            TARGET_DIR="$EXPORT_ROOT/u/$USERNAME"
+            TARGET_FILE="$TARGET_DIR/index.html"
+
+            mkdir -p "$TARGET_DIR"
+
+            if ! cp "u/profile-template.html" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"error\",\"could not copy template\"" >> "$LOG_FILE"
+              continue
+            fi
+
+            AVATAR=$(echo "$creator" | jq -r '.avatar // .profilePhoto // .photo // ""')
+            BIO_SHORT=$(echo "$creator" | jq -r '.bioShort // .shortBio // .bio // ""')
+            CATEGORY=$(echo "$creator" | jq -r '.category // .contentCategory // ""')
+
+            TWITCH=$(echo "$creator" | jq -r '.twitch // ""')
+            KICK=$(echo "$creator" | jq -r '.kick // ""')
+            IG=$(echo "$creator" | jq -r '.ig // ""')
+            X=$(echo "$creator" | jq -r '.x // ""')
+            YOUTUBE=$(echo "$creator" | jq -r '.youtube // ""')
+            TIKTOK=$(echo "$creator" | jq -r '.tiktok // ""')
+            EMAIL=$(echo "$creator" | jq -r '.email // ""')
+
+            link_or_pending() {
+              local value="$1"
+              if [ -n "$value" ] && [ "$value" != "null" ]; then
+                printf "%s" "$value"
+              else
+                printf "PH-LINKPENDING"
+              fi
+            }
+
+            text_or_pending() {
+              local value="$1"
+              if [ -n "$value" ] && [ "$value" != "null" ]; then
+                printf "%s" "$value"
+              else
+                printf "PH-LINKPENDING"
+              fi
+            }
+
+            PH_LINK_TWITCH=$(link_or_pending "$TWITCH")
+            PH_LINK_KICK=$(link_or_pending "$KICK")
+            PH_LINK_IG=$(link_or_pending "$IG")
+            PH_LINK_X=$(link_or_pending "$X")
+            PH_LINK_YOUTUBE=$(link_or_pending "$YOUTUBE")
+            PH_LINK_TIKTOK=$(link_or_pending "$TIKTOK")
+            PH_LINK_EMAIL=$(text_or_pending "$EMAIL")
+
+            PH_TEXT_TWITCH=$(text_or_pending "$TWITCH")
+            PH_TEXT_KICK=$(text_or_pending "$KICK")
+            PH_TEXT_IG=$(text_or_pending "$IG")
+            PH_TEXT_X=$(text_or_pending "$X")
+            PH_TEXT_YOUTUBE=$(text_or_pending "$YOUTUBE")
+            PH_TEXT_TIKTOK=$(text_or_pending "$TIKTOK")
+
+            [ -z "$AVATAR" ] && AVATAR="PH-STREAMER-AVATAR"
+            [ -z "$BIO_SHORT" ] && BIO_SHORT=""
+            [ -z "$CATEGORY" ] && CATEGORY="Creator"
+
+            sed -i "s|PH-STREAMER-USERNAME|$USERNAME|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-DISPLAYNAME|$DISPLAYNAME|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-NAME|$DISPLAYNAME|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-AVATAR|$AVATAR|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-BIO-SHORT|$BIO_SHORT|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-CATEGORY|$CATEGORY|g" "$TARGET_FILE"
+
+            sed -i "s|PH-LINK-TWITCH|$PH_LINK_TWITCH|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-KICK|$PH_LINK_KICK|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-INSTAGRAM|$PH_LINK_IG|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-IG|$PH_LINK_IG|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-X|$PH_LINK_X|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-YOUTUBE|$PH_LINK_YOUTUBE|g" "$TARGET_FILE"
+            sed -i "s|PH-LINK-TIKTOK|$PH_LINK_TIKTOK|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-EMAIL|$PH_LINK_EMAIL|g" "$TARGET_FILE"
+
+            sed -i "s|PH-STREAMER-TWITCH|$PH_TEXT_TWITCH|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-KICK|$PH_TEXT_KICK|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-IG|$PH_TEXT_IG|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-X|$PH_TEXT_X|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-YOUTUBE|$PH_TEXT_YOUTUBE|g" "$TARGET_FILE"
+            sed -i "s|PH-STREAMER-TIKTOK|$PH_TEXT_TIKTOK|g" "$TARGET_FILE"
+
+            python3 - <<PY
+from pathlib import Path
+import re
+
+path = Path("$TARGET_FILE")
+html = path.read_text(encoding="utf-8")
+
+html = re.sub(
+    r'<a\\b[^>]*href="(?:mailto:)?PH-LINKPENDING"[^>]*>.*?</a>',
+    '',
+    html,
+    flags=re.DOTALL
+)
+
+html = re.sub(r'\\n\\s*\\n\\s*\\n+', '\\n\\n', html)
+path.write_text(html, encoding="utf-8")
+PY
+
+            if grep -q "$USERNAME" "$TARGET_FILE"; then
+              echo "\"$USERNAME\",\"generated\",\"ok\"" >> "$LOG_FILE"
+            else
+              echo "\"$USERNAME\",\"warning\",\"file created but username not found in output\"" >> "$LOG_FILE"
+            fi
+          done
+
+      - name: Mostrar log generado
+        run: |
+          echo "=== profile-generation-log.csv ==="
+          cat profile-generation-log.csv
+
+      - name: Mostrar carpetas generadas
+        run: |
+          echo "=== Árbol de generated-range-output/u/ ==="
+          ls -R generated-range-output/u || true
+
+      - name: Subir artifact de perfiles
+        uses: actions/upload-artifact@v6
+        with:
+          name: generated-profiles-range-${{ github.event.inputs.start_id }}-${{ github.event.inputs.end_id }}
+          path: |
+            generated-range-output/u/
+            profile-generation-log.csv
+          if-no-files-found: error
+          overwrite: true
