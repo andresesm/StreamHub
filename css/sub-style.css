@@ -78,6 +78,11 @@ html[data-theme="night"] {
   font-display: swap;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 *,
 *::before,
 *::after {
