@@ -1,4 +1,4 @@
-name: toycansaopapadio
+name: toycansaopapadiov2
 on:
   workflow_dispatch:
     inputs:
@@ -112,32 +112,32 @@ jobs:
               PH_LINK_TWITCH="https://www.twitch.tv/${TWITCH#@}"
               PH_TEXT_TWITCH="@${TWITCH#@}"
             else
-              PH_LINK_TWITCH="PH-LINKPENDING"
-              PH_TEXT_TWITCH="PH-LINKPENDING"
+              PH_LINK_TWITCH=""
+              PH_TEXT_TWITCH=""
             fi
 
             if [ -n "$KICK" ] && [ "$KICK" != "null" ]; then
               PH_LINK_KICK="https://kick.com/${KICK#@}"
               PH_TEXT_KICK="@${KICK#@}"
             else
-              PH_LINK_KICK="PH-LINKPENDING"
-              PH_TEXT_KICK="PH-LINKPENDING"
+              PH_LINK_KICK=""
+              PH_TEXT_KICK=""
             fi
 
             if [ -n "$IG" ] && [ "$IG" != "null" ]; then
               PH_LINK_IG="https://www.instagram.com/${IG#@}"
               PH_TEXT_IG="@${IG#@}"
             else
-              PH_LINK_IG="PH-LINKPENDING"
-              PH_TEXT_IG="PH-LINKPENDING"
+              PH_LINK_IG=""
+              PH_TEXT_IG=""
             fi
 
             if [ -n "$X" ] && [ "$X" != "null" ]; then
               PH_LINK_X="https://x.com/${X#@}"
               PH_TEXT_X="@${X#@}"
             else
-              PH_LINK_X="PH-LINKPENDING"
-              PH_TEXT_X="PH-LINKPENDING"
+              PH_LINK_X=""
+              PH_TEXT_X=""
             fi
 
             if [ -n "$YOUTUBE" ] && [ "$YOUTUBE" != "null" ]; then
@@ -149,24 +149,24 @@ jobs:
                 PH_TEXT_YOUTUBE="@${YOUTUBE#@}"
               fi
             else
-              PH_LINK_YOUTUBE="PH-LINKPENDING"
-              PH_TEXT_YOUTUBE="PH-LINKPENDING"
+              PH_LINK_YOUTUBE=""
+              PH_TEXT_YOUTUBE=""
             fi
 
             if [ -n "$TIKTOK" ] && [ "$TIKTOK" != "null" ]; then
               PH_LINK_TIKTOK="https://www.tiktok.com/@${TIKTOK#@}"
               PH_TEXT_TIKTOK="@${TIKTOK#@}"
             else
-              PH_LINK_TIKTOK="PH-LINKPENDING"
-              PH_TEXT_TIKTOK="PH-LINKPENDING"
+              PH_LINK_TIKTOK=""
+              PH_TEXT_TIKTOK=""
             fi
 
             if [ -n "$EMAIL" ] && [ "$EMAIL" != "null" ]; then
               PH_LINK_EMAIL="mailto:$EMAIL"
               PH_TEXT_EMAIL="$EMAIL"
             else
-              PH_LINK_EMAIL="PH-LINKPENDING"
-              PH_TEXT_EMAIL="PH-LINKPENDING"
+              PH_LINK_EMAIL=""
+              PH_TEXT_EMAIL=""
             fi
 
             export TARGET_FILE USERNAME DISPLAYNAME DATAKEY TITLE DESCRIPTION AVATAR BIO_SHORT CATEGORY
@@ -176,7 +176,6 @@ jobs:
 
             python3 -c '
 import os
-import re
 from pathlib import Path
 
 path = Path(os.environ["TARGET_FILE"])
@@ -194,51 +193,82 @@ replacements = {
     "PH-STREAMER-AVATAR": os.environ["AVATAR"],
     "PH-STREAMER-BIO-SHORT": os.environ["BIO_SHORT"],
     "PH-STREAMER-CATEGORY": os.environ["CATEGORY"],
-    "PH-LINK-TWITCH": os.environ["PH_LINK_TWITCH"],
-    "PH-LINK-KICK": os.environ["PH_LINK_KICK"],
-    "PH-LINK-INSTAGRAM": os.environ["PH_LINK_IG"],
-    "PH-LINK-IG": os.environ["PH_LINK_IG"],
-    "PH-LINK-X": os.environ["PH_LINK_X"],
-    "PH-LINK-YOUTUBE": os.environ["PH_LINK_YOUTUBE"],
-    "PH-LINK-TIKTOK": os.environ["PH_LINK_TIKTOK"],
-    "PH-LINK-EMAIL": os.environ["PH_LINK_EMAIL"],
-    "PH-STREAMER-EMAIL": os.environ["PH_TEXT_EMAIL"],
-    "PH-STREAMER-TWITCH": os.environ["PH_TEXT_TWITCH"],
-    "PH-STREAMER-KICK": os.environ["PH_TEXT_KICK"],
-    "PH-STREAMER-IG": os.environ["PH_TEXT_IG"],
-    "PH-STREAMER-X": os.environ["PH_TEXT_X"],
-    "PH-STREAMER-YOUTUBE": os.environ["PH_TEXT_YOUTUBE"],
-    "PH-STREAMER-TIKTOK": os.environ["PH_TEXT_TIKTOK"],
 }
 
 for k, v in replacements.items():
     html = html.replace(k, v)
 
-def is_missing(value: str) -> bool:
+def valid(value: str) -> bool:
     value = (value or "").strip()
-    return value in ("", "null", "PH-LINKPENDING")
+    return value != "" and value != "null" and value != "PH-LINKPENDING"
 
-def remove_block(text: str, block_name: str) -> str:
-    pattern = rf"<!--\s*{re.escape(block_name)}_START\s*-->.*?<!--\s*{re.escape(block_name)}_END\s*-->"
-    return re.sub(pattern, "", text, flags=re.DOTALL)
+buttons = []
 
-def remove_if_missing(text: str, block_name: str, env_vars) -> str:
-    values = [os.environ.get(v, "") for v in env_vars]
-    if any(is_missing(v) for v in values):
-        return remove_block(text, block_name)
-    return text
+if valid(os.environ["PH_LINK_TWITCH"]) and valid(os.environ["PH_TEXT_TWITCH"]):
+    buttons.append(f"""            <a class="link-btn link-btn--twitch" href="{os.environ["PH_LINK_TWITCH"]}" target="_blank" rel="noopener noreferrer">
+              <span class="link-icon brand-twitch" aria-hidden="true"></span>
+              <span class="link-copy">
+                <strong>Twitch</strong>
+                <small>{os.environ["PH_TEXT_TWITCH"]}</small>
+              </span>
+            </a>""")
 
-html = remove_if_missing(html, "BTN_TWITCH", ["PH_LINK_TWITCH", "PH_TEXT_TWITCH"])
-html = remove_if_missing(html, "BTN_KICK", ["PH_LINK_KICK", "PH_TEXT_KICK"])
-html = remove_if_missing(html, "BTN_YOUTUBE", ["PH_LINK_YOUTUBE", "PH_TEXT_YOUTUBE"])
-html = remove_if_missing(html, "BTN_TIKTOK", ["PH_LINK_TIKTOK", "PH_TEXT_TIKTOK"])
-html = remove_if_missing(html, "BTN_IG", ["PH_LINK_IG", "PH_TEXT_IG"])
-html = remove_if_missing(html, "BTN_X", ["PH_LINK_X", "PH_TEXT_X"])
-html = remove_if_missing(html, "BTN_EMAIL", ["PH_LINK_EMAIL", "PH_TEXT_EMAIL"])
+if valid(os.environ["PH_LINK_KICK"]) and valid(os.environ["PH_TEXT_KICK"]):
+    buttons.append(f"""            <a class="link-btn link-btn--kick" href="{os.environ["PH_LINK_KICK"]}" target="_blank" rel="noopener noreferrer">
+              <span class="link-icon brand-kick" aria-hidden="true"></span>
+              <span class="link-copy">
+                <strong>Kick</strong>
+                <small>{os.environ["PH_TEXT_KICK"]}</small>
+              </span>
+            </a>""")
 
-html = remove_block(html, "BTN_REDACTED")
+if valid(os.environ["PH_LINK_YOUTUBE"]) and valid(os.environ["PH_TEXT_YOUTUBE"]):
+    buttons.append(f"""            <a class="link-btn link-btn--youtube" href="{os.environ["PH_LINK_YOUTUBE"]}" target="_blank" rel="noopener noreferrer">
+              <span class="link-icon brand-youtube" aria-hidden="true"></span>
+              <span class="link-copy">
+                <strong>YouTube</strong>
+                <small>{os.environ["PH_TEXT_YOUTUBE"]}</small>
+              </span>
+            </a>""")
 
-html = re.sub(r"\n[ \t]*\n[ \t]*\n+", "\n\n", html)
+if valid(os.environ["PH_LINK_TIKTOK"]) and valid(os.environ["PH_TEXT_TIKTOK"]):
+    buttons.append(f"""            <a class="link-btn link-btn--tiktok" href="{os.environ["PH_LINK_TIKTOK"]}" target="_blank" rel="noopener noreferrer">
+              <span class="link-icon brand-tiktok" aria-hidden="true"></span>
+              <span class="link-copy">
+                <strong>TikTok</strong>
+                <small>{os.environ["PH_TEXT_TIKTOK"]}</small>
+              </span>
+            </a>""")
+
+if valid(os.environ["PH_LINK_IG"]) and valid(os.environ["PH_TEXT_IG"]):
+    buttons.append(f"""            <a class="link-btn link-btn--instagram" href="{os.environ["PH_LINK_IG"]}" target="_blank" rel="noopener noreferrer">
+              <span class="link-icon brand-instagram" aria-hidden="true"></span>
+              <span class="link-copy">
+                <strong>Instagram</strong>
+                <small>{os.environ["PH_TEXT_IG"]}</small>
+              </span>
+            </a>""")
+
+if valid(os.environ["PH_LINK_X"]) and valid(os.environ["PH_TEXT_X"]):
+    buttons.append(f"""            <a class="link-btn link-btn--x" href="{os.environ["PH_LINK_X"]}" target="_blank" rel="noopener noreferrer">
+              <span class="link-icon brand-x" aria-hidden="true"></span>
+              <span class="link-copy">
+                <strong>X</strong>
+                <small>{os.environ["PH_TEXT_X"]}</small>
+              </span>
+            </a>""")
+
+if valid(os.environ["PH_LINK_EMAIL"]) and valid(os.environ["PH_TEXT_EMAIL"]):
+    buttons.append(f"""            <a class="link-btn link-btn--email" href="{os.environ["PH_LINK_EMAIL"]}">
+              <span class="link-icon brand-email" aria-hidden="true"></span>
+              <span class="link-copy">
+                <strong>Email</strong>
+                <small>{os.environ["PH_TEXT_EMAIL"]}</small>
+              </span>
+            </a>""")
+
+social_buttons_html = "\n\n".join(buttons)
+html = html.replace("PH-SOCIAL-BUTTONS", social_buttons_html)
 
 path.write_text(html, encoding="utf-8")
 '
