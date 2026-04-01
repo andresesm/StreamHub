@@ -28,7 +28,7 @@ const GAME_COVER_MAP = {
   'GTA V': '/assets/bbdd/g/GrandTheftAuto.webp',
   'Grayzone Warfare': '/assets/bbdd/g/Grayzone-Warfare.webp',
   'Half-Life': '/assets/bbdd/g/Half-Life.webp',
-  'Heartopia': '/assets/bbdd/g/Heatopia.webp',
+  'Heartopia': '/assets/bbdd/g/Heartopia.webp',
   'Hitman': '/assets/bbdd/g/Hitman.webp',
   'Hollow Knight': '/assets/bbdd/g/HollowKnight.webp',
   'HumanitZ': '/assets/bbdd/g/HumanitZ.webp',
