@@ -28,6 +28,7 @@
   const PLATFORM_WRAP = document.getElementById("platformSelectWrap");
 
   const PLATFORMS = [
+    { key: "all", label: "Todos" },
     { key: "twitch", label: "Twitch" },
     { key: "kick", label: "Kick" },
     { key: "youtube", label: "YouTube" },
@@ -39,7 +40,7 @@
   let activeTags = new Set();
   let activeGames = new Set();
   let searchTerm = "";
-  let selectedPlatform = "twitch";
+  let selectedPlatform = "all";
   let liveOnly = false;
   let liveByUser = {};
   let liveUpdateListenerAttached = false;
@@ -60,10 +61,13 @@
   }
 
   function computePlatformTotals(creators) {
-    const totals = { twitch: 0, kick: 0, youtube: 0, tiktok: 0 };
+    const totals = { all: 0, twitch: 0, kick: 0, youtube: 0, tiktok: 0 };
     creators.forEach(c => {
       const p = getCreatorPlatform(c);
-      if (p && totals[p] != null) totals[p] += 1;
+      if (p) {
+        totals.all += 1;
+        if (totals[p] != null) totals[p] += 1;
+      }
     });
     return totals;
   }
@@ -79,12 +83,12 @@
 
   function updateMasterToggleMeta() {
     if (!FILTERS_TOGGLE_BTN) return;
-    let meta = FILTERS_TOGGLE_BTN.querySelector('.filters-master-toggle__meta');
+    let meta = FILTERS_TOGGLE_BTN.querySelector(".filters-master-toggle__meta");
     if (!meta) return;
-    let count = meta.querySelector('.filters-master-toggle__count');
+    let count = meta.querySelector(".filters-master-toggle__count");
     if (!count) {
-      count = document.createElement('span');
-      count.className = 'filters-master-toggle__count';
+      count = document.createElement("span");
+      count.className = "filters-master-toggle__count";
       meta.prepend(count);
     }
     const total = countActiveFilters();
@@ -94,14 +98,17 @@
 
   function updateSectionCount(toggleBtn, countValue) {
     if (!toggleBtn) return;
-    let meta = toggleBtn.querySelector('.filter-block__meta');
+
+    const meta = toggleBtn.querySelector(".filter-block__meta");
     if (!meta) return;
-    let count = meta.querySelector('.filter-block__count');
+
+    let count = meta.querySelector(".filter-block__count");
     if (!count) {
-      count = document.createElement('span');
-      count.className = 'filter-block__count';
+      count = document.createElement("span");
+      count.className = "filter-block__count";
       meta.prepend(count);
     }
+
     count.textContent = countValue;
     count.hidden = !countValue;
   }
@@ -109,34 +116,34 @@
   function ensurePlatformBtnParts() {
     if (!PLATFORM_BTN) return null;
 
-    let selection = PLATFORM_BTN.querySelector('.platform-selection');
+    let selection = PLATFORM_BTN.querySelector(".platform-selection");
     if (!selection) {
-      selection = document.createElement('span');
-      selection.className = 'platform-selection';
+      selection = document.createElement("span");
+      selection.className = "platform-selection";
     }
 
-    let labelSpan = selection.querySelector('.platform-label');
+    let labelSpan = selection.querySelector(".platform-label");
     if (!labelSpan) {
-      labelSpan = document.createElement('span');
-      labelSpan.className = 'platform-label';
+      labelSpan = document.createElement("span");
+      labelSpan.className = "platform-label";
       selection.appendChild(labelSpan);
     }
 
-    let countSpan = selection.querySelector('.platform-count');
+    let countSpan = selection.querySelector(".platform-count");
     if (!countSpan) {
-      countSpan = document.createElement('span');
-      countSpan.className = 'platform-count';
+      countSpan = document.createElement("span");
+      countSpan.className = "platform-count";
       selection.appendChild(countSpan);
     }
 
-    let caret = PLATFORM_BTN.querySelector('.platform-caret');
+    let caret = PLATFORM_BTN.querySelector(".platform-caret");
     if (!caret) {
-      caret = document.createElement('span');
-      caret.className = 'platform-caret';
-      caret.textContent = '▾';
+      caret = document.createElement("span");
+      caret.className = "platform-caret";
+      caret.textContent = "▾";
     }
 
-    PLATFORM_BTN.textContent = '';
+    PLATFORM_BTN.textContent = "";
     PLATFORM_BTN.appendChild(selection);
     PLATFORM_BTN.appendChild(caret);
 
@@ -147,7 +154,7 @@
     if (!PLATFORM_BTN) return;
     const parts = ensurePlatformBtnParts();
     if (!parts) return;
-    const label = PLATFORMS.find(p => p.key === selectedPlatform)?.label || 'Twitch';
+    const label = PLATFORMS.find(p => p.key === selectedPlatform)?.label || "Todos";
     const n = platformTotals ? (platformTotals[selectedPlatform] || 0) : 0;
     parts.labelSpan.textContent = label;
     parts.countSpan.textContent = `(${n})`;
@@ -156,40 +163,40 @@
   function setPanelOpen(panel, toggleBtn, open, maxHeightVh, block) {
     if (!toggleBtn || !panel) return;
 
-    panel.classList.toggle('is-open', open);
-    panel.classList.toggle('is-collapsed', !open);
-    panel.setAttribute('aria-hidden', String(!open));
-    toggleBtn.setAttribute('aria-expanded', String(open));
+    panel.classList.toggle("is-open", open);
+    panel.classList.toggle("is-collapsed", !open);
+    panel.setAttribute("aria-hidden", String(!open));
+    toggleBtn.setAttribute("aria-expanded", String(open));
 
     if (block) {
-      block.classList.toggle('is-collapsed', !open);
-      block.setAttribute('data-collapsed', String(!open));
+      block.classList.toggle("is-collapsed", !open);
+      block.setAttribute("data-collapsed", String(!open));
     }
 
     if (isMobileView()) {
-      panel.style.maxHeight = open ? maxHeightVh : '0px';
-      panel.style.overflowY = open ? 'auto' : 'hidden';
+      panel.style.maxHeight = open ? maxHeightVh : "0px";
+      panel.style.overflowY = open ? "auto" : "hidden";
     } else {
-      panel.style.maxHeight = '';
-      panel.style.overflowY = '';
+      panel.style.maxHeight = "";
+      panel.style.overflowY = "";
     }
   }
 
   function setFiltersPanelOpen(open) {
     if (FILTERS_CARD) {
-      FILTERS_CARD.classList.toggle('is-collapsed', !open);
-      FILTERS_CARD.setAttribute('data-collapsed', String(!open));
+      FILTERS_CARD.classList.toggle("is-collapsed", !open);
+      FILTERS_CARD.setAttribute("data-collapsed", String(!open));
     }
-    setPanelOpen(FILTERS_PANEL, FILTERS_TOGGLE_BTN, open, '80vh');
+    setPanelOpen(FILTERS_PANEL, FILTERS_TOGGLE_BTN, open, "80vh");
     updateMasterToggleMeta();
   }
 
   function setTagsPanelOpen(open) {
-    setPanelOpen(TAG_CONTAINER, TAGS_TOGGLE_BTN, open, '40vh', TAG_BLOCK);
+    setPanelOpen(TAG_CONTAINER, TAGS_TOGGLE_BTN, open, "40vh", TAG_BLOCK);
   }
 
   function setGamesPanelOpen(open) {
-    setPanelOpen(GAMES_PANEL, GAMES_TOGGLE_BTN, open, '40vh', GAMES_BLOCK);
+    setPanelOpen(GAMES_PANEL, GAMES_TOGGLE_BTN, open, "40vh", GAMES_BLOCK);
   }
 
   function applyResponsiveFilterState() {
@@ -200,18 +207,19 @@
       setGamesPanelOpen(activeGames.size > 0);
       return;
     }
+
     setFiltersPanelOpen(true);
-    setTagsPanelOpen(true);
-    setGamesPanelOpen(true);
+    setTagsPanelOpen(activeTags.size > 0);
+    setGamesPanelOpen(activeGames.size > 0);
   }
 
   function buildTagPills(uniqueTags) {
     if (!TAG_CONTAINER) return;
-    TAG_CONTAINER.innerHTML = '';
+    TAG_CONTAINER.innerHTML = "";
     uniqueTags.forEach(tag => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'tag-pill';
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tag-pill";
       btn.dataset.tag = tag;
       btn.textContent = tag;
       TAG_CONTAINER.appendChild(btn);
@@ -231,7 +239,7 @@
     const set = new Set();
     creators.forEach(c => {
       (c.games || []).forEach(g => {
-        const name = String(g || '').trim();
+        const name = String(g || "").trim();
         if (name) set.add(name);
       });
     });
@@ -241,30 +249,30 @@
   function buildGamePills(uniqueGames) {
     if (!GAMES_PILLS_CONTAINER) return;
 
-    let container = document.getElementById('gamesPillsContainer');
+    let container = document.getElementById("gamesPillsContainer");
     if (!container) {
-      container = document.createElement('div');
-      container.id = 'gamesPillsContainer';
-      container.className = 'pills-grid games-pills-container';
+      container = document.createElement("div");
+      container.id = "gamesPillsContainer";
+      container.className = "pills-grid games-pills-container";
       GAMES_PILLS_CONTAINER.appendChild(container);
     }
 
-    container.classList.add('pills-grid', 'games-pills-container');
-    container.innerHTML = '';
+    container.classList.add("pills-grid", "games-pills-container");
+    container.innerHTML = "";
 
     uniqueGames.forEach(game => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'tag-pill game-pill';
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tag-pill game-pill";
       btn.dataset.game = game;
 
-      const label = document.createElement('span');
-      label.className = 'game-label';
+      const label = document.createElement("span");
+      label.className = "game-label";
       label.textContent = game;
 
-      const count = document.createElement('span');
-      count.className = 'tag-count';
-      count.textContent = '0';
+      const count = document.createElement("span");
+      count.className = "tag-count";
+      count.textContent = "0";
 
       btn.appendChild(label);
       btn.appendChild(count);
@@ -273,49 +281,101 @@
   }
 
   function ensureLiveToggleButton() {
-    const btn = document.getElementById('liveToggleBtn');
+    const btn = document.getElementById("liveToggleBtn");
     if (!btn) return;
 
     if (!btn.__vsdInit) {
       btn.__vsdInit = true;
-      btn.addEventListener('click', function (e) {
+      btn.addEventListener("click", function (e) {
         e.stopPropagation();
-        if (selectedPlatform !== 'twitch') return;
+        if (selectedPlatform !== "twitch" && selectedPlatform !== "all") return;
         liveOnly = !liveOnly;
         syncLiveUI();
-        if (isMobileView()) setFiltersPanelOpen(true);
         window.VSDFilters && window.VSDFilters.onFilterChange();
       });
     }
 
-    btn.style.display = (selectedPlatform === 'twitch') ? '' : 'none';
-    if (selectedPlatform !== 'twitch') liveOnly = false;
+    const shouldShow = selectedPlatform === "twitch" || selectedPlatform === "all";
+    btn.style.display = shouldShow ? "" : "none";
+
+    if (!shouldShow) liveOnly = false;
     syncLiveUI();
   }
 
   function syncLiveUI() {
-    const liveBtn = document.getElementById('liveToggleBtn');
+    const liveBtn = document.getElementById("liveToggleBtn");
     if (!liveBtn) return;
-    liveBtn.classList.toggle('is-active', !!liveOnly);
-    liveBtn.setAttribute('aria-pressed', liveOnly ? 'true' : 'false');
+    liveBtn.classList.toggle("is-active", !!liveOnly);
+    liveBtn.setAttribute("aria-pressed", liveOnly ? "true" : "false");
+  }
+
+  function resetFloatingPlatformMenu() {
+    if (!PLATFORM_MENU) return;
+    PLATFORM_MENU.classList.remove("is-floating");
+    PLATFORM_MENU.style.top = "";
+    PLATFORM_MENU.style.left = "";
+    PLATFORM_MENU.style.width = "";
+    PLATFORM_MENU.style.maxWidth = "";
+    PLATFORM_MENU.style.setProperty("--platform-menu-width", "");
+  }
+
+  function positionFloatingPlatformMenu() {
+    if (!PLATFORM_BTN || !PLATFORM_MENU) return;
+
+    if (isMobileView()) {
+      resetFloatingPlatformMenu();
+      return;
+    }
+
+    const rect = PLATFORM_BTN.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const menuWidth = rect.width;
+    const gap = 8;
+
+    let left = rect.left;
+    let top = rect.bottom + gap;
+
+    if (left + menuWidth > viewportWidth - gap) {
+      left = Math.max(gap, viewportWidth - menuWidth - gap);
+    }
+
+    PLATFORM_MENU.classList.add("is-floating");
+    PLATFORM_MENU.style.top = `${top}px`;
+    PLATFORM_MENU.style.left = `${left}px`;
+    PLATFORM_MENU.style.width = `${menuWidth}px`;
+    PLATFORM_MENU.style.maxWidth = `${menuWidth}px`;
+    PLATFORM_MENU.style.setProperty("--platform-menu-width", `${menuWidth}px`);
   }
 
   function openPlatformMenu(open) {
     if (!PLATFORM_MENU || !PLATFORM_BTN) return;
-    PLATFORM_MENU.classList.toggle('is-open', open);
-    PLATFORM_MENU.setAttribute('aria-hidden', String(!open));
-    PLATFORM_BTN.setAttribute('aria-expanded', String(open));
+
+    if (open) {
+      positionFloatingPlatformMenu();
+    } else {
+      resetFloatingPlatformMenu();
+    }
+
+    PLATFORM_MENU.classList.toggle("is-open", open);
+    PLATFORM_MENU.setAttribute("aria-hidden", String(!open));
+    PLATFORM_BTN.setAttribute("aria-expanded", String(open));
   }
 
   function setPlatform(key) {
-    const normalized = String(key || '').trim().toLowerCase();
+    const normalized = String(key || "").trim().toLowerCase();
     if (!PLATFORMS.some(p => p.key === normalized)) return;
     selectedPlatform = normalized;
 
     if (PLATFORM_BTN) {
-      PLATFORM_BTN.classList.remove('platform--twitch', 'platform--kick', 'platform--youtube', 'platform--tiktok');
+      PLATFORM_BTN.classList.remove(
+        "platform--all",
+        "platform--twitch",
+        "platform--kick",
+        "platform--youtube",
+        "platform--tiktok"
+      );
       PLATFORM_BTN.classList.add(`platform--${normalized}`);
-      PLATFORM_BTN.classList.add('is-active');
+      PLATFORM_BTN.classList.add("is-active");
       updatePlatformSelectBtnCount();
     }
 
@@ -327,17 +387,17 @@
   function clearNonPlatformFilters() {
     activeTags.clear();
     activeGames.clear();
-    searchTerm = '';
+    searchTerm = "";
     liveOnly = false;
 
     syncLiveUI();
-    if (SEARCH_INPUT) SEARCH_INPUT.value = '';
+    if (SEARCH_INPUT) SEARCH_INPUT.value = "";
 
-    document.querySelectorAll('.tag-pill').forEach(el => {
-      if (el.classList.contains('game-pill')) return;
-      el.classList.remove('is-active');
+    document.querySelectorAll(".tag-pill").forEach(el => {
+      if (el.classList.contains("game-pill")) return;
+      el.classList.remove("is-active");
     });
-    document.querySelectorAll('.game-pill').forEach(el => el.classList.remove('is-active'));
+    document.querySelectorAll(".game-pill").forEach(el => el.classList.remove("is-active"));
 
     applyResponsiveFilterState();
     window.VSDFilters && window.VSDFilters.onFilterChange();
@@ -346,28 +406,28 @@
   function attachPanelToggles() {
     if (FILTERS_TOGGLE_BTN && !FILTERS_TOGGLE_BTN.__vsdInit) {
       FILTERS_TOGGLE_BTN.__vsdInit = true;
-      FILTERS_TOGGLE_BTN.addEventListener('click', function (e) {
+      FILTERS_TOGGLE_BTN.addEventListener("click", function (e) {
         e.stopPropagation();
         openPlatformMenu(false);
-        const isOpen = FILTERS_PANEL ? FILTERS_PANEL.classList.contains('is-open') : false;
+        const isOpen = FILTERS_PANEL ? FILTERS_PANEL.classList.contains("is-open") : false;
         setFiltersPanelOpen(!isOpen);
       });
     }
 
     if (TAGS_TOGGLE_BTN && !TAGS_TOGGLE_BTN.__vsdInit) {
       TAGS_TOGGLE_BTN.__vsdInit = true;
-      TAGS_TOGGLE_BTN.addEventListener('click', function (e) {
+      TAGS_TOGGLE_BTN.addEventListener("click", function (e) {
         e.stopPropagation();
-        const isOpen = TAG_CONTAINER ? TAG_CONTAINER.classList.contains('is-open') : false;
+        const isOpen = TAG_CONTAINER ? TAG_CONTAINER.classList.contains("is-open") : false;
         setTagsPanelOpen(!isOpen);
       });
     }
 
     if (GAMES_TOGGLE_BTN && !GAMES_TOGGLE_BTN.__vsdInit) {
       GAMES_TOGGLE_BTN.__vsdInit = true;
-      GAMES_TOGGLE_BTN.addEventListener('click', function (e) {
+      GAMES_TOGGLE_BTN.addEventListener("click", function (e) {
         e.stopPropagation();
-        const isOpen = GAMES_PANEL ? GAMES_PANEL.classList.contains('is-open') : false;
+        const isOpen = GAMES_PANEL ? GAMES_PANEL.classList.contains("is-open") : false;
         setGamesPanelOpen(!isOpen);
       });
     }
@@ -379,7 +439,7 @@
 
     if (CLEAR_FILTERS_BTN && !CLEAR_FILTERS_BTN.__vsdInit) {
       CLEAR_FILTERS_BTN.__vsdInit = true;
-      CLEAR_FILTERS_BTN.addEventListener('click', function (e) {
+      CLEAR_FILTERS_BTN.addEventListener("click", function (e) {
         e.stopPropagation();
         clearNonPlatformFilters();
       });
@@ -387,79 +447,76 @@
 
     if (PLATFORM_BTN && !PLATFORM_BTN.__vsdInit) {
       PLATFORM_BTN.__vsdInit = true;
-      PLATFORM_BTN.addEventListener('click', function (e) {
+      PLATFORM_BTN.addEventListener("click", function (e) {
         e.stopPropagation();
-        const open = !(PLATFORM_MENU && PLATFORM_MENU.classList.contains('is-open'));
+        const open = !(PLATFORM_MENU && PLATFORM_MENU.classList.contains("is-open"));
         openPlatformMenu(open);
       });
     }
 
     if (PLATFORM_MENU && !PLATFORM_MENU.__vsdInit) {
       PLATFORM_MENU.__vsdInit = true;
-      PLATFORM_MENU.addEventListener('click', function (e) {
-        const item = e.target.closest('.platform-menu-item');
+      PLATFORM_MENU.addEventListener("click", function (e) {
+        const item = e.target.closest(".platform-menu-item");
         if (!item) return;
         setPlatform(item.dataset.platform);
         openPlatformMenu(false);
       });
     }
 
-    document.addEventListener('click', function (evt) {
-      const insidePlatform = PLATFORM_WRAP && evt.target.closest && evt.target.closest('#platformSelectWrap');
+    document.addEventListener("click", function (evt) {
+      const insidePlatform =
+        (PLATFORM_WRAP && evt.target.closest && evt.target.closest("#platformSelectWrap")) ||
+        (PLATFORM_MENU && evt.target.closest && evt.target.closest("#platformMenu"));
+
       if (!insidePlatform) openPlatformMenu(false);
 
       if (isMobileView()) {
-        const clickedInsideFiltersCard = evt.target.closest && evt.target.closest('#filtersCard');
-        if (!clickedInsideFiltersCard && FILTERS_PANEL && FILTERS_PANEL.classList.contains('is-open')) {
+        const clickedInsideFiltersCard = evt.target.closest && evt.target.closest("#filtersCard");
+        if (!clickedInsideFiltersCard && FILTERS_PANEL && FILTERS_PANEL.classList.contains("is-open")) {
           setFiltersPanelOpen(false);
         }
       }
 
-      const tagBtn = evt.target.closest('.tag-pill');
-      if (tagBtn && !tagBtn.classList.contains('game-pill')) {
+      const tagBtn = evt.target.closest(".tag-pill");
+      if (tagBtn && !tagBtn.classList.contains("game-pill")) {
         const tag = tagBtn.dataset.tag;
         if (!tag) return;
 
         if (activeTags.has(tag)) {
           activeTags.delete(tag);
-          tagBtn.classList.remove('is-active');
+          tagBtn.classList.remove("is-active");
         } else {
           activeTags.add(tag);
-          tagBtn.classList.add('is-active');
+          tagBtn.classList.add("is-active");
         }
 
-        if (isMobileView()) {
-          setFiltersPanelOpen(true);
-          setTagsPanelOpen(true);
-        }
+        if (isMobileView()) setTagsPanelOpen(true);
         window.VSDFilters && window.VSDFilters.onFilterChange();
         return;
       }
 
-      const gameBtn = evt.target.closest('.game-pill');
+      const gameBtn = evt.target.closest(".game-pill");
       if (gameBtn) {
         const game = gameBtn.dataset.game;
         if (!game) return;
 
         if (activeGames.has(game)) {
           activeGames.delete(game);
-          gameBtn.classList.remove('is-active');
+          gameBtn.classList.remove("is-active");
         } else {
           activeGames.add(game);
-          gameBtn.classList.add('is-active');
+          gameBtn.classList.add("is-active");
         }
 
-        if (isMobileView()) {
-          setFiltersPanelOpen(true);
-          setGamesPanelOpen(true);
-        }
+        if (isMobileView()) setGamesPanelOpen(true);
         window.VSDFilters && window.VSDFilters.onFilterChange();
       }
     });
 
     if (SEARCH_INPUT && !SEARCH_INPUT.__vsdSearchInit) {
       SEARCH_INPUT.__vsdSearchInit = true;
-      SEARCH_INPUT.addEventListener('input', function () {
+      SEARCH_INPUT.addEventListener("input", function () {
         searchTerm = this.value.trim().toLowerCase();
         if (isMobileView()) setFiltersPanelOpen(true);
         window.VSDFilters && window.VSDFilters.onFilterChange();
@@ -468,8 +525,8 @@
 
     if (!document.__vsdFiltersEscapeInit) {
       document.__vsdFiltersEscapeInit = true;
-      document.addEventListener('keydown', function (evt) {
-        if (evt.key !== 'Escape') return;
+      document.addEventListener("keydown", function (evt) {
+        if (evt.key !== "Escape") return;
         openPlatformMenu(false);
         if (isMobileView()) {
           setGamesPanelOpen(false);
@@ -481,30 +538,43 @@
 
     if (!window.__vsdFiltersResizeInit) {
       window.__vsdFiltersResizeInit = true;
-      MOBILE_MEDIA.addEventListener('change', function () {
+
+      const repositionPlatformMenuIfOpen = function () {
+        if (!PLATFORM_MENU || !PLATFORM_MENU.classList.contains("is-open")) return;
+        positionFloatingPlatformMenu();
+      };
+
+      MOBILE_MEDIA.addEventListener("change", function () {
         openPlatformMenu(false);
         applyResponsiveFilterState();
       });
+
+      window.addEventListener("resize", repositionPlatformMenuIfOpen);
+      window.addEventListener("scroll", repositionPlatformMenuIfOpen, true);
     }
   }
 
   function creatorMatchesFilters(creator) {
     const p = getCreatorPlatform(creator);
-    if (!p || p !== selectedPlatform) return false;
+    if (!p) return false;
+
+    if (selectedPlatform !== "all" && p !== selectedPlatform) return false;
 
     if (searchTerm) {
-      const uname = (creator.username || '').toLowerCase();
+      const uname = (creator.username || "").toLowerCase();
       if (!uname.includes(searchTerm)) return false;
     }
 
-    if (selectedPlatform === 'twitch' && liveOnly) {
+    if (liveOnly) {
+      if (p !== "twitch") return false;
+
       const twitch = normalizeTwitchHandle(creator?.socials?.twitch);
       if (!twitch || liveByUser[twitch] !== true) return false;
     }
 
     if (activeTags.size === 0 && activeGames.size === 0) return true;
 
-    const baseSet = new Set([...(creator.tags || []), creator.language || '']);
+    const baseSet = new Set([...(creator.tags || []), creator.language || ""]);
     for (const t of activeTags) {
       if (!baseSet.has(t)) return false;
     }
@@ -524,7 +594,7 @@
     const gameCounts = {};
 
     creatorsSubset.forEach(c => {
-      const appliedTags = new Set([...(c.tags || []), c.language || '']);
+      const appliedTags = new Set([...(c.tags || []), c.language || ""]);
       appliedTags.forEach(tag => {
         if (!tag) return;
         tagCounts[tag] = (tagCounts[tag] || 0) + 1;
@@ -543,47 +613,49 @@
     if (TAG_COUNT_ALL) TAG_COUNT_ALL.textContent = counts.all;
 
     let visible = 0;
-    document.querySelectorAll('.tag-pill[data-tag]').forEach(btn => {
+    document.querySelectorAll(".tag-pill[data-tag]").forEach(btn => {
       const tag = btn.dataset.tag;
       if (!tag) return;
 
       const n = counts.tags[tag] || 0;
-      let span = btn.querySelector('.tag-count');
+      let span = btn.querySelector(".tag-count");
       if (!span) {
-        span = document.createElement('span');
-        span.className = 'tag-count';
+        span = document.createElement("span");
+        span.className = "tag-count";
         btn.appendChild(span);
       }
       span.textContent = n;
 
       const isActive = activeTags.has(tag);
       const hidden = n === 0 && !isActive;
-      btn.classList.toggle('filter-pill-hidden', hidden);
+      btn.classList.toggle("filter-pill-hidden", hidden);
       if (!hidden) visible += 1;
     });
+
     updateSectionCount(TAGS_TOGGLE_BTN, visible);
   }
 
   function updateGameCounts(counts) {
     let visible = 0;
-    document.querySelectorAll('.game-pill').forEach(btn => {
+    document.querySelectorAll(".game-pill").forEach(btn => {
       const game = btn.dataset.game;
       if (!game) return;
 
       const n = counts.games[game] || 0;
-      let span = btn.querySelector('.tag-count');
+      let span = btn.querySelector(".tag-count");
       if (!span) {
-        span = document.createElement('span');
-        span.className = 'tag-count';
+        span = document.createElement("span");
+        span.className = "tag-count";
         btn.appendChild(span);
       }
       span.textContent = n;
 
       const isActive = activeGames.has(game);
       const hidden = n === 0 && !isActive;
-      btn.classList.toggle('filter-pill-hidden', hidden);
+      btn.classList.toggle("filter-pill-hidden", hidden);
       if (!hidden) visible += 1;
     });
+
     updateSectionCount(GAMES_TOGGLE_BTN, visible);
   }
 
@@ -608,14 +680,14 @@
     attachPanelToggles();
     attachEvents();
 
-    setPlatform('twitch');
+    setPlatform("all");
     ensureLiveToggleButton();
 
     if (!liveUpdateListenerAttached) {
       liveUpdateListenerAttached = true;
-      window.addEventListener('twitch:live-update', function (e) {
+      window.addEventListener("twitch:live-update", function (e) {
         liveByUser = (e && e.detail && e.detail.liveByUser) ? e.detail.liveByUser : {};
-        if (selectedPlatform === 'twitch' && liveOnly) {
+        if ((selectedPlatform === "twitch" || selectedPlatform === "all") && liveOnly) {
           window.VSDFilters && window.VSDFilters.onFilterChange();
         }
       });
