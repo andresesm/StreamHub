@@ -32,12 +32,92 @@
     return String(v || '').trim().replace(/^@/, '').toLowerCase();
   }
 
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function normalizeDescription(value) {
+    return String(value ?? '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n')
+      .trim();
+  }
+
+  function getTwitchDescription(twitchData) {
+    if (!twitchData || typeof twitchData !== 'object') return '';
+    return normalizeDescription(
+      twitchData.description ||
+      twitchData.broadcaster_description ||
+      twitchData.bio ||
+      ''
+    );
+  }
+
+  function setElementTextOrHtml(element, text, options = {}) {
+    const { asHtml = false, preserveLines = true } = options;
+
+    if (!element) return;
+
+    const normalized = normalizeDescription(text);
+
+    if (!normalized) {
+      element.textContent = '';
+      element.hidden = true;
+      return;
+    }
+
+    element.hidden = false;
+
+    if (asHtml) {
+      const safe = escapeHtml(normalized);
+      element.innerHTML = preserveLines ? safe.replace(/\n/g, '<br>') : safe;
+      return;
+    }
+
+    element.textContent = normalized;
+  }
+
+  function updateTwitchDescriptionElements(scope = document) {
+    const nodes = scope.querySelectorAll('[data-twitch-description]');
+
+    nodes.forEach(node => {
+      const username = normalizeTwitchHandle(node.getAttribute('data-twitch-description'));
+      if (!username) return;
+
+      const twitchData = TwitchClient.getUserData(username);
+      const fallback = normalizeDescription(node.getAttribute('data-twitch-description-fallback') || '');
+      const description = getTwitchDescription(twitchData);
+
+      if (description) {
+        node.hidden = false;
+        node.innerHTML = escapeHtml(description).replace(/\n/g, '<br>');
+      } else if (fallback) {
+        node.hidden = false;
+        node.textContent = fallback;
+      } else {
+        node.textContent = '';
+        node.hidden = true;
+      }
+    });
+  }
+
   function extractTwitchUsernames(creators) {
     const usernames = [];
     creators.forEach(creator => {
       const handle = normalizeTwitchHandle(creator?.socials?.twitch);
       if (handle) usernames.push(handle);
     });
+
+    document.querySelectorAll('[data-twitch-description]').forEach(node => {
+      const handle = normalizeTwitchHandle(node.getAttribute('data-twitch-description'));
+      if (handle) usernames.push(handle);
+    });
+
     return [...new Set(usernames)];
   }
 
@@ -283,6 +363,8 @@
       updateCardTwitchIcon(card, twitchData);
       updateCardLiveIndicator(card, twitchData);
     });
+
+    updateTwitchDescriptionElements(document);
   }
 
   function updateModalFollowersStat(followers) {
@@ -331,6 +413,8 @@
     if (twitchData.isLive) {
       addLiveIndicatorToModal();
     }
+
+    updateTwitchDescriptionElements(document);
   }
 
   function updateProfileLiveIndicator(creator, twitchData) {
@@ -367,17 +451,20 @@
   function refreshProfileLiveIndicator() {
     if (!currentProfileCreator) {
       updateProfileLiveBottom(null, null);
+      updateTwitchDescriptionElements(document);
       return;
     }
 
     const twitchHandle = getProfileTwitchHandle(currentProfileCreator);
     if (!twitchHandle) {
       updateProfileLiveIndicator(null, null);
+      updateTwitchDescriptionElements(document);
       return;
     }
 
     const twitchData = TwitchClient.getUserData(twitchHandle);
     updateProfileLiveIndicator(currentProfileCreator, twitchData);
+    updateTwitchDescriptionElements(document);
   }
 
   function observeGridChanges() {
@@ -392,7 +479,10 @@
     gridMutationObserver = new MutationObserver(mutations => {
       for (const mutation of mutations) {
         if (mutation.addedNodes && mutation.addedNodes.length > 0) {
-          setTimeout(updateAllCreatorCards, 50);
+          setTimeout(() => {
+            updateAllCreatorCards();
+            updateTwitchDescriptionElements(document);
+          }, 50);
           break;
         }
       }
@@ -528,7 +618,18 @@
   };
 
   async function initTwitchIntegration(creators) {
-    if (!creators || creators.length === 0) return;
+    if (!creators || creators.length === 0) {
+      allCreators = [];
+      allTwitchUsernames = extractTwitchUsernames([]);
+      ensureDesktopLiveBreakpointListener();
+
+      if (allTwitchUsernames.length > 0) {
+        await TwitchClient.getUsersData(allTwitchUsernames);
+      }
+
+      updateTwitchDescriptionElements(document);
+      return;
+    }
 
     allCreators = creators;
     currentProfileCreator = Array.isArray(creators) && creators.length === 1 ? creators[0] : currentProfileCreator;
@@ -538,6 +639,7 @@
 
     if (allTwitchUsernames.length === 0) {
       refreshProfileLiveIndicator();
+      updateTwitchDescriptionElements(document);
       return;
     }
 
@@ -551,16 +653,19 @@
         await TwitchClient.getUsersData(allTwitchUsernames);
         updateAllCreatorCards();
         refreshProfileLiveIndicator();
+        updateTwitchDescriptionElements(document);
       }, UPDATE_INTERVAL);
     } else {
       updateAllCreatorCards();
       refreshProfileLiveIndicator();
+      updateTwitchDescriptionElements(document);
     }
 
     updateTimer = setInterval(async () => {
       await TwitchClient.getUsersData(allTwitchUsernames);
       updateAllCreatorCards();
       refreshProfileLiveIndicator();
+      updateTwitchDescriptionElements(document);
     }, UPDATE_INTERVAL);
 
     if (!modalWrapped && window.VSDModal && typeof window.VSDModal.open === 'function') {
@@ -569,7 +674,10 @@
 
       window.VSDModal.open = function(creator) {
         originalModalOpen.call(window.VSDModal, creator);
-        setTimeout(() => enhanceModalWithTwitchData(creator), 50);
+        setTimeout(() => {
+          enhanceModalWithTwitchData(creator);
+          updateTwitchDescriptionElements(document);
+        }, 50);
       };
     }
 
@@ -771,10 +879,12 @@
   window.addEventListener('streamhubprofile-loaded', event => {
     currentProfileCreator = event?.detail?.creator || null;
     refreshProfileLiveIndicator();
+    updateTwitchDescriptionElements(document);
   });
 
   window.addEventListener('twitch:live-update', () => {
     refreshProfileLiveIndicator();
+    updateTwitchDescriptionElements(document);
   });
 
   window.addEventListener('click', event => {
@@ -783,6 +893,7 @@
 
     setTimeout(() => {
       refreshProfileLiveIndicator();
+      updateTwitchDescriptionElements(document);
     }, 0);
   });
 
@@ -792,14 +903,24 @@
       await TwitchClient.getUsersData(allTwitchUsernames);
       updateAllCreatorCards();
       refreshProfileLiveIndicator();
+      updateTwitchDescriptionElements(document);
     },
     getClient: () => TwitchClient,
-    updateCards: updateAllCreatorCards
+    updateCards: updateAllCreatorCards,
+    updateDescriptions: (scope = document) => updateTwitchDescriptionElements(scope),
+    getDescription: (username) => {
+      const data = TwitchClient.getUserData(username);
+      return getTwitchDescription(data);
+    }
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', addTwitchStyles);
+    document.addEventListener('DOMContentLoaded', () => {
+      addTwitchStyles();
+      updateTwitchDescriptionElements(document);
+    });
   } else {
     addTwitchStyles();
+    updateTwitchDescriptionElements(document);
   }
 })();
