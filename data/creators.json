@@ -4808,5 +4808,29 @@
     "email": "yosberquintero12@gmail.com",
     "residence": "Caracas, Venezuela",
     "nationality": "Venezuela"
-  }
+  },
+  {
+  "id": 168,
+  "username": "FeelOhSophie",
+  "streamPlatform": "twitch",
+  "avatar_url": "assets/avatars/FeelOhSophie.webp",
+  "tags": [
+    "Arte",
+    "Alta interacción con el chat",
+    "Calmado",
+    "Manualidades"
+  ],
+  "games": [
+    "Cozy Games",
+    "Pokémon"
+  ],
+  "socials": {
+    "twitch": "FeelOhSophie",
+    "ig": "feelohsophie",
+    "x": "FeelOhSophie"
+  },
+  "email": "",
+  "residence": "",
+  "nationality": "Venezuela"
+}
 ]
