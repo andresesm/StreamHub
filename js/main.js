@@ -95,8 +95,30 @@
     });
   }
 
+  function initBackToTop() {
+    const btn = document.getElementById("backToTopBtn");
+    if (!btn) return;
+
+    const toggleVisibility = () => {
+      const shouldShow = window.scrollY > 500;
+      btn.classList.toggle("is-visible", shouldShow);
+    };
+
+    window.addEventListener("scroll", toggleVisibility, { passive: true });
+
+    btn.addEventListener("click", function () {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    });
+
+    toggleVisibility();
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initThemeToggle();
+    initBackToTop();
 
     fetchCreators().then(creators => {
       if (window.TwitchIntegration && typeof window.TwitchIntegration.init === "function") {
