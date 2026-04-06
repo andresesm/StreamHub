@@ -2,7 +2,7 @@
   <img src="assets/WSSH.svg" alt="Logo de StreamHUB" width="450">
 </p>
 
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/CSS-563d7c?&style=flat&logo=css3&logoColor=white) [![Netlify Status](https://api.netlify.com/api/v1/badges/f5c92cce-a37d-4433-8be2-1e90dab5f819/deploy-status)](https://app.netlify.com/projects/streamhubve/deploys) ![X](https://img.shields.io/badge/X-000000?style=flat&logo=x&logoColor=white)
+<p align="center"> ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/CSS-563d7c?&style=flat&logo=css3&logoColor=white) [![Netlify Status](https://api.netlify.com/api/v1/badges/f5c92cce-a37d-4433-8be2-1e90dab5f819/deploy-status)](https://app.netlify.com/projects/streamhubve/deploys) ![X](https://img.shields.io/badge/X-000000?style=flat&logo=x&logoColor=white) </p>
 
 <p align="center">
   Directorio web estático de creadores y streamers, con fichas compactas, páginas de perfil, filtros por etiquetas y juegos, selector de plataforma y soporte para tema claro/oscuro.
