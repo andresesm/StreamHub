@@ -4834,5 +4834,69 @@
   "email": "",
   "residence": "",
   "nationality": "Venezuela"
-}
+},
+  {
+    "id": 169,
+    "username": "kumathehuman",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatars/kumathehuman.webp",
+    "tags": [
+      "Alta interacción con el chat",
+      "Cosplay",
+      "Challenges",
+      "Humor",
+      "Just Chatting",
+      "Eventos especiales",
+      "Juegos cortos",
+      "Juegos largos",
+      "Muy animado",
+      "Roleplayer"
+    ],
+    "games": [
+      "Juegos indie",
+      "Juegos de terror",
+      "Variedad",
+      "Juegos de rol",
+      "Juegos de historia"
+    ],
+    "socials": {
+      "twitch": "kumathehuman",
+      "kick": "",
+      "ig": "Kuma_thehuman",
+      "x": "",
+      "youtube": "",
+      "tiktok": "Kuma_thehuman",
+      "email": "a.kuma.human@gmail.com"
+    },
+    "residence": "Maracaibo, Venezuela",
+    "nationality": "Venezuela"
+  },
+  {
+    "id": 170,
+    "username": "ravenount",
+    "streamPlatform": "twitch",
+    "avatar_url": "assets/avatars/ravenount.webp",
+    "tags": [
+      "Just Chatting",
+      "Jugador casual",
+      "Juegos cortos",
+      "Juegos largos"
+    ],
+    "games": [
+      "Juegos indie",
+      "Soulslike",
+      "Variedad"
+    ],
+    "socials": {
+      "twitch": "ravenount",
+      "kick": "",
+      "ig": "ravenount1",
+      "x": "Ravenount_",
+      "youtube": "Ravenount",
+      "tiktok": "ravenount",
+      "email": "ravenount.contacto@gmail.com"
+    },
+    "residence": "Nashville, Estados Unidos",
+    "nationality": "Maracaibo, Venezuela"
+  }
 ]
