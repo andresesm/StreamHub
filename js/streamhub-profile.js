@@ -828,7 +828,7 @@ function loadCreatorProfile() {
             });
         } else {
           console.error('searchGamesRAWG no está disponible');
-          gamesContainer.innerHTML = '<p class="error-games">RAWG no está cargado</p>';
+          gamesContainer.innerHTML = '<p class="error-games">Ocurrió un error cargando los juegos, actualiza la página.</p>';
         }
       }
 
