@@ -3,7 +3,7 @@
 
 [![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://streamhub.com.es/) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity) ![Maintainer](https://img.shields.io/badge/maintainer-BillyBillete-blue) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)  
 
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/CSS-563d7c?&style=flat&logo=css3&logoColor=white) [![Netlify Status](https://api.netlify.com/api/v1/badges/f5c92cce-a37d-4433-8be2-1e90dab5f819/deploy-status)](https://app.netlify.com/projects/streamhubve/deploys) </p>
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/CSS-563d7c?&style=flat&logo=css3&logoColor=white)
 
 <p align="center">
   Directorio web estático de creadores y streamers, con fichas compactas, páginas de perfil, filtros por etiquetas y juegos, selector de plataforma y soporte para tema claro/oscuro.
