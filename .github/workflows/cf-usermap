@@ -1,0 +1,36 @@
+name: Generate user map
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "u/**"
+      - "scripts/generate-user-map.mjs"
+      - ".github/workflows/generate-user-map.yml"
+
+jobs:
+  generate-user-map:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate user map
+        run: node scripts/generate-user-map.mjs
+
+      - name: Commit generated map
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/user-map.js
+          git diff --cached --quiet || git commit -m "chore: update generated user map"
+          git push

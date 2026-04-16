@@ -3,7 +3,7 @@
 
 <div align="center">
 
-[![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://streamhub.com.es/) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/andresesm/StreamHub/graphs/commit-activity) [![Maintainer](https://img.shields.io/badge/maintainer-BillyBillete-blue)](https://github.com/andresesm) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) ![Cloudflare Badge](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=fff&style=flat)
+[![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://streamhub.com.es/) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/andresesm/StreamHub/graphs/commit-activity) [![Maintainer](https://img.shields.io/badge/maintainer-BillyBillete-blue)](https://github.com/andresesm) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) [![Cloudflare Badge](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=fff&style=flat)](#)
 
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)](#) [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](#) [![CSS](https://img.shields.io/badge/CSS-563d7c?&style=flat&logo=css3&logoColor=white)](#)
 
@@ -178,7 +178,7 @@ El proyecto es libre, pero se agradece la mención si lo reutilizas o adaptas.
 
 ## Autoría
 
-Constructor: [Billy Billete](https://billy.kuumedia.com.es/)  
+Diseñador y desarrollador de StreamHub: [Billy Billete](https://billy.kuumedia.com.es/)  
 Integración de Twitch: [Lighdx](https://github.com/Lighdx) 
 
 ---
@@ -187,11 +187,12 @@ Integración de Twitch: [Lighdx](https://github.com/Lighdx)
 
 - ChatGPT Business
 - Perplexity Pro 
+- Idea original/inspiración: [Giyusk](https://x.com/xgiyuzk) mediante [Twitter/X](https://x.com/xgiyuzk/status/1983371956960338086)
 
 ## Assets ligeramente editados y adaptados
 - 404 page by [Jon Kantner](https://codepen.io/jkantner)
-- Rotatint stars by [Lucas Bebber](https://codepen.io/lbebber)
-- Star flashing effect [Matt Edwards](https://codepen.io/mtedwards)
+- Rotating stars by [Lucas Bebber](https://codepen.io/lbebber)
+- Star flashing effect by [Matt Edwards](https://codepen.io/mtedwards)
 
 ---
 
