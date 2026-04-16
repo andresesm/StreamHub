@@ -12,12 +12,10 @@
 </div>
 
 <p align="center">
-  Directorio web estático de creadores y streamers, con fichas compactas, páginas de perfil, filtros por etiquetas y juegos, selector de plataforma y soporte para tema claro/oscuro.
+  Directorio streamers de la comnidad venezolana.
 </p>
 
-> Proyecto hecho sobre una estructura muy concreta. Si cambias nombres de clases, IDs, rutas o el esquema del JSON, es bastante probable que el sitio entero deje de funcionar.
-
-Este readme está escrito también con IA porque me dio mucha flojera hacerlo yo, está ligeramente editado para ser un poco más acertado
+> TODO el proyecto está muy mal hecho sobre una estructura bastante rígida y posiblemente, nada flexible. Si al forkear o resubir haces cambios mínimos es bastante probable que el sitio comience a desmoronarse o deje de funcionar entero, mi recomendación si quieres reusar es que trates de entender la estructura y te adaptes a ella.
 
 ---
 
@@ -27,18 +25,30 @@ https://streamhub.com.es/
 
 ---
 
-## Qué incluye
+## Que funciones posee el proyecto
 
-- Directorio responsive de creadores con carga incremental. 
-- Buscador por nombre de usuario. 
-- Filtros dinámicos por etiquetas y juegos. 
-- Selector de plataforma principal con prioridad para Twitch, Kick, YouTube y TikTok. 
-- Botón de “En vivo” para Twitch. 
-- Limpieza de filtros sin perder la plataforma seleccionada.
-- Páginas de perfil individuales para cada creador. 
-- Integración visual con redes sociales mediante SVG y estilos por plataforma. 
-- Tema day/night persistente mediante `localStorage`.
-- Página FAQ y páginas auxiliares del proyecto. 
+- Páginas totalmente creadas y responsivas para HOME - FAQ - Vista de directorio - TEMPLATE de perfiles. 
+- Funciones generales del sitio:
+-* Headerbar normalizada con botón volver, logo escrito, botón de temas
+-* Funciones de tema día/noche
+-* Footer normalizado (salvo en Directorio), con fecha, tm, y hotlinks 
+- Home
+*- Web simple con título, subtítulo y botones de acción
+*- 3 estilos de botones de acción, enfasis 1 (azul), enfasis 2 (verde) y normal (varía según tema de la web)
+*- Fondo de pantalla fijo y adaptable, que parece cambiar con cambio de tema
+- Directorio:
+*- Sístema de búsqueda actualizable en tiempo real
+*- Selector de plataforma, opción de todos y luego específicas para Twitch, Kick, YouTube y TikTok. Los botones poseen color relativo a la plataforma al estar activos
+*- Filtros dinámicos por etiquetas y juegos (ocultos por defecto) 
+*- Botones de limpieza de búsqueda (limpia todo menos la plataforma)
+*- Integración con API Twitch para saber el estado de stream de las personas 
+*- En la categoría TODOS y TWITCH se habilita el botón de “En vivo” para filtrar.
+- Perfil individual por creador:
+-* Sistema estilo Linktree/Beacons donde se muestran las redes sociales de manera simple y directa
+-* Botón disponible para ver "perfil completo" resaltado para no pasar desapercibido
+-* Perfil completo además de las redes sociales muestra la descripción traída de Twitch
+-* Sección de etiquetas que identifican al streamer según su manera de hacer directos
+-* Sección de juegos asociados al creador con su propia caratula
 
 ---
 
