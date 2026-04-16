@@ -5,7 +5,7 @@
 
 [![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://streamhub.com.es/) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/andresesm/StreamHub/graphs/commit-activity) [![Maintainer](https://img.shields.io/badge/maintainer-BillyBillete-blue)](https://github.com/andresesm) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) ![Cloudflare Badge](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=fff&style=flat)
 
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/CSS-563d7c?&style=flat&logo=css3&logoColor=white)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)](#) [![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](#) [![CSS](https://img.shields.io/badge/CSS-563d7c?&style=flat&logo=css3&logoColor=white)](#)
 
 [![X Badge](https://img.shields.io/badge/X-000?logo=x&logoColor=fff&style=flat-square)](https://x.com/andresesann) [![Twitch Badge](https://img.shields.io/badge/Twitch-9146FF?logo=twitch&logoColor=fff&style=flat-square)](https://www.twitch.tv/billybillete)
 
