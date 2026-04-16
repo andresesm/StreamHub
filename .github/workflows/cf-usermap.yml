@@ -1,8 +1,10 @@
 name: Generate user map
 
 on:
+  workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - "u/**"
       - "scripts/generate-user-map.mjs"
@@ -26,6 +28,12 @@ jobs:
 
       - name: Generate user map
         run: node scripts/generate-user-map.mjs
+
+      - name: Show generated files
+        run: |
+          git status
+          ls -la
+          ls -la src || true
 
       - name: Commit generated map
         run: |
