@@ -12,7 +12,7 @@
 </div>
 
 <p align="center">
-  Directorio streamers de la comnidad venezolana.
+  Directorio streamers de la comunidad venezolana.
 </p>
 
 > TODO el proyecto está muy mal hecho sobre una estructura bastante rígida y posiblemente, nada flexible. Si al forkear o resubir haces cambios mínimos es bastante probable que el sitio comience a desmoronarse o deje de funcionar entero, mi recomendación si quieres reusar es que trates de entender la estructura y te adaptes a ella.
@@ -34,10 +34,10 @@ https://streamhub.com.es/
   - Footer normalizado (salvo en Directorio), con fecha, tm, y hotlinks 
 - Home
   - Web simple con título, subtítulo y botones de acción
-  - 3 estilos de botones de acción, enfasis 1 (azul), enfasis 2 (verde) y normal (varía según tema de la web)
+  - 3 estilos de botones de acción, énfasis 1 (azul), énfasis 2 (verde) y normal (varía según tema de la web)
   - Fondo de pantalla fijo y adaptable, que parece cambiar con cambio de tema
 - Directorio:
-  - Sístema de búsqueda actualizable en tiempo real
+  - Sistema de búsqueda actualizable en tiempo real
   - Selector de plataforma, opción de todos y luego específicas para Twitch, Kick, YouTube y TikTok. Los botones poseen color relativo a la plataforma al estar activos
   - Filtros dinámicos por etiquetas y juegos (ocultos por defecto) 
   - Botones de limpieza de búsqueda (limpia todo menos la plataforma)
