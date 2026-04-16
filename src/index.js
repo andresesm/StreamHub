@@ -1,3 +1,5 @@
+import { USER_MAP } from "./user-map.js";
+
 const RESERVED_EXACT = new Set([
   "",
   "/",
@@ -62,7 +64,7 @@ export default {
       isReserved(cleanPath) ||
       FILE_EXTENSION_REGEX.test(cleanPath)
     ) {
-      return env.ASSETS.fetch(request.url);
+      return env.ASSETS.fetch(request);
     }
 
     // 3) Solo intenta rewrite para rutas tipo /usuario
@@ -70,9 +72,10 @@ export default {
 
     if (parts.length === 1) {
       const slug = parts[0];
+      const canonicalSlug = USER_MAP[slug.toLowerCase()] || slug;
 
       const candidateUrl = new URL("https://assets.local");
-      candidateUrl.pathname = `/u/${slug}/`;
+      candidateUrl.pathname = `/u/${canonicalSlug}/`;
 
       const candidateResponse = await env.ASSETS.fetch(candidateUrl.toString());
 
@@ -82,6 +85,6 @@ export default {
     }
 
     // 4) Todo lo demás sigue flujo normal
-    return env.ASSETS.fetch(request.url);
+    return env.ASSETS.fetch(request);
   }
 };
