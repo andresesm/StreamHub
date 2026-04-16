@@ -29,26 +29,26 @@ https://streamhub.com.es/
 
 - Páginas totalmente creadas y responsivas para HOME - FAQ - Vista de directorio - TEMPLATE de perfiles. 
 - Funciones generales del sitio:
--* Headerbar normalizada con botón volver, logo escrito, botón de temas
--* Funciones de tema día/noche
--* Footer normalizado (salvo en Directorio), con fecha, tm, y hotlinks 
+ - Headerbar normalizada con botón volver, logo escrito, botón de temas
+ - Funciones de tema día/noche
+ - Footer normalizado (salvo en Directorio), con fecha, tm, y hotlinks 
 - Home
-*- Web simple con título, subtítulo y botones de acción
-*- 3 estilos de botones de acción, enfasis 1 (azul), enfasis 2 (verde) y normal (varía según tema de la web)
-*- Fondo de pantalla fijo y adaptable, que parece cambiar con cambio de tema
+ - Web simple con título, subtítulo y botones de acción
+ - 3 estilos de botones de acción, enfasis 1 (azul), enfasis 2 (verde) y normal (varía según tema de la web)
+ - Fondo de pantalla fijo y adaptable, que parece cambiar con cambio de tema
 - Directorio:
-*- Sístema de búsqueda actualizable en tiempo real
-*- Selector de plataforma, opción de todos y luego específicas para Twitch, Kick, YouTube y TikTok. Los botones poseen color relativo a la plataforma al estar activos
-*- Filtros dinámicos por etiquetas y juegos (ocultos por defecto) 
-*- Botones de limpieza de búsqueda (limpia todo menos la plataforma)
-*- Integración con API Twitch para saber el estado de stream de las personas 
-*- En la categoría TODOS y TWITCH se habilita el botón de “En vivo” para filtrar.
+ - Sístema de búsqueda actualizable en tiempo real
+ - Selector de plataforma, opción de todos y luego específicas para Twitch, Kick, YouTube y TikTok. Los botones poseen color relativo a la plataforma al estar activos
+ - Filtros dinámicos por etiquetas y juegos (ocultos por defecto) 
+ - Botones de limpieza de búsqueda (limpia todo menos la plataforma)
+ - Integración con API Twitch para saber el estado de stream de las personas 
+ - En la categoría TODOS y TWITCH se habilita el botón de “En vivo” para filtrar.
 - Perfil individual por creador:
--* Sistema estilo Linktree/Beacons donde se muestran las redes sociales de manera simple y directa
--* Botón disponible para ver "perfil completo" resaltado para no pasar desapercibido
--* Perfil completo además de las redes sociales muestra la descripción traída de Twitch
--* Sección de etiquetas que identifican al streamer según su manera de hacer directos
--* Sección de juegos asociados al creador con su propia caratula
+ - Sistema estilo Linktree/Beacons donde se muestran las redes sociales de manera simple y directa
+ - Botón disponible para ver "perfil completo" resaltado para no pasar desapercibido
+ - Perfil completo además de las redes sociales muestra la descripción traída de Twitch
+ - Sección de etiquetas que identifican al streamer según su manera de hacer directos
+ - Sección de juegos asociados al creador con su propia caratula
 
 ---
 
