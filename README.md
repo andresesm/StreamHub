@@ -1,15 +1,23 @@
 <p align="center">
-  <img src="assets/WSSH.svg" alt="Logo de StreamHUB" width="450">
+  <img src="assets/WSSH.svg" alt="Logo de StreamHUB" width="450"></p>
 
-[![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://streamhub.com.es/) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity) ![Maintainer](https://img.shields.io/badge/maintainer-BillyBillete-blue) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)  
+<div align="center">
+
+[![Website](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://streamhub.com.es/) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/andresesm/StreamHub/graphs/commit-activity) [![Maintainer](https://img.shields.io/badge/maintainer-BillyBillete-blue)](https://github.com/andresesm) [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) ![Cloudflare Badge](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=fff&style=flat)
 
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white) ![CSS](https://img.shields.io/badge/CSS-563d7c?&style=flat&logo=css3&logoColor=white)
+
+[![X Badge](https://img.shields.io/badge/X-000?logo=x&logoColor=fff&style=flat-square)](https://x.com/andresesann) [![Twitch Badge](https://img.shields.io/badge/Twitch-9146FF?logo=twitch&logoColor=fff&style=flat-square)](https://www.twitch.tv/billybillete)
+
+</div>
 
 <p align="center">
   Directorio web estático de creadores y streamers, con fichas compactas, páginas de perfil, filtros por etiquetas y juegos, selector de plataforma y soporte para tema claro/oscuro.
 </p>
 
 > Proyecto hecho sobre una estructura muy concreta. Si cambias nombres de clases, IDs, rutas o el esquema del JSON, es bastante probable que el sitio entero deje de funcionar.
+
+Este readme está escrito también con IA porque me dio mucha flojera hacerlo yo, está ligeramente editado para ser un poco más acertado
 
 ---
 
@@ -179,7 +187,11 @@ Integración de Twitch: [Lighdx](https://github.com/Lighdx)
 
 - ChatGPT Business
 - Perplexity Pro 
+
+## Assets ligeramente editados y adaptados
 - 404 page by [Jon Kantner](https://codepen.io/jkantner)
+- Rotatint stars by [Lucas Bebber](https://codepen.io/lbebber)
+- Star flashing effect [Matt Edwards](https://codepen.io/mtedwards)
 
 ---
 
