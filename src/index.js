@@ -14,7 +14,8 @@ const RESERVED_EXACT = new Set([
   "/favicon.ico",
   "/robots.txt",
   "/sitemap.xml",
-  "/404.html"
+  "/404.html",
+  "/Bonescraft/"
 ]);
 
 const RESERVED_PREFIXES = [

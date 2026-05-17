@@ -271,7 +271,7 @@ main {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: url("../assets/Topolines.webp");
+  background-image: url("softTopolines.png");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
