@@ -140,6 +140,7 @@ export const USER_MAP = {
   "taitaimochi": "Taitaimochi",
   "tali_glasc": "tali_glasc",
   "terryluh": "terryluh",
+  "teucrovzla": "Teucrovzla",
   "the_antiyisus": "The_AntiYisus",
   "thefrums": "TheFrums",
   "themispeed": "Themispeed",
@@ -176,5 +177,5 @@ export const USER_MAP = {
   "zeromeow23": "ZeroMeow23",
   "zeropeage": "zeropeage",
   "zhaid_0": "zhaid_0",
-  "bonescraft": "Bonescraft"
+  "zz-zz-old": "ZZ-ZZ-OLD"
 };
