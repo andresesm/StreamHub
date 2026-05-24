@@ -4901,6 +4901,39 @@
     "residence": "Nashville, Estados Unidos",
     "nationality": "Maracaibo, Venezuela"
   },
+  { "id": 171,
+  "username": "Teucrovzla",
+  "streamPlatform": "twitch",
+  "avatar_url": "assets/avatars/Teucrovzla.webp",
+  "tags": [
+  "Jugador competitivo/Tryhard",
+  "FPS",
+  "Shooter",
+  "Accion",
+  "Extraccion Shooter",
+  "Battle Royale",
+  "PvP",
+  "PvE"
+  ],
+  "games": [
+  "Fortnite",
+  "Multiplayer",
+  "Delta Force",
+  "Battlefield REDSEC",
+  "Battlefield 6"
+  ],
+  "socials": {
+  "twitch": "Teucrovzla",
+  "kick": "Teucrovzla",
+  "ig": "Teucrovzla",
+  "x": "Teucrovzla",
+  "youtube": "Teucrovzla",
+  "tiktok": "Teucrovzla"
+  },
+  "email": "",
+  "residence": "",
+  "nationality": "Venezuela"
+  },
   {
     "id": 172,
     "username": "soykenwilde",
