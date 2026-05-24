@@ -176,5 +176,5 @@ export const USER_MAP = {
   "zeromeow23": "ZeroMeow23",
   "zeropeage": "zeropeage",
   "zhaid_0": "zhaid_0",
-  "bonescraft": "Bonescraft"
+  "zz-zz-old": "ZZ-ZZ-OLD"
 };
