@@ -5225,5 +5225,72 @@
     "email": "manager@soydraku.com",
     "residence": "",
     "nationality": "Venezuela"
-  }
+  },
+  {
+  "id": 184,
+  "username": "Simonaliyt",
+  "streamPlatform": "twitch",
+  "avatar_url": "assets/avatars/Simonaliyt.webp",
+  "tags": [
+    "Jugador casual"
+  ],
+  "games": [
+    "Counter-Strike",
+    "Minecraft",
+    "Rocket League"
+  ],
+  "socials": {
+    "twitch": "Simonaliyt",
+    "kick": "Simonaliyt",
+    "ig": "Simonaliyt_",
+    "x": "Simonalijpg",
+    "youtube": "SIMONALIYT",
+    "tiktok": "simonaliyt"
+  },
+  "email": "Simonpinero406@gmail.com",
+  "residence": "Maracaibo, Venezuela",
+  "nationality": "Venezuela"
+},
+{
+  "id": 185,
+  "username": "Idkponque",
+  "streamPlatform": "twitch",
+  "avatar_url": "assets/avatars/Idkponque.webp",
+  "tags": [
+    "Alta interacción con el chat",
+    "Cocina",
+    "Challenges",
+    "Deportes",
+    "Educación",
+    "Humor",
+    "Just Chatting",
+    "Juegos de Historia",
+    "Jugador competitivo/Tryhard",
+    "Jugador casual",
+    "Juegos cortos",
+    "Juegos largos",
+    "Música",
+    "Muy animado",
+    "Reacciones"
+  ],
+  "games": [
+    "Fortnite",
+    "GTA V",
+    "Juegos indie",
+    "Juegos de terror",
+    "Minecraft",
+    "Roblox",
+    "Variedad"
+  ],
+  "socials": {
+    "twitch": "Idkponque",
+    "ig": "idkponque",
+    "x": "massiponquesito",
+    "youtube": "idkponqueuwu",
+    "tiktok": "ponquesito_uwu"
+  },
+  "email": "idkponque@gmail.com",
+  "residence": "Chile, Venezuela",
+  "nationality": "Venezuela"
+}
 ]
